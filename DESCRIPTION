@@ -1,0 +1,22 @@
+Package: multimput
+Type: Package
+Title: Using Multiple Imputation to Address Missing Data
+Version: 0.2
+Date: 2015-10-16
+Author: Thierry Onkelinx, Koen Devos, Paul Quataert
+Maintainer: Thierry.Onkelinx <Thierry.Onkelinx@inbo.be>
+Description: Accompaning package for the paper: "Working with population totals
+    in the presence of with missing data".
+License: GPL-3
+Depends:
+    R (>= 3.0.0)
+Imports:
+    MASS,
+    geepack,
+    plyr
+Suggests:
+    INLA,
+    snowfall
+Roxygen: list(wrap = FALSE)
+LazyData: TRUE
+RoxygenNote: 5.0.1
