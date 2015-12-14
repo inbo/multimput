@@ -9,7 +9,7 @@
 #'   \item \code{Year} The year of the index
 #'   \item \code{Method} A factor indicating the imputation technique
 #'   \item \code{Type} A factor indicating if the index is based on the observed, augmented or complete data
-#'   \item Family} A factor indicating if the index is based on the negative binomial or Poisson distribution
+#'   \item \code{Family} A factor indicating if the index is based on the negative binomial or Poisson distribution
 #' }
 #'
 #' @docType data
