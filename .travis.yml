@@ -1,4 +1,4 @@
 language: r
 sudo: required
 r_github_packages:
-  - grantbrown/inla
+  - grantbrown/inla/rinla
