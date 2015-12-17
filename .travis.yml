@@ -1,4 +1,4 @@
 language: r
 sudo: required
-before_install:
-  - "Rscript -e 'tryCatch({   install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable") }, error = function(e) {   message(e);   q(status = 1, save = "no") })'"
+install:
+  - Rscript -e 'tryCatch({   install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable") }, error = function(e) {   message(e);   q(status = 1, save = "no") })'
