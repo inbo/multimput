@@ -16,6 +16,7 @@ Imports:
     plyr
 Suggests:
     INLA,
+    devtools,
     snowfall
 Roxygen: list(wrap = FALSE)
 LazyData: TRUE
