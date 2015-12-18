@@ -1,6 +1,10 @@
 language: r
 sudo: required
-r_binary_packages:
-  - devtools
+
+# System dependencies for HTTP calling
+apt_packages:
+ - libcurl4-openssl-dev
+ - libxml2-dev
+
 install:
   - Rscript -e 'install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable")'
