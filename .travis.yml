@@ -3,4 +3,4 @@ sudo: required
 r_binary_packages:
   - devtools
 install:
-  - Rscript -e 'tryCatch({   install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable") }, error = function(e) {   message(e);   q(status = 1, save = "no") })'
+  - Rscript -e 'install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable")'
