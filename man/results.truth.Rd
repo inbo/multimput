@@ -13,14 +13,14 @@ Data for fig 3 to 8 in Onkelinx et al
 }
 \details{
 \itemize{
-  \item \code{Estimate} The point estimate of the $API$ index
-  \item \code{Std. Error} The standard error of the $API$ index
-  \item \code{2.5 \%} The lower confidence limit of the $API$ index
-  \item \code{97.5 \%} The upper confidence limit of the $API$ index
-  \item \code{Estimatebis} The point estimate of the $APA$ index
-  \item \code{Std. Errorbis} The standard error of the $APA$ index
-  \item \code{2.5 \%bis} The lower confidence limit of the $APA$ index
-  \item \code{97.5 \%bis} The upper confidence limit of the $APA$ index
+  \item \code{Estimate} The point estimate of the \eqn{API} index
+  \item \code{Std. Error} The standard error of the \eqn{API} index
+  \item \code{2.5 \%} The lower confidence limit of the \eqn{API} index
+  \item \code{97.5 \%} The upper confidence limit of the \eqn{API} index
+  \item \code{Estimatebis} The point estimate of the \eqn{APA} index
+  \item \code{Std. Errorbis} The standard error of the \eqn{APA} index
+  \item \code{2.5 \%bis} The lower confidence limit of the \eqn{APA} index
+  \item \code{97.5 \%bis} The upper confidence limit of the \eqn{APA} index
   \item \code{Year} The year of the index
   \item \code{Run} The id of the simulated dataset
   \item \code{Years} The number of years in the dataset: 0 = 24, 1 = 6, 2 = 12, 3 = 24
