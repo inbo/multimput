@@ -6,7 +6,14 @@
 #' @param extractor a function which return a \code{matrix} or \code{data.frame}. The first column should contain the estimate, the second the standard error of the estimate
 #' @param extractor.args an optional list of arguments to pass to the extractor function
 #' @export
-average_imputation <- function(data, model.fun, rhs, model.args, extractor, extractor.args){
+average_imputation <- function(
+  data,
+  model.fun,
+  rhs,
+  model.args,
+  extractor,
+  extractor.args
+){
   model.args <- c(list(data = data), model.args)
   raw.coef <- lapply(
     grep("^Imputation[[:digit:]]*$", colnames(data)),
@@ -16,8 +23,18 @@ average_imputation <- function(data, model.fun, rhs, model.args, extractor, extr
       do.call(extractor, c(list(model), extractor.args))
     }
   )
-  estimate <- sapply(raw.coef, function(x){x[, 1]})
-  variance <- sapply(raw.coef, function(x){x[, 2] ^ 2})
+  estimate <- sapply(
+    raw.coef,
+    function(x){
+      x[, 1]
+    }
+  )
+  variance <- sapply(
+    raw.coef,
+    function(x){
+      x[, 2] ^ 2
+    }
+  )
   cbind(
     Estimate = rowMeans(estimate),
     SE = sqrt(

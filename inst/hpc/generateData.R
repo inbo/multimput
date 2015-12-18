@@ -15,5 +15,11 @@ n.year <- 24
 seeds <- sample(.Machine$integer.max, n.run)
 
 source(system.file("paper_simulation/generate_data.R", package = "multimput"))
-source(system.file("paper_simulation/generate_data_design.R", package = "multimput"))
-source(system.file("paper_simulation/generate_data_random.R", package = "multimput"))
+source(system.file(
+  "paper_simulation/generate_data_design.R",
+  package = "multimput")
+)
+source(system.file(
+  "paper_simulation/generate_data_random.R",
+  package = "multimput")
+)

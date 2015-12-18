@@ -3,9 +3,9 @@ library(MASS)
 
 # loading dataset
 the.dataset <- "0001_1_3_0"
-birdstat.file <- paste0(tempdir, "/trim/run_", the.dataset, ".out")
-birdstat.file2 <- paste0(tempdir, "/trim/run_", the.dataset, "_c.out")
-load(paste0(tempdir, "/dataset/run_", the.dataset, ".rda"))
+birdstat.file <- paste0(tempdir, "/trim/run_", the.dataset, ".out") #nolint
+birdstat.file2 <- paste0(tempdir, "/trim/run_", the.dataset, "_c.out") #nolint
+load(paste0(tempdir, "/dataset/run_", the.dataset, ".rda")) #nolint
 rm(the.dataset)
 dataset <- output$dataset
 rm(output)
@@ -15,9 +15,9 @@ dataset$YearSite <- interaction(dataset$Year, dataset$Site, drop = TRUE)
 # reading birdSTATS output
 start <- which(readLines(birdstat.file) == " TIME TOTALS")
 output <- read.table(
-  birdstat.file, 
-  header = TRUE, 
-  skip = start, 
+  birdstat.file,
+  header = TRUE,
+  skip = start,
   nrows = length(levels(dataset$Year))
 )
 rm(birdstat.file)
@@ -36,9 +36,9 @@ rm(output)
 # reading birdSTATS output
 start <- which(readLines(birdstat.file2) == " TIME TOTALS")
 output <- read.table(
-  birdstat.file2, 
-  header = TRUE, 
-  skip = start, 
+  birdstat.file2,
+  header = TRUE,
+  skip = start,
   nrows = length(levels(dataset$Year))
 )
 rm(birdstat.file2, start)
@@ -56,16 +56,16 @@ rm(output)
 
 # impute using INLA with the complex model
 dataset.inla <- imputeINLA(
-  dataset, 
-  formula = Observed ~ Year + Period + f(Site, model = "iid") + 
-    f(YearPeriod, model = "iid") + f(YearSite, model = "iid"), 
+  dataset,
+  formula = Observed ~ Year + Period + f(Site, model = "iid") +
+    f(YearPeriod, model = "iid") + f(YearSite, model = "iid"),
   n.sim = 199
 )
 
 total.inla <- imputedTotals(
-  data = dataset, 
-  imputations = dataset.inla, 
-  variable = "Observed", 
+  data = dataset,
+  imputations = dataset.inla,
+  variable = "Observed",
   rhs = "Year + Period"
 )
 output <- summarizeImputationGLM.nb(data = total.inla, rhs = "0 + Year")
@@ -79,23 +79,25 @@ output$"Std. Error" <- NULL
 output$Type <- "Augmented"
 output$Method <- "Multiple\nimputation"
 output$Family <- "Negative binomial"
-output[, c("Estimate", "LCL", "UCL")] <- exp(output[, c("Estimate", "LCL", "UCL")])
+output[, c("Estimate", "LCL", "UCL")] <- exp(
+  output[, c("Estimate", "LCL", "UCL")]
+)
 result.inla <- output
 rm(output, dataset.inla, total.inla)
 
 # impute using INLA with the complex model and Poisson distribution
 dataset.inla <- imputeINLA(
-  dataset, 
-  formula = Observed ~ Year + Period + f(Site, model = "iid") + 
-    f(YearPeriod, model = "iid") + f(YearSite, model = "iid"), 
+  dataset,
+  formula = Observed ~ Year + Period + f(Site, model = "iid") +
+    f(YearPeriod, model = "iid") + f(YearSite, model = "iid"),
   n.sim = 199,
   family = "poisson"
 )
 
 total.inla <- imputedTotals(
-  data = dataset, 
-  imputations = dataset.inla, 
-  variable = "Observed", 
+  data = dataset,
+  imputations = dataset.inla,
+  variable = "Observed",
   rhs = "Year + Period"
 )
 output <- summarizeImputationGLM(data = total.inla, rhs = "0 + Year")
@@ -109,21 +111,23 @@ output$"Std. Error" <- NULL
 output$Type <- "Augmented"
 output$Method <- "Multiple\nimputation"
 output$Family <- "Poisson"
-output[, c("Estimate", "LCL", "UCL")] <- exp(output[, c("Estimate", "LCL", "UCL")])
+output[, c("Estimate", "LCL", "UCL")] <- exp(
+  output[, c("Estimate", "LCL", "UCL")]
+)
 result.inla <- rbind(result.inla, output)
 rm(output, dataset.inla, total.inla)
 
 # impute using Underhill (original with mean as initial value)
 initial <- round(exp(coef(glm.nb(Observed ~ 1, data = dataset))))
 imputation  <- imputeUnderhill(
-  data = dataset, 
-  formula = Observed ~ Year + Period + Site, 
+  data = dataset,
+  formula = Observed ~ Year + Period + Site,
   initial = initial
 )
 rm(initial)
 total <- aggregate(
-  imputation$data[, "Observed"], 
-  imputation$data[, c("Year", "Period")], 
+  imputation$data[, "Observed"],
+  imputation$data[, c("Year", "Period")],
   FUN = sum
 )
 model <- glm.nb(x ~ 0 + Year, data = total)
@@ -141,7 +145,9 @@ rownames(output) <- NULL
 output$Method <- "Underhill"
 output$Type <- "Augmented"
 output$Family <- "Negative binomial"
-output[, c("Estimate", "LCL", "UCL")] <- exp(output[, c("Estimate", "LCL", "UCL")])
+output[, c("Estimate", "LCL", "UCL")] <- exp(
+  output[, c("Estimate", "LCL", "UCL")]
+)
 output$"Std. Error" <- NULL
 result.underhill <- output
 rm(output, total, model, imputation)
@@ -149,15 +155,15 @@ rm(output, total, model, imputation)
 # impute using Underhill (original with mean as initial value)
 initial <- round(exp(coef(glm(Observed ~ 1, data = dataset, family = poisson))))
 imputation  <- imputeUnderhill(
-  data = dataset, 
-  formula = Observed ~ Year + Period + Site, 
+  data = dataset,
+  formula = Observed ~ Year + Period + Site,
   initial = initial,
   family = "poisson"
 )
 rm(initial)
 total <- aggregate(
-  imputation$data[, "Observed"], 
-  imputation$data[, c("Year", "Period")], 
+  imputation$data[, "Observed"],
+  imputation$data[, c("Year", "Period")],
   FUN = sum
 )
 model <- glm(x ~ 0 + Year, data = total, family = poisson)
@@ -175,7 +181,9 @@ rownames(output) <- NULL
 output$Method <- "Underhill"
 output$Type <- "Augmented"
 output$Family <- "Poisson"
-output[, c("Estimate", "LCL", "UCL")] <- exp(output[, c("Estimate", "LCL", "UCL")])
+output[, c("Estimate", "LCL", "UCL")] <- exp(
+  output[, c("Estimate", "LCL", "UCL")]
+)
 output$"Std. Error" <- NULL
 result.underhill <- rbind(result.underhill, output)
 rm(output, total, model, imputation)
@@ -202,7 +210,9 @@ rownames(output) <- NULL
 output$Method <- "As is"
 output$Type <- "Observed"
 output$Family <- "Negative binomial"
-output[, c("Estimate", "LCL", "UCL")] <- exp(output[, c("Estimate", "LCL", "UCL")])
+output[, c("Estimate", "LCL", "UCL")] <- exp(
+  output[, c("Estimate", "LCL", "UCL")]
+)
 output$"Std. Error" <- NULL
 result.observed <- output
 rm(output, total, model)
@@ -229,7 +239,9 @@ rownames(output) <- NULL
 output$Method <- "As is"
 output$Type <- "Observed"
 output$Family <- "Poisson"
-output[, c("Estimate", "LCL", "UCL")] <- exp(output[, c("Estimate", "LCL", "UCL")])
+output[, c("Estimate", "LCL", "UCL")] <- exp(
+  output[, c("Estimate", "LCL", "UCL")]
+)
 output$"Std. Error" <- NULL
 result.observed <- rbind(result.observed, output)
 rm(output, total, model)
@@ -256,7 +268,9 @@ rownames(output) <- NULL
 output$Method <- "As is"
 output$Type <- "Complete"
 output$Family <- "Negative binomial"
-output[, c("Estimate", "LCL", "UCL")] <- exp(output[, c("Estimate", "LCL", "UCL")])
+output[, c("Estimate", "LCL", "UCL")] <- exp(
+  output[, c("Estimate", "LCL", "UCL")]
+)
 output$"Std. Error" <- NULL
 result.complete <- output
 rm(output, total, model)
@@ -284,7 +298,9 @@ rownames(output) <- NULL
 output$Method <- "As is"
 output$Type <- "Complete"
 output$Family <- "Poisson"
-output[, c("Estimate", "LCL", "UCL")] <- exp(output[, c("Estimate", "LCL", "UCL")])
+output[, c("Estimate", "LCL", "UCL")] <- exp(
+  output[, c("Estimate", "LCL", "UCL")]
+)
 output$"Std. Error" <- NULL
 result.complete.poisson <- output
 rm(output, total, model, dataset)
@@ -300,17 +316,17 @@ example <- rbind(
 )
 unique(example$Method)
 example$Method <- factor(
-  example$Method, 
+  example$Method,
   levels = c("As is", "Multiple\nimputation", "birdSTATs", "Underhill")
 )
 example$Type <- factor(
-  example$Type, 
+  example$Type,
   levels = c("Observed", "Augmented", "Complete")
 )
 example$Family <- factor(example$Family)
 
-save(example, file = paste0(datadir, "/paper_example.rda"))
+save(example, file = paste0(datadir, "/paper_example.rda")) #nolint
 rm(
-  example, result.birdstats, result.birdstats.complete, result.complete, 
+  example, result.birdstats, result.birdstats.complete, result.complete,
   result.complete.poisson, result.inla, result.observed, result.underhill
 )

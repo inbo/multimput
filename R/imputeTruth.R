@@ -7,7 +7,13 @@
 #' @export
 #' @return A matrix with one row for each missing value. Each column is on imputation.
 
-imputeTruth <- function(data, size, mean = "Mu", respons = "Observed", n.sim = 499){
+imputeTruth <- function(
+  data,
+  size,
+  mean = "Mu",
+  respons = "Observed",
+  n.sim = 499
+){
   missing.data <- which(is.na(data[, respons]))
   sapply(seq_len(n.sim), function(i){
     rnbinom(length(missing.data), mu = data[missing.data, mean], size = size)

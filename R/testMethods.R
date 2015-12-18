@@ -1,5 +1,5 @@
 #' test imputation methods
-#' 
+#'
 #' @param dataset The dataset to test the methods
 #' @importFrom MASS glm.nb
 #' @importFrom geepack geeglm
@@ -10,20 +10,20 @@ testMethods <- function(dataset){
   Wave <- NULL
   rm(Site, Wave)
   ### Fooling R CMD Check ###
-  
+
   n.year <- length(unique(dataset$Year))
   n.period <- length(unique(dataset$Period))
   initial <- round(exp(coef(glm.nb(Observed ~ 1, data = dataset))))
   test <- imputeUnderhill(
-    data = dataset, 
-    formula = Observed ~ Year + Period + Site, 
+    data = dataset,
+    formula = Observed ~ Year + Period + Site,
     initial = 0
   )
   model <- glm(
     Observed ~ 0 + Year + Period,
     data = aggregate(
-      Observed ~ Year + Period, 
-      data = test$data, 
+      Observed ~ Year + Period,
+      data = test$data,
       FUN = sum
     ),
     family = quasipoisson
@@ -32,17 +32,17 @@ testMethods <- function(dataset){
     Type = "UH0",
     coefficients(summary(model))[, 1:2]
   )
-  
+
   test <- imputeUnderhill(
-    data = dataset, 
-    formula = Observed ~ Year + Period + Site, 
+    data = dataset,
+    formula = Observed ~ Year + Period + Site,
     initial = initial
   )
   model <- glm(
     Observed ~ 0 + Year + Period,
     data = aggregate(
-      Observed ~ Year + Period, 
-      data = test$data, 
+      Observed ~ Year + Period,
+      data = test$data,
       FUN = sum
     ),
     family = quasipoisson
@@ -55,17 +55,17 @@ testMethods <- function(dataset){
     )
   )
 
-  
+
   test <- imputeUnderhillAltered(
-    data = dataset, 
-    formula = Observed ~ Year + Period + Site, 
+    data = dataset,
+    formula = Observed ~ Year + Period + Site,
     initial = 0
   )
   model <- glm(
     Observed ~ 0 + Year + Period,
     data = aggregate(
-      Observed ~ Year + Period, 
-      data = test$data, 
+      Observed ~ Year + Period,
+      data = test$data,
       FUN = sum
     ),
     family = quasipoisson
@@ -79,15 +79,15 @@ testMethods <- function(dataset){
   )
 
   test <- imputeUnderhillAltered(
-    data = dataset, 
-    formula = Observed ~ Year + Period + Site, 
+    data = dataset,
+    formula = Observed ~ Year + Period + Site,
     initial = initial
   )
   model <- glm(
     Observed ~ 0 + Year + Period,
     data = aggregate(
-      Observed ~ Year + Period, 
-      data = test$data, 
+      Observed ~ Year + Period,
+      data = test$data,
       FUN = sum
     ),
     family = quasipoisson
@@ -99,7 +99,7 @@ testMethods <- function(dataset){
       coefficients(summary(model))[, 1:2]
     )
   )
-  
+
   colnames(estimate)[3] <- "Std.err"
   observed.site <- length(unique(dataset$Site[!is.na(dataset$Observed)]))
   model <- geeglm(
@@ -140,26 +140,26 @@ testMethods <- function(dataset){
         ))
     )
   )
-  
-  
+
+
   rownames(estimate) <- NULL
   colnames(estimate)[3] <- "SE"
   estimate$Parameter <- c(
     paste("Year", seq_len(n.year), sep = ""),
     paste("Period", seq_len(n.period)[-1], sep = "")
   )
-  
+
   test <- imputedTotals(
-    data = dataset, 
+    data = dataset,
     imputations = imputeINLA(
-      data = dataset, 
+      data = dataset,
       formula = Observed ~ Year + Period + f(Site, model = "iid")
-    ), 
-    variable = "Observed", 
+    ),
+    variable = "Observed",
     rhs = "Year + Period"
   )
   tmp <- summarizeImputationGLM(data = test, rhs = "0 + Year + Period")
   colnames(tmp)[2] <- "Estimate"
-  tmp$Type <- "MI"  
+  tmp$Type <- "MI"
   rbind(estimate, tmp)
 }

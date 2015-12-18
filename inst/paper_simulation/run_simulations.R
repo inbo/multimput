@@ -1,18 +1,14 @@
-#source(system.file("paper_simulation/run_simulations.R", package = "multimput"))
-
 library(multimput)
 library(snowfall)
 library(plyr)
 
-if(R.Version()$platform %in% c("x86_64-w64-mingw32", "i386-w64-mingw32")){
-#   tempdir <- "c:/Users/thierry_onkelinx/ownCloud/documents/artikels/simulation_multimput"
-#   datadir <- "c:/Users/thierry_onkelinx/ownCloud/documents/artikels/multimput/data"
-  tempdir <- "c:/tmp/multimput_definitief"
-  datadir <- "c:/tmp/multimput"
+if (R.Version()$platform %in% c("x86_64-w64-mingw32", "i386-w64-mingw32")) {
+  tempdir <- "c:/tmp/multimput_definitief" #nolint
+  datadir <- "c:/tmp/multimput" #nolint
   n.cpu <- 4
 } else {
-  tempdir <- "~/artikels/simulation_multimput"
-  datadir <- "~/packages/multimput/data"
+  tempdir <- "~/artikels/simulation_multimput" #nolint
+  datadir <- "~/packages/multimput/data" #nolint
   n.cpu <- 1
 }
 
@@ -30,11 +26,16 @@ source(system.file("paper_simulation/generate_data.R", package = "multimput"))
 
 message("generate data with random missing pattern")
 utils::flush.console()
-source(system.file("paper_simulation/generate_data_random.R", package = "multimput"))
+source(
+  system.file("paper_simulation/generate_data_random.R", package = "multimput")
+)
 
 message("generate data with observed missing pattern and several designs")
 utils::flush.console()
-source(system.file("paper_simulation/generate_data_design.R", package = "multimput"))
+source(system.file(
+  "paper_simulation/generate_data_design.R",
+  package = "multimput")
+)
 
 message("create TRIM files")
 utils::flush.console()
@@ -47,10 +48,6 @@ source(system.file("paper_simulation/truth.R", package = "multimput"))
 message("create imputations with INLA")
 utils::flush.console()
 source(system.file("paper_simulation/inla_impute.R", package = "multimput"))
-
-# message("create imputations with INLA with random walk")
-# source(system.file("paper_simulation/inla_impute_2.R", package = "multimput"))
-# utils::flush.console()
 
 message("create imputations with true mean")
 utils::flush.console()
@@ -70,5 +67,7 @@ source(system.file("paper_simulation/trim_output.R", package = "multimput"))
 
 message("compare example dataset")
 utils::flush.console()
-source(system.file("paper_simulation/compare_example_dataset.R", package = "multimput"))
-
+source(system.file(
+  "paper_simulation/compare_example_dataset.R",
+  package = "multimput")
+)

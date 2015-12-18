@@ -5,8 +5,8 @@ library(plyr)
 args <- commandArgs(TRUE)
 message(args)
 
-tempdir <- paste0(args[1], "/tmp")
-datadir <- paste0(args[1], "/data")
+tempdir <- paste0(args[1], "/tmp") #nolint
+datadir <- paste0(args[1], "/data") #nolint
 n.cpu <- 20
 
 message(tempdir)

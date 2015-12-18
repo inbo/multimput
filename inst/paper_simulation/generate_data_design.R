@@ -1,6 +1,6 @@
 singleRun <- function(run, path, seeds, sites, years, n.period = 6){
   require(multimput)
-  
+
   intercept <- 2
   trend <- 0.01
   sd.rw.year <- 0.1
@@ -10,27 +10,46 @@ singleRun <- function(run, path, seeds, sites, years, n.period = 6){
   sd.rw.site <- 0.02
   sd.noise <- 0.01
   size <- 2
-  
+
   this.run <- as.integer(substr(run, 1, 4))
   set.seed(seeds[this.run])
   this.year <- years[as.integer(substr(run, 8, 8))]
   this.site <- sites[as.integer(substr(run, 10, 10))]
   dataset <- generateData(
-    n.year = this.year, n.period = n.period, n.site = this.site,
-    intercept = intercept, trend = trend, sd.rw.year = sd.rw.year, 
-    amplitude.period = amplitude.period, sd.phase.period = sd.phase.period, 
-    sd.site = sd.site, sd.rw.site = sd.rw.site, sd.noise = sd.noise, size = size, 
-    year.factor = TRUE, period.factor = TRUE, site.factor = TRUE,
-    n.run = 1,as.list = FALSE
+    n.year = this.year,
+    n.period = n.period,
+    n.site = this.site,
+    intercept = intercept,
+    trend = trend,
+    sd.rw.year = sd.rw.year,
+    amplitude.period = amplitude.period,
+    sd.phase.period = sd.phase.period,
+    sd.site = sd.site,
+    sd.rw.site = sd.rw.site,
+    sd.noise = sd.noise,
+    size = size,
+    year.factor = TRUE,
+    period.factor = TRUE,
+    site.factor = TRUE,
+    n.run = 1,
+    as.list = FALSE
   )
   dataset <- missingObserved(dataset)
   output <- list(
-    dataset = dataset, 
+    dataset = dataset,
     parameter = c(
-      n.year = this.year, n.period = n.period, n.site = this.site,
-      intercept = intercept, trend = trend, sd.rw.year = sd.rw.year, 
-      amplitude.period = amplitude.period, sd.phase.period = sd.phase.period, 
-      sd.site = sd.site, sd.rw.site = sd.rw.site, sd.noise = sd.noise, size = size
+      n.year = this.year,
+      n.period = n.period,
+      n.site = this.site,
+      intercept = intercept,
+      trend = trend,
+      sd.rw.year = sd.rw.year,
+      amplitude.period = amplitude.period,
+      sd.phase.period = sd.phase.period,
+      sd.site = sd.site,
+      sd.rw.site = sd.rw.site,
+      sd.noise = sd.noise,
+      size = size
     ),
     missing.pattern = "Observed"
   )
@@ -46,12 +65,23 @@ combinations <- expand.grid(
   n.site = seq_along(sites),
   run = seq_len(n.run)
 )
-combinations <- combinations[!(years[combinations$n.year] == n.year & sites[combinations$n.site] == n.site), ]
+combinations <- combinations[
+  !(years[combinations$n.year] == n.year &
+      sites[combinations$n.site] == n.site),
+]
 
-to.do <- sprintf("%04i_2_%i_%i", combinations$run, combinations$n.year, combinations$n.site)
+to.do <- sprintf(
+  "%04i_2_%i_%i",
+  combinations$run,
+  combinations$n.year,
+  combinations$n.site
+)
 path <- paste(tempdir, "dataset", sep = "/")
-if(file.exists(path)){
-  done <- list.files(path, pattern = "^run_[0123456789]{4}_2_[0123456789]_[0123456789]\\.rda$")
+if (file.exists(path)) {
+  done <- list.files(
+    path,
+    pattern = "^run_[[:digit:]]{4}_2_[[:digit:]]_[[:digit:]]\\.rda$"
+  )
   done <- gsub("^run_", "", done)
   done <- gsub("\\.rda$", "", done)
   to.do <- to.do[!to.do %in% done]
@@ -60,10 +90,10 @@ if(file.exists(path)){
   dir.create(path)
 }
 
-if(n.cpu > 1){
+if (n.cpu > 1) {
   sfInit(parallel = TRUE, cpus = n.cpu)
   results <- sfClusterApplyLB(
-    to.do, 
+    to.do,
     singleRun,
     path = path,
     seeds = seeds,
@@ -74,7 +104,7 @@ if(n.cpu > 1){
   sfStop()
 } else {
   results <- lapply(
-    to.do, 
+    to.do,
     singleRun,
     path = path,
     seeds = seeds,

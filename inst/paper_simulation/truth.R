@@ -1,21 +1,21 @@
 singleRun <- function(run, path, seeds){
   require(MASS)
   require(multimput)
-  
+
   this.run <- as.integer(substr(run, 1, 4))
   set.seed(seeds[this.run])
   data.file <- sprintf(
-    "%s/run_%s.rda", 
-    gsub("truth$", "dataset", path), 
+    "%s/run_%s.rda",
+    gsub("truth$", "dataset", path),
     run
   )
   load(data.file)
   dataset <- output$dataset
   rm(output)
-  
+
   total <- aggregate(
-    dataset[, "Count"], 
-    dataset[, c("Year", "Period")], 
+    dataset[, "Count"],
+    dataset[, c("Year", "Period")],
     FUN = sum
   )
   model <- glm.nb(x ~ 0 + Year + Period, data = total)
@@ -23,9 +23,9 @@ singleRun <- function(run, path, seeds){
     coef(summary(model))[, c("Estimate", "Std. Error")],
     confint(model)
   )
-  period <- c(0, output[grep("Period", rownames(output)), "Estimate"])
+  period <- c(0, output[grep("Period", rownames(output)), "Estimate"]) # nolint
   output <- output[grep("Year", rownames(output)), ]
-  
+
   model2 <- glm.nb(x ~ 0 + Year, data = total)
   output <- cbind(
     output,
@@ -49,14 +49,20 @@ singleRun <- function(run, path, seeds){
 }
 
 datasetpath <- paste(tempdir, "dataset", sep = "/")
-to.do <- list.files(datasetpath, pattern = "^run_[0123456789]{4}_[02]_[0123456789]_[0123456789]\\.rda$")
+to.do <- list.files(
+  datasetpath,
+  pattern = "^run_[[:digit:]]{4}_[02]_[[:digit:]]_[[:digit:]]\\.rda$"
+)
 to.do <- gsub("^run_", "", to.do)
 to.do <- gsub("\\.rda$", "", to.do)
 rm(datasetpath)
 
 path <- paste(tempdir, "truth", sep = "/")
-if(file.exists(path)){
-  done <- list.files(path, pattern = "^run_[0123456789]{4}_[0123456789]_[0123456789]_[0123456789]\\.rda$")
+if (file.exists(path)) {
+  done <- list.files(
+    path,
+    pattern = "^run_[[:digit:]]{4}_[[:digit:]]_[[:digit:]]_[[:digit:]]\\.rda$"
+  )
   done <- gsub("^run_", "", done)
   done <- gsub("\\.rda$", "", done)
   to.do <- to.do[!to.do %in% done]
@@ -65,10 +71,10 @@ if(file.exists(path)){
   dir.create(path)
 }
 
-if(n.cpu > 1){
+if (n.cpu > 1) {
   sfInit(parallel = TRUE, cpus = n.cpu)
   results <- sfClusterApplyLB(
-    to.do, 
+    to.do,
     singleRun,
     path = path,
     seeds = seeds
@@ -76,7 +82,7 @@ if(n.cpu > 1){
   sfStop()
 } else {
   results <- lapply(
-    to.do, 
+    to.do,
     singleRun,
     path = path,
     seeds = seeds
@@ -85,7 +91,11 @@ if(n.cpu > 1){
 
 rm(to.do, results, singleRun)
 
-done <- list.files(path, pattern = "^run_[0123456789]{4}_[0123456789]_[0123456789]_[0123456789]\\.rda$", full.names = TRUE)
+done <- list.files(
+  path,
+  pattern = "^run_[[:digit:]]{4}_[[:digit:]]_[[:digit:]]_[[:digit:]]\\.rda$",
+  full.names = TRUE
+)
 results.truth <- do.call(
   rbind,
   lapply(done, function(x){
@@ -93,6 +103,6 @@ results.truth <- do.call(
     output
   })
 )
-save(results.truth, file = paste0(datadir, "/paper_truth.rda"))
+save(results.truth, file = paste0(datadir, "/paper_truth.rda")) #nolint
 
 rm(done, results.truth, path)

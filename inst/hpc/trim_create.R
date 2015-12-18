@@ -3,8 +3,8 @@ library(snowfall)
 library(plyr)
 
 args <- commandArgs(TRUE)
-tempdir <- paste0(args[1], "/tmp")
-datadir <- paste0(args[1], "/data")
+tempdir <- paste0(args[1], "/tmp") #nolint
+datadir <- paste0(args[1], "/data") #nolint
 message(tempdir)
 n.cpu <- 20
 
