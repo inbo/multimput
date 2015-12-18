@@ -1,3 +1,4 @@
+^wercker\.yml$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.lintr$
