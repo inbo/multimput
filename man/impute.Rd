@@ -22,4 +22,10 @@ impute(model, ..., n.imp = 19)
 \description{
 Impute a dataset
 }
+\examples{
+dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
+dataset$Count[sample(nrow(dataset), 50)] <- NA
+model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
+impute(model, dataset)
+}
 
