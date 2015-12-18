@@ -16,6 +16,8 @@ Imports:
     geepack,
     plyr
 Suggests:
+    testthat,
+    lintr,
     INLA,
     snowfall
 Roxygen: list(wrap = FALSE)
