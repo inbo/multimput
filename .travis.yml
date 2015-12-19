@@ -12,8 +12,8 @@ before_install:
   - chmod 755 ./travis-tool.sh
   - ./travis-tool.sh bootstrap
 install:
-  - Rscript -e 'install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable")'
   - ./travis-tool.sh install_deps
+  - Rscript -e 'install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable")'
 script: ./travis-tool.sh run_tests
 
 after_failure:
