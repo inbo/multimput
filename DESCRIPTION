@@ -19,6 +19,7 @@ Suggests:
     testthat,
     lintr,
     INLA,
+    devtools,
     snowfall
 Roxygen: list(wrap = FALSE)
 LazyData: TRUE

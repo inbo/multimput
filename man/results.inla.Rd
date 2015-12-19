@@ -13,11 +13,11 @@ Data for fig 7 and 8 in Onkelinx et al
 }
 \details{
 \itemize{
-  \item \code{Estimate} The point estimate of the $API$ index
-  \item \code{Std. Error} The standard error of the $API$ index
+  \item \code{Estimate} The point estimate of the \eqn{API} index
+  \item \code{Std. Error} The standard error of the \eqn{API} index
   \item \code{Year} The year of the index
-  \item \code{2.5 \%} The lower confidence limit of the $API$ index
-  \item \code{97.5 \%} The upper confidence limit of the $API$ index
+  \item \code{2.5 \%} The lower confidence limit of the \eqn{API} index
+  \item \code{97.5 \%} The upper confidence limit of the \eqn{API} index
   \item \code{Run} The id of the simulated dataset
   \item \code{Pattern} Pattern of missingness: 0 = missing completely at random (MCAR), 1 = observed
   \item \code{Missing} The proportions of missingness: 0 = observed, 1 = 1\%, 2 = 5\%, 3 = 25\%, 4 = 50\%, 5 = 75\%
