@@ -14,7 +14,7 @@ singleRun <- function(run, path, seeds){
   dataset <- output$dataset
   rm(output)
 
-  if ((type %% 2) == 0) {
+  if (0 == (type %% 2)) {
     initial <- round(exp(coef(glm.nb(Observed ~ 1, data = dataset))))
     method <- "M"
   } else {
