@@ -4,6 +4,7 @@
 #'   \describe{
 #'    \item{\code{Model}}{The imputation model}
 #'    \item{\code{Data}}{a data.frame with the data}
+#'    \item{\code{Response}}{a character holding the name of the response variable}
 #'    \item{\code{Imputation}}{a matrix wih imputed values}
 #'   }
 #' @name rawImputed-class
@@ -17,6 +18,7 @@ setClass(
   representation = representation(
     Model = "lm",
     Data = "data.frame",
+    Response = "character",
     Imputation = "matrix"
   )
 )
