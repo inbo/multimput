@@ -58,5 +58,36 @@ describe("impute", {
       impute(model = "junk"),
       "impute\\(\\) can't handle a model of class character at this moment."
     )
+    dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
+    dataset$Count[sample(nrow(dataset), 50)] <- NA
+    model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
+    expect_error(
+      impute(model = model, data = "junk"),
+      "data does not inherit from class data.frame"
+    )
+    expect_error(
+      impute(model = model, data = dataset, n.imp = -1),
+      "n.imp is not a count \\(a single positive integer\\)"
+    )
+    expect_error(
+      impute(model = model, data = dataset, n.imp = 0),
+      "n.imp is not a count \\(a single positive integer\\)"
+    )
+    expect_error(
+      impute(model = model, data = dataset, n.imp = "junk"),
+      "n.imp is not a count \\(a single positive integer\\)"
+    )
+    wrong.dataset <- dataset
+    wrong.dataset$Year <- NULL
+    expect_error(
+      impute(model = model, data = wrong.dataset),
+      "object 'Year' not found"
+    )
+    wrong.dataset <- dataset
+    wrong.dataset$Count <- NULL
+    expect_error(
+      impute(model = model, data = wrong.dataset),
+      "data does not have name Count"
+    )
   })
 })

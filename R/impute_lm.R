@@ -1,5 +1,6 @@
 #' @rdname impute
 #' @importFrom methods setMethod
+#' @importFrom assertthat assert_that is.count has_name
 #' @param data The dataset holding both the observed and the missing values
 #' @examples
 #' dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
@@ -10,8 +11,13 @@
 setMethod(
   f = "impute",
   signature = signature(model = "lm"),
-  definition = function(model, data, ..., n.imp = 19){
+  definition = function(model, data, ..., n.imp){
+    assert_that(inherits(data, "data.frame"))
+    assert_that(is.count(n.imp))
+
     response <- as.character(terms(model))[2]
+    assert_that(has_name(data, response))
+
     missing.obs <- which(is.na(data[, response]))
     prediction <- predict(model, newdata = data[missing.obs, ], se.fit = TRUE)
     prediction$se.pred <- sqrt(
