@@ -6,6 +6,7 @@
 #' dataset$Count[sample(nrow(dataset), 50)] <- NA
 #' model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
 #' impute(model, dataset)
+#' @include impute_generic.R
 setMethod(
   f = "impute",
   signature = signature(model = "lm"),
