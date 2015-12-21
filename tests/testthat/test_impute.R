@@ -32,6 +32,43 @@ describe("impute", {
     )
   })
 
+  it("handles inla with poisson distribution", {
+    if (!require(INLA)) {
+      skip("INLA package not available")
+    }
+    model <- INLA::inla(
+      Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
+      data = dataset,
+      family = "poisson",
+      control.predictor = list(compute = TRUE)
+    )
+    expect_is(
+      imputed <- impute(model),
+      "rawImputed"
+    )
+    expect_identical(
+      ncol(imputed@Imputation),
+      19L
+    )
+    expect_identical(
+      nrow(imputed@Imputation),
+      sum(is.na(dataset$Count))
+    )
+
+    expect_is(
+      imputed <- impute(model, dataset, n.imp = n.imp),
+      "rawImputed"
+    )
+    expect_identical(
+      ncol(imputed@Imputation),
+      n.imp
+    )
+    expect_identical(
+      nrow(imputed@Imputation),
+      sum(is.na(dataset$Count))
+    )
+  })
+
   it("handles datasets without missing observations", {
     n.imp <- 19L
     dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
@@ -88,6 +125,29 @@ describe("impute", {
     expect_error(
       impute(model = model, data = wrong.dataset),
       "data does not have name Count"
+    )
+
+    if (!require(INLA)) {
+      skip("INLA package not available")
+    }
+    model <- INLA::inla(
+      Mu ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
+      data = dataset,
+      family = "gamma"
+    )
+    expect_error(
+      impute(model),
+"model must be fit with the 'compute = TRUE' argument of control.predictor"
+    )
+    model <- INLA::inla(
+      Mu ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
+      data = dataset,
+      family = "gamma",
+      control.predictor = list(compute = TRUE)
+    )
+    expect_error(
+      impute(model),
+      "Imputations from the 'gamma' family not yet defined"
     )
   })
 })
