@@ -13,3 +13,17 @@ setGeneric(
     standard.generic("impute") # nocov
   }
 )
+
+#' @rdname impute
+#' @importFrom methods setMethod
+setMethod(
+  f = "impute",
+  signature = signature(model = "ANY"),
+  definition = function(model, ..., n.imp){
+    stop(
+"impute() can't handle a model of class ", class(model), " at this moment.
+We will consider adding support for extra classes. Please create an issue with a
+reproducible example at https://github.com/ThierryO/multimput/issues"
+    )
+  }
+)

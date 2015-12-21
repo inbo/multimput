@@ -53,4 +53,10 @@ describe("impute", {
       sum(is.na(dataset$Count))
     )
   })
+  it("is robust for wrong imput", {
+    expect_error(
+      impute(model = "junk"),
+      "impute\\(\\) can't handle a model of class character at this moment."
+    )
+  })
 })

@@ -3,12 +3,15 @@
 \docType{methods}
 \name{impute}
 \alias{impute}
+\alias{impute,ANY-method}
 \alias{impute,lm-method}
 \title{Impute a dataset}
 \usage{
 impute(model, ..., n.imp = 19)
 
-\S4method{impute}{lm}(model, data, ..., n.imp = 19)
+\S4method{impute}{ANY}(model, ..., n.imp = 19)
+
+\S4method{impute}{lm}(model, data, ..., n.imp)
 }
 \arguments{
 \item{model}{model to impute the dataset}
