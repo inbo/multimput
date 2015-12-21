@@ -1,5 +1,5 @@
 #' The rawimputed class
-#' Hold a dataset, an imputation model and imputed valus
+#' Holds a dataset, an imputation model and imputed values
 #' @section Slots:
 #'   \describe{
 #'    \item{\code{Model}}{The imputation model}

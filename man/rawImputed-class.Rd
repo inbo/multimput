@@ -4,10 +4,10 @@
 \name{rawImputed-class}
 \alias{rawImputed-class}
 \title{The rawimputed class
-Hold a dataset, an imputation model and imputed valus}
+Holds a dataset, an imputation model and imputed values}
 \description{
 The rawimputed class
-Hold a dataset, an imputation model and imputed valus
+Holds a dataset, an imputation model and imputed values
 }
 \section{Slots}{
 
