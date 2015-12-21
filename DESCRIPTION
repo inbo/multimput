@@ -38,6 +38,7 @@ Collate:
     'imputeUnderhill.R'
     'imputeUnderhillAltered.R'
     'impute_generic.R'
+    'impute_inla.R'
     'impute_lm.R'
     'imputedTotals.R'
     'missingAtRandom.R'
