@@ -39,7 +39,7 @@ extractor <- function(model){
 model_impute(
   object = aggr,
   model.fun = lm,
-  rhs = "factor(Year)",
+  rhs = "0 + factor(Year)",
   extractor = extractor
 )
 }
