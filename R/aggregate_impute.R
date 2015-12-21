@@ -26,6 +26,7 @@ setMethod(
 
 #' @rdname aggregate_impute
 #' @importFrom methods setMethod
+#' @importFrom assertthat assert_that
 #' @importFrom dplyr %>% group_by_ summarise_each_ mutate_ bind_rows select_ funs
 #' @importFrom tidyr spread_
 #' @examples
@@ -39,6 +40,9 @@ setMethod(
   f = "aggregate_impute",
   signature = signature(object = "rawImputed"),
   definition = function(object, grouping, fun){
+    assert_that(is.character(grouping))
+    assert_that(inherits(fun, "function"))
+
     response <- object@Response
     data <- object@Data
     missing.obs <- which(is.na(data[, response]))

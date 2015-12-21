@@ -56,5 +56,21 @@ describe("aggregate_impute", {
       aggregate_impute(object = "junk"),
       "aggregate_impute\\(\\) requires a 'rawImputed' object. See \\?impute"
     )
+    expect_error(
+      aggregate_impute(imputed, grouping = "junk", fun = sum),
+      "unknown column 'junk'"
+    )
+    expect_error(
+      aggregate_impute(imputed, grouping = imputed),
+      "grouping is not a character vector"
+    )
+    expect_error(
+      aggregate_impute(imputed, grouping = NA),
+      "grouping is not a character vector"
+    )
+    expect_error(
+      aggregate_impute(imputed, grouping = "Year", fun = "junk"),
+      "fun does not inherit from class function"
+    )
   })
 })
