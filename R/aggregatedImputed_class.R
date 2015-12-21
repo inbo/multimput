@@ -11,6 +11,7 @@
 #' @aliases aggregatedImputed-class
 #' @importFrom methods setClass
 #' @docType class
+#' @include rawImputed_class.R
 setClass(
   Class = "aggregatedImputed",
   representation = representation(
