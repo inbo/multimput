@@ -7,8 +7,6 @@
 #' @exportMethod aggregate_impute
 #' @docType methods
 #' @importFrom methods setGeneric
-#' @importFrom dplyr %>% group_by_ summarise_each_ mutate_ bind_rows select_
-#' @importFrom tidyr spread_
 setGeneric(
   name = "aggregate_impute",
   def = function(object, grouping, fun){
@@ -18,6 +16,8 @@ setGeneric(
 
 #' @rdname aggregate_impute
 #' @importFrom methods setMethod
+#' @importFrom dplyr %>% group_by_ summarise_each_ mutate_ bind_rows select_ funs
+#' @importFrom tidyr spread_
 #' @examples
 #' @include rawImputed_class.R
 setMethod(
@@ -43,10 +43,10 @@ setMethod(
     new(
       "aggregatedImputed",
       Covariate = total %>%
-        select(-starts_with("Imputation")) %>%
+        select_(~-starts_with("Imputation")) %>%
         as.data.frame(),
       Imputation = total %>%
-        select(starts_with("Imputation")) %>%
+        select_(~starts_with("Imputation")) %>%
         as.matrix()
     )
   }
