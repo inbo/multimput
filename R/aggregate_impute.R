@@ -7,6 +7,8 @@
 #' @exportMethod aggregate_impute
 #' @docType methods
 #' @importFrom methods setGeneric
+#' @importFrom dplyr %>% group_by_ summarise_each_ mutate_ bind_rows select_
+#' @importFrom tidyr spread_
 setGeneric(
   name = "aggregate_impute",
   def = function(object, grouping, fun){
