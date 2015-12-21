@@ -1,3 +1,7 @@
+#' @importFrom methods setClassUnion
+#' @include import_S3_classes.R
+setClassUnion("imputeModel", c("inla", "lm"))
+
 #' The rawimputed class
 #' Holds a dataset, an imputation model and imputed values
 #' @section Slots:
@@ -16,7 +20,7 @@
 setClass(
   Class = "rawImputed",
   representation = representation(
-    Model = "lm",
+    Model = "imputeModel",
     Data = "data.frame",
     Response = "character",
     Imputation = "matrix"

@@ -26,6 +26,7 @@ Roxygen: list(wrap = FALSE)
 LazyData: TRUE
 RoxygenNote: 5.0.1
 Collate:
+    'import_S3_classes.R'
     'rawImputed_class.R'
     'aggregate_impute.R'
     'aggregatedImputed_class.R'
