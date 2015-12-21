@@ -17,6 +17,7 @@ setGeneric(
 #' @rdname aggregate_impute
 #' @importFrom methods setMethod
 #' @examples
+#' @include rawImputed_class.R
 setMethod(
   f = "aggregate_impute",
   signature = signature(object = "rawImputed"),
