@@ -43,6 +43,7 @@ setMethod(
 
 #' @rdname model_impute
 #' @importFrom methods setMethod
+#' @importFrom assertthat assert_that
 #' @examples
 #' dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
 #' dataset$Count[sample(nrow(dataset), 50)] <- NA
@@ -70,12 +71,21 @@ setMethod(
     extractor,
     extractor.args
   ){
+    assert_that(inherits(model.fun, "function"))
+    assert_that(inherits(extractor, "function"))
+    assert_that(is.character(rhs))
+
     if (missing(model.args)) {
       model.args <- list()
+    } else {
+      assert_that(inherits(model.args, "list"))
     }
     if (missing(extractor.args)) {
       extractor.args <- list()
+    } else {
+      assert_that(inherits(extractor.args, "list"))
     }
+
     form <- as.formula(paste("Imputed", rhs, sep = "~"))
     raw.coef <- lapply(
       seq_len(ncol(object@Imputation)),

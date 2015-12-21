@@ -10,7 +10,7 @@ describe("model_impute", {
     }
     model.aggr <- model_impute(
       aggr,
-      model.fun = "lm",
+      model.fun = lm,
       rhs = "0 + factor(Year)",
       extractor = extractor
     )
@@ -48,6 +48,78 @@ describe("model_impute", {
     expect_error(
       model_impute(object = "junk"),
       "model_impute\\(\\) doesn't handle a 'character' object"
+    )
+    dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
+    dataset$Count[sample(nrow(dataset), 50)] <- NA
+    model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
+    imputed <- impute(data = dataset, model = model)
+    aggr <- aggregate_impute(imputed, grouping = c("Year", "Period"), fun = sum)
+    expect_error(
+      model_impute(
+        aggr,
+        model.fun = "junk",
+        rhs = "0 + factor(Year)"
+      ),
+      "model.fun does not inherit from class function"
+    )
+    expect_error(
+      model_impute(
+        aggr,
+        model.fun = lm,
+        rhs = "0 + factor(Year)",
+        extractor = "junk"
+      ),
+      "extractor does not inherit from class function"
+    )
+    extractor <- function(model){
+      summary(model)$coefficients[, c("Estimate", "Std. Error")]
+    }
+    expect_error(
+      model_impute(
+        aggr,
+        model.fun = lm,
+        rhs = "0 + factor(Year)",
+        model.args = "junk",
+        extractor = extractor
+      ),
+      "model.args does not inherit from class list"
+    )
+    expect_error(
+      model_impute(
+        aggr,
+        model.fun = lm,
+        rhs = "0 + factor(Year)",
+        extractor.args = "junk",
+        extractor = extractor
+      ),
+      "extractor.args does not inherit from class list"
+    )
+    expect_error(
+      model_impute(
+        aggr,
+        model.fun = lm,
+        rhs = NA,
+        extractor = extractor
+      ),
+      "rhs is not a character vector"
+    )
+    expect_error(
+      model_impute(
+        aggr,
+        model.fun = lm,
+        rhs = ~factor(Year),
+        extractor = extractor
+      ),
+      "rhs is not a character vector"
+    )
+    expect_error(
+      model_impute(
+        aggr,
+        model.fun = lm,
+        rhs = "junk",
+        extractor = extractor
+      ),
+      "object 'junk' not found"
     )
   })
 })
