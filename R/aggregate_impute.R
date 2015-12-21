@@ -19,6 +19,11 @@ setGeneric(
 #' @importFrom dplyr %>% group_by_ summarise_each_ mutate_ bind_rows select_ funs
 #' @importFrom tidyr spread_
 #' @examples
+#' dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
+#' dataset$Count[sample(nrow(dataset), 50)] <- NA
+#' model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
+#' imputed <- impute(data = dataset, model = model)
+#' aggregate_impute(imputed, grouping = c("Year", "Period"), fun = sum)
 #' @include rawImputed_class.R
 setMethod(
   f = "aggregate_impute",
