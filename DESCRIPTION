@@ -22,3 +22,25 @@ Suggests:
 Roxygen: list(wrap = FALSE)
 LazyData: TRUE
 RoxygenNote: 5.0.1
+Collate:
+    'rawImputed_class.R'
+    'aggregate_impute.R'
+    'aggregatedImputed_class.R'
+    'average_imputation.R'
+    'datasets.R'
+    'generateData.R'
+    'imputeINLA.R'
+    'imputeINLAfit.R'
+    'imputeTruth.R'
+    'imputeUnderhill.R'
+    'imputeUnderhillAltered.R'
+    'impute_generic.R'
+    'impute_lm.R'
+    'imputedTotals.R'
+    'missingAtRandom.R'
+    'missingCurrentCount.R'
+    'missingObserved.R'
+    'missingVolunteer.R'
+    'summarizeImputationGLM.R'
+    'summarizeImputationGLMnb.R'
+    'testMethods.R'
