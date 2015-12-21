@@ -3,10 +3,14 @@
 \docType{methods}
 \name{model_impute}
 \alias{model_impute}
+\alias{model_impute,ANY-method}
 \alias{model_impute,aggregatedImputed-method}
 \title{Model an imputed dataset}
 \usage{
 model_impute(object, model.fun, rhs, model.args, extractor, extractor.args)
+
+\S4method{model_impute}{ANY}(object, model.fun, rhs, model.args, extractor,
+  extractor.args)
 
 \S4method{model_impute}{aggregatedImputed}(object, model.fun, rhs, model.args,
   extractor, extractor.args)

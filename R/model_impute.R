@@ -26,6 +26,23 @@ setGeneric(
 
 #' @rdname model_impute
 #' @importFrom methods setMethod
+setMethod(
+  f = "model_impute",
+  signature = signature(object = "ANY"),
+  definition = function(
+    object,
+    model.fun,
+    rhs,
+    model.args,
+    extractor,
+    extractor.args
+  ){
+    stop("model_impute() doesn't handle a '", class(object), "' object")
+  }
+)
+
+#' @rdname model_impute
+#' @importFrom methods setMethod
 #' @examples
 #' dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
 #' dataset$Count[sample(nrow(dataset), 50)] <- NA

@@ -44,4 +44,10 @@ describe("model_impute", {
       c("Estimate", "SE")
     )
   })
+  it("checks the sanity of the arguments", {
+    expect_error(
+      model_impute(object = "junk"),
+      "model_impute\\(\\) doesn't handle a 'character' object"
+    )
+  })
 })
