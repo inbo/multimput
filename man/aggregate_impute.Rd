@@ -3,10 +3,13 @@
 \docType{methods}
 \name{aggregate_impute}
 \alias{aggregate_impute}
+\alias{aggregate_impute,ANY-method}
 \alias{aggregate_impute,rawImputed-method}
 \title{Aggregate an imputed dataset}
 \usage{
 aggregate_impute(object, grouping, fun)
+
+\S4method{aggregate_impute}{ANY}(object, grouping, fun)
 
 \S4method{aggregate_impute}{rawImputed}(object, grouping, fun)
 }

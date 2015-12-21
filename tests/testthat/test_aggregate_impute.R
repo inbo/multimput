@@ -51,4 +51,10 @@ describe("aggregate_impute", {
       }
     )
   })
+  it("checks the sanity of the arguments", {
+    expect_error(
+      aggregate_impute(object = "junk"),
+      "aggregate_impute\\(\\) requires a 'rawImputed' object. See \\?impute"
+    )
+  })
 })

@@ -16,6 +16,16 @@ setGeneric(
 
 #' @rdname aggregate_impute
 #' @importFrom methods setMethod
+setMethod(
+  f = "aggregate_impute",
+  signature = signature(object = "ANY"),
+  definition = function(object, grouping, fun){
+    stop("aggregate_impute() requires a 'rawImputed' object. See ?impute")
+  }
+)
+
+#' @rdname aggregate_impute
+#' @importFrom methods setMethod
 #' @importFrom dplyr %>% group_by_ summarise_each_ mutate_ bind_rows select_ funs
 #' @importFrom tidyr spread_
 #' @examples
