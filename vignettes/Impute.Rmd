@@ -126,7 +126,7 @@ raw.lm <- impute(imp.lm, data = dataset)
 raw.inla.p <- impute(imp.inla.p)
 raw.inla.nb <- impute(imp.inla.nb)
 raw.better <- impute(imp.better)
-raw.better.199 <- impute(imp.better, n.imp = 199)
+raw.better.199 <- impute(imp.better, n.imp = 9)
 ```
 
 # Aggregate the imputated dataset
