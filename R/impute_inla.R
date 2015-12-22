@@ -32,6 +32,27 @@ setMethod(
           byrow = TRUE
         )
       },
+      nbinomial = {
+        linpred <- sapply(
+          model$marginals.linear.predictor[missing.obs],
+          INLA::inla.rmarginal,
+          n = n.imp
+        )
+        h <- model$marginals.hyperpar
+        size <- INLA::inla.rmarginal(
+          n = n.imp,
+          marginal = h$`size for the nbinomial observations (overdispersion)` # nolint
+        )
+        matrix(
+          rnbinom(
+            n = length(linpred),
+            size = rep(size, ncol(linpred)),
+            mu = exp(linpred)
+          ),
+          ncol = n.imp,
+          byrow = TRUE
+        )
+      },
       stop(
         "Imputations from the '", model$.args$family, "' family not yet defined.
 We will consider adding support for other families. Please create an issue with
