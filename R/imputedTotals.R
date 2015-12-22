@@ -6,6 +6,9 @@
 #' @return a dataset containing the totals for each imputations. The first few columns will contains the \code{rhs} variables.
 #' @export
 imputedTotals <- function(data, imputations, variable, rhs){
+  .Deprecated(
+    new = "aggregate_impute"
+  )
   totals <- lapply(seq_len(ncol(imputations)), function(i){
     data[, variable][is.na(data[, variable])] <- imputations[, i]
     aggregate(
