@@ -1,2 +1,6 @@
+^wercker\.yml$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.lintr$
+^\.git$
+^\.travis\.yml$

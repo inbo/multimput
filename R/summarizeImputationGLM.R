@@ -8,7 +8,7 @@ summarizeImputationGLM <- function(data, rhs){
     model <- glm(
       as.formula(
         paste(
-          colnames(data)[imputations[i]], 
+          colnames(data)[imputations[i]],
           rhs,
           sep = "~"
         )

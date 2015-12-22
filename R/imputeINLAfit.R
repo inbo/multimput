@@ -4,17 +4,21 @@
 #' @export
 #' @return A matrix with one row for each missing value. Each column is on imputation.
 
-imputeINLAfit<- function(data, formula = Observed ~ Year + Month + f(Site, model = "iid")){
+imputeINLAfit <- function(
+  data,
+  formula = Observed ~ Year + Month + f(Site, model = "iid")
+){
   missing.data <- which(is.na(data[, as.character(formula[2])]))
-  if(!requireNamespace("INLA", quietly = TRUE)){
+  if (!requireNamespace("INLA", quietly = TRUE)) {
     stop("the INLA package is required for this function")
   }
   model <- INLA::inla(
-    formula, 
-    data = data, 
-    family = "nbinomial", 
+    formula,
+    data = data,
+    family = "nbinomial",
     control.predictor = list(compute = TRUE, link = 1)
   )
-  data$Observed[missing.data] <- model$summary.fitted.values[missing.data, "mean"]
+  data$Observed[missing.data] <-
+    model$summary.fitted.values[missing.data, "mean"]
   return(data)
 }

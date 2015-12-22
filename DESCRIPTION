@@ -1,8 +1,8 @@
 Package: multimput
 Type: Package
 Title: Using Multiple Imputation to Address Missing Data
-Version: 0.2
-Date: 2015-10-16
+Version: 0.2.1
+Date: 2015-12-22
 Author: Thierry Onkelinx, Koen Devos, Paul Quataert
 Maintainer: Thierry.Onkelinx <Thierry.Onkelinx@inbo.be>
 Description: Accompaning package for the paper: "Working with population totals
@@ -11,12 +11,46 @@ License: GPL-3
 Depends:
     R (>= 3.0.0)
 Imports:
+    methods,
+    dplyr,
+    tidyr,
+    assertthat,
     MASS,
     geepack,
     plyr
 Suggests:
+    testthat,
     INLA,
-    snowfall
+    snowfall,
+    ggplot2,
+    mgcv,
+    knitr,
+    rmarkdown
 Roxygen: list(wrap = FALSE)
 LazyData: TRUE
 RoxygenNote: 5.0.1
+Collate:
+    'rawImputed_class.R'
+    'aggregate_impute.R'
+    'aggregatedImputed_class.R'
+    'datasets.R'
+    'generateData.R'
+    'import_S3_classes.R'
+    'imputeINLA.R'
+    'imputeINLAfit.R'
+    'imputeTruth.R'
+    'imputeUnderhill.R'
+    'imputeUnderhillAltered.R'
+    'impute_generic.R'
+    'impute_inla.R'
+    'impute_lm.R'
+    'imputedTotals.R'
+    'missingAtRandom.R'
+    'missingCurrentCount.R'
+    'missingObserved.R'
+    'missingVolunteer.R'
+    'model_impute.R'
+    'summarizeImputationGLM.R'
+    'summarizeImputationGLMnb.R'
+    'testMethods.R'
+VignetteBuilder: knitr

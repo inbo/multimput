@@ -11,5 +11,16 @@ data(example)
 \description{
 Data for fig 9 in Onkelinx et al
 }
+\details{
+\itemize{
+  \item \code{Estimate} The point estimate of the index
+  \item \code{LCL} The lower confidence limit of the index
+  \item \code{UCL} The upper confidence limit of the index
+  \item \code{Year} The year of the index
+  \item \code{Method} A factor indicating the imputation technique
+  \item \code{Type} A factor indicating if the index is based on the observed, augmented or complete data
+  \item \code{Family} A factor indicating if the index is based on the negative binomial or Poisson distribution
+}
+}
 \keyword{datasets}
 

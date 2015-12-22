@@ -1,18 +1,18 @@
 singleRun <- function(run, path, seeds, n.year){
   library(plyr)
-  
+
   this.run <- as.integer(substr(run, 1, 4))
   set.seed(seeds[this.run])
-  
+
   data.file <- sprintf(
-    "%s/run_%s.rda", 
-    gsub("trim$", "dataset", path), 
+    "%s/run_%s.rda",
+    gsub("trim$", "dataset", path),
     run
   )
   load(data.file)
-  dataset <- output$dataset
-  rm(output)
-  
+  dataset <- output$dataset # nolint
+  rm(output) # nolint
+
   dataset.trim <- ddply(
     dataset,
     .(Site, Year),
@@ -24,20 +24,29 @@ singleRun <- function(run, path, seeds, n.year){
   dataset.trim$Year <- as.integer(dataset.trim$Year)
   dataset.trim$Count[is.infinite(dataset.trim$Weights)] <- -1
   dataset.trim$Weights[is.infinite(dataset.trim$Weights)] <- 1
-  
+
   filename <- sprintf("run_%s.poi", run)
   write.table(
-    dataset.trim, 
-    file = paste(path, filename, sep = "/"), 
-    row.names = FALSE, 
+    dataset.trim,
+    file = paste(path, filename, sep = "/"),
+    row.names = FALSE,
     col.names = FALSE,
     quote = FALSE
   )
-  text <- paste("FILE", filename, "\nTITLE", filename, "\nNTIMES", n.year, "\nNCOVARS 0\nLABELS \nEnd\nMISSING -1\nWEIGHT Present\n\nWEIGHTING on\nSERIALCOR on\nOVERDISP on\nMODEL 3\nSTEPWISE off\nRUN\n")
+  text <- paste(
+    "FILE",
+    filename,
+    "\nTITLE",
+    filename,
+    "\nNTIMES",
+    n.year,
+    "\nNCOVARS 0\nLABELS \nEnd\nMISSING -1\nWEIGHT Present\n\nWEIGHTING on
+SERIALCOR on\nOVERDISP on\nMODEL 3\nSTEPWISE off\nRUN\n"
+    )
   writeLines(
-    text, 
+    text,
     paste(
-      path, 
+      path,
       gsub("poi", "TCF", filename),
       sep = "/"
     )
@@ -55,20 +64,29 @@ singleRun <- function(run, path, seeds, n.year){
   dataset.trim$Year <- as.integer(dataset.trim$Year)
   dataset.trim$Count[is.infinite(dataset.trim$Weights)] <- -1
   dataset.trim$Weights[is.infinite(dataset.trim$Weights)] <- 1
-  
+
   filename <- sprintf("run_%s_c.poi", run)
   write.table(
-    dataset.trim, 
-    file = paste(path, filename, sep = "/"), 
-    row.names = FALSE, 
+    dataset.trim,
+    file = paste(path, filename, sep = "/"),
+    row.names = FALSE,
     col.names = FALSE,
     quote = FALSE
   )
-  text <- paste("FILE", filename, "\nTITLE", filename, "\nNTIMES", n.year, "\nNCOVARS 0\nLABELS \nEnd\nMISSING -1\nWEIGHT Present\n\nWEIGHTING on\nSERIALCOR on\nOVERDISP on\nMODEL 3\nSTEPWISE off\nRUN\n")
+  text <- paste(
+    "FILE",
+    filename,
+    "\nTITLE",
+    filename, "\
+    nNTIMES",
+    n.year,
+    "\nNCOVARS 0\nLABELS \nEnd\nMISSING -1\nWEIGHT Present\n\nWEIGHTING on
+SERIALCOR on\nOVERDISP on\nMODEL 3\nSTEPWISE off\nRUN\n"
+  )
   writeLines(
-    text, 
+    text,
     paste(
-      path, 
+      path,
       gsub("poi", "TCF", filename),
       sep = "/"
     )
@@ -76,14 +94,20 @@ singleRun <- function(run, path, seeds, n.year){
 }
 
 datasetpath <- paste(tempdir, "dataset", sep = "/")
-to.do <- list.files(datasetpath, pattern = "^run_[0123456789]{4}_[01]_[0123456789]_0\\.rda$")
+to.do <- list.files(
+  datasetpath,
+  pattern = "^run_[[:digit:]]{4}_[01]_[[:digit:]]_0\\.rda$"
+)
 to.do <- gsub("^run_", "", to.do)
 to.do <- gsub("\\.rda$", "", to.do)
 rm(datasetpath)
 
 path <- paste(tempdir, "trim", sep = "/")
-if(file.exists(path)){
-  done <- list.files(path, pattern = "^run_[0123456789]{4}_[0123456789]_[0123456789]_0\\.poi$")
+if (file.exists(path)) {
+  done <- list.files(
+    path,
+    pattern = "^run_[[:digit:]]{4}_[[:digit:]]_[[:digit:]]_0\\.poi$"
+  )
   done <- gsub("^run_", "", done)
   done <- gsub("\\.poi$", "", done)
   to.do <- to.do[!to.do %in% done]
@@ -95,7 +119,7 @@ if(file.exists(path)){
 if(n.cpu > 1){
   sfInit(parallel = TRUE, cpus = n.cpu)
   results <- sfClusterApplyLB(
-    to.do, 
+    to.do,
     singleRun,
     path = path,
     seeds = seeds,
@@ -104,7 +128,7 @@ if(n.cpu > 1){
   sfStop()
 } else {
   results <- lapply(
-    to.do, 
+    to.do,
     singleRun,
     path = path,
     seeds = seeds,

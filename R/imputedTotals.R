@@ -20,9 +20,9 @@ imputedTotals <- function(data, imputations, variable, rhs){
   })
   colnames(totals) <- sprintf(
     paste(
-      "Imputation%0", 
-      ceiling(log10(ncol(totals))), 
-      "i", 
+      "Imputation%0",
+      ceiling(log10(ncol(totals))),
+      "i",
       sep = ""
     ),
     seq_len(ncol(totals))

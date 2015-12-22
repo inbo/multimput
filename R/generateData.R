@@ -1,5 +1,5 @@
 #' Generate simulated data
-#' 
+#'
 #' Generate data for a regural monitoring design. The counts follow a negative binomial distribution with given size paramters and the true mean mu depending on a year, period and site effect. All effects are independent fro each other and have, on the log-scale, a normal distribution with zero mean and given standard deviation.
 #' @param intercept the global mean on the log-scale
 #' @param n.year the number of years
@@ -23,11 +23,23 @@
 #' @return A \code{data.frame} with five variables. \code{Year}, \code{Month} and \code{Site} are factors identifying the location and time of monitoring. \code{Mu} is the true mean of the negative binomial distribution in the original scale. \code{Count} are the simulated counts.
 #' @importFrom plyr dlply
 generateData <- function(
-  intercept = 2, 
-  n.year = 24, n.period = 6, n.site = 20, 
-  year.factor = FALSE, period.factor = FALSE, site.factor = FALSE,
-  trend = 0.01, sd.rw.year = 0.1, amplitude.period = 1, sd.phase.period = 0.2, 
-  sd.site = 1, sd.rw.site = 0.02, sd.noise = 0.01, size = 2, n.run = 10, as.list = FALSE, 
+  intercept = 2,
+  n.year = 24,
+  n.period = 6,
+  n.site = 20,
+  year.factor = FALSE,
+  period.factor = FALSE,
+  site.factor = FALSE,
+  trend = 0.01,
+  sd.rw.year = 0.1,
+  amplitude.period = 1,
+  sd.phase.period = 0.2,
+  sd.site = 1,
+  sd.rw.site = 0.02,
+  sd.noise = 0.01,
+  size = 2,
+  n.run = 10,
+  as.list = FALSE,
   details = FALSE
 ){
   #generate the design
@@ -40,14 +52,14 @@ generateData <- function(
   phase <- rnorm(n.year + 1, mean = 0, sd = sd.phase.period)
   site.rw.effect <- rbind(
     rnorm(
-      n.site, 
-      mean = 0, 
+      n.site,
+      mean = 0,
       sd = sd.site
     ),
     matrix(
       rnorm(
-        (n.year - 1) * n.site, 
-        mean = 0, 
+        (n.year - 1) * n.site,
+        mean = 0,
         sd = sd.rw.site
       ),
       ncol = n.site
@@ -55,34 +67,40 @@ generateData <- function(
   )
   site.rw.effect <- as.vector(apply(site.rw.effect, 2, cumsum))
   observation.effect <- rnorm(nrow(dataset), mean = 0, sd = sd.noise)
-  
+
   #generate the true mean
   dataset$Mu <- exp(
-    intercept + 
+    intercept +
       year.rw.effect[dataset$Year] + trend * dataset$Year +
-      amplitude.period * sin(dataset$Period * pi / n.period + phase[dataset$Year]) +
+      amplitude.period *
+        sin(
+          dataset$Period * pi / n.period + phase[dataset$Year]
+        ) +
       site.rw.effect[dataset$Year + (dataset$Site - 1) * n.year] +
       observation.effect
   )
 
-  if(details){
+  if (details) {
     dataset$YearEffect <- exp(
       year.rw.effect[dataset$Year] + trend * dataset$Year
     )
     dataset$PeriodEffect <- exp(
-      amplitude.period * sin(dataset$Period * pi / n.period + phase[dataset$Year]) 
+      amplitude.period *
+        sin(
+          dataset$Period * pi / n.period + phase[dataset$Year]
+        )
     )
     dataset$SiteEffect <- exp(
       site.rw.effect[dataset$Year + (dataset$Site - 1) * n.year]
     )
   }
-  if(year.factor){
+  if (year.factor) {
     dataset$Year <- factor(dataset$Year)
   }
-  if(period.factor){
+  if (period.factor) {
     dataset$Period <- factor(dataset$Period)
   }
-  if(site.factor){
+  if (site.factor) {
     dataset$Site <- factor(dataset$Site)
   }
   # add the runs
@@ -96,10 +114,16 @@ generateData <- function(
   #generate the counts
   dataset$Count <- rnbinom(nrow(dataset), size = size, mu = dataset$Mu)
 
-  if(as.list){
-    if(details){
+  if (as.list) {
+    if (details) {
       dataset <- dlply(dataset, "Run", function(x){
-        x[, c("Year", "Period", "Site", "Mu", "Count", "YearEffect", "PeriodEffect", "SiteEffect")]
+        x[
+          ,
+          c(
+            "Year", "Period", "Site", "Mu", "Count", "YearEffect",
+            "PeriodEffect", "SiteEffect"
+          )
+        ]
       })
     } else {
     dataset <- dlply(dataset, "Run", function(x){
