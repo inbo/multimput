@@ -32,6 +32,12 @@ describe("impute", {
     )
   })
 
+
+
+
+
+
+
   it("handles inla with poisson distribution", {
     if (!require(INLA)) {
       skip("INLA package not available")
@@ -69,6 +75,10 @@ describe("impute", {
     )
   })
 
+
+
+
+
   it("handles datasets without missing observations", {
     n.imp <- 19L
     dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
@@ -90,6 +100,11 @@ describe("impute", {
       sum(is.na(dataset$Count))
     )
   })
+
+
+
+
+
   it("is robust for wrong imput", {
     expect_error(
       impute(model = "junk"),
