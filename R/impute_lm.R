@@ -29,7 +29,6 @@ setMethod(
     )
     new(
       "rawImputed",
-      Model = model,
       Data = data,
       Response = response,
       Imputation = prediction$fit + rt.value * prediction$se.pred

@@ -62,7 +62,6 @@ a reproducible example at https://github.com/ThierryO/multimput/issues"
 
     new(
       "rawImputed",
-      Model = model,
       Data = model$.args$data,
       Response = response,
       Imputation = imputation
