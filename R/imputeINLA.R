@@ -12,6 +12,9 @@ imputeINLA <- function(
   n.sim = 499,
   family = c("nbinomial", "poisson")
 ){
+  .Deprecated(
+    new = "impute"
+  )
   family <- match.arg(family)
   missing.data <- which(is.na(data[, as.character(formula[2])]))
   if (!requireNamespace("INLA", quietly = TRUE)) {
