@@ -79,6 +79,47 @@ describe("impute", {
 
 
 
+  it("handles inla with negative binomial distribution", {
+    if (!require(INLA)) {
+      skip("INLA package not available")
+    }
+    model <- INLA::inla(
+      Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
+      data = dataset,
+      family = "nbinomial",
+      control.predictor = list(compute = TRUE)
+    )
+    expect_is(
+      imputed <- impute(model),
+      "rawImputed"
+    )
+    expect_identical(
+      ncol(imputed@Imputation),
+      19L
+    )
+    expect_identical(
+      nrow(imputed@Imputation),
+      sum(is.na(dataset$Count))
+    )
+
+    expect_is(
+      imputed <- impute(model, dataset, n.imp = n.imp),
+      "rawImputed"
+    )
+    expect_identical(
+      ncol(imputed@Imputation),
+      n.imp
+    )
+    expect_identical(
+      nrow(imputed@Imputation),
+      sum(is.na(dataset$Count))
+    )
+  })
+
+
+
+
+
   it("handles datasets without missing observations", {
     n.imp <- 19L
     dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
