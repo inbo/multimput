@@ -21,7 +21,11 @@ Imports:
 Suggests:
     testthat,
     INLA,
-    snowfall
+    snowfall,
+    ggplot2,
+    mgcv,
+    knitr,
+    rmarkdown
 Roxygen: list(wrap = FALSE)
 LazyData: TRUE
 RoxygenNote: 5.0.1
@@ -49,3 +53,4 @@ Collate:
     'summarizeImputationGLM.R'
     'summarizeImputationGLMnb.R'
     'testMethods.R'
+VignetteBuilder: knitr
