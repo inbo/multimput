@@ -53,4 +53,5 @@ Collate:
     'summarizeImputationGLM.R'
     'summarizeImputationGLMnb.R'
     'testMethods.R'
+    'zzz_test_extractor.R'
 VignetteBuilder: knitr

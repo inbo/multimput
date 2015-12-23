@@ -26,5 +26,32 @@ describe("extractor", {
   })
 
   it("returns an error when summary(model)$coefficients has wrong colnames", {
+    # see R/zzz_test_extractor.R for the required auxilary functions
+    # this hack required to make the S3 methods available for the unit tests
+    junk <- "junk"
+    class(junk) <- "N"
+    expect_error(
+      extractor(junk),
+      "Currently, no default extractor\\(\\) for a N model is available"
+    )
+    class(junk) <- "E"
+    expect_error(
+      extractor(junk),
+      "Currently, no default extractor\\(\\) for a E model is available"
+    )
+    class(junk) <- "S"
+    expect_error(
+      extractor(junk),
+      "Currently, no default extractor\\(\\) for a S model is available"
+    )
+    class(junk) <- "C"
+    expect_equal(
+      extractor(junk),
+      matrix(
+        0,
+        ncol = 2,
+        dimnames = list(NULL, c("Estimate", "Std. Error"))
+      )
+    )
   })
 })
