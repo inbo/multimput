@@ -37,6 +37,6 @@ We will consider adding support for extra classes. Please create an issue with a
 reproducible example at https://github.com/ThierryO/multimput/issues"
       )
     }
-    the.coef[, c("Estimate", "Std. Error")]
+    the.coef[, c("Estimate", "Std. Error"), drop = FALSE]
   }
 )
