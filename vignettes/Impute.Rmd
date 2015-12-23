@@ -208,9 +208,8 @@ model_impute(
 Note that we pass extra arguments to the `extractor.fun` function through the `extractor.args` argument. This has to be a list. We recommend to use a named list to avoid confusion.
 
 ```{r model_aggregate_lm3}
-library(mgcv)
 new.set <- expand.grid(
-  Year = pretty(dataset$Year, 20),
+  Year = pretty(dataset$Year, 40),
   fPeriod = dataset$fPeriod[1]
 )
 extractor.lm3 <- function(model, newdata){
@@ -220,17 +219,18 @@ extractor.lm3 <- function(model, newdata){
     predictions$se.fit
   )
 }  
-model.gam <- model_impute(
-  aggr.lm, 
-  model.fun = gam, 
-  rhs = "s(Year) + fPeriod", 
+model.poly <- model_impute(
+  aggr.better, 
+  model.fun = glm, 
+  rhs = "poly(Year, 4) + fPeriod", 
+  model.args = list(family = poisson),
   extractor.fun = extractor.lm3,
   extractor.args = list(newdata = new.set)
 )
-model.gam <- cbind(new.set, model.gam)
-model.gam$LCL <- qnorm(0.025, mean = model.gam$Estimate, sd = model.gam$SE)
-model.gam$UCL <- qnorm(0.975, mean = model.gam$Estimate, sd = model.gam$SE)
-ggplot(model.gam, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
+model.poly <- cbind(new.set, model.poly)
+model.poly$LCL <- qnorm(0.025, mean = model.poly$Estimate, sd = model.poly$SE)
+model.poly$UCL <- qnorm(0.975, mean = model.poly$Estimate, sd = model.poly$SE)
+ggplot(model.poly, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
   geom_ribbon(alpha = 0.1) + 
   geom_line()
 ```

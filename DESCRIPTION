@@ -23,7 +23,6 @@ Suggests:
     INLA,
     snowfall,
     ggplot2,
-    mgcv,
     knitr,
     rmarkdown
 Roxygen: list(wrap = FALSE)
