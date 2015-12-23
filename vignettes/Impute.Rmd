@@ -154,11 +154,6 @@ aggr.better <- aggregate_impute(
   grouping = c("fYear", "fPeriod", "Year"), 
   fun = sum
 )
-aggr.better.199 <- aggregate_impute(
-  raw.better.199, 
-  grouping = c("fYear", "fPeriod", "Year"), 
-  fun = sum
-)
 ```
 
 # Model the aggregated imputed dataset
