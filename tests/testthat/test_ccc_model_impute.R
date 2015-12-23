@@ -44,6 +44,31 @@ describe("model_impute", {
       c("Estimate", "SE")
     )
   })
+
+
+
+
+
+  it("uses default extractor()", {
+    expect_equal(
+      model_impute(
+        aggr,
+        model.fun = lm,
+        rhs = "0 + factor(Year)"
+      ),
+      model_impute(
+        aggr,
+        model.fun = lm,
+        rhs = "0 + factor(Year)",
+        extractor.fun = extractor
+      )
+    )
+  })
+
+
+
+
+
   it("checks the sanity of the arguments", {
     expect_error(
       model_impute(object = "junk"),

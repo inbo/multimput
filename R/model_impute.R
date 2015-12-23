@@ -3,7 +3,7 @@
 #' @param model.fun the function to apply on each imputation set
 #' @param rhs the right hand side of the model
 #' @param model.args an optional list of arguments to pass to the model function.
-#' @param extractor.fun a function which return a \code{matrix} or \code{data.frame}. The first column should contain the estimate, the second the standard error of the estimate
+#' @param extractor.fun a function which return a \code{matrix} or \code{data.frame}. The first column should contain the estimate, the second the standard error of the estimate. \code{\link{extractor}} will be used when missing.
 #' @param extractor.args an optional list of arguments to pass to the extractor function.
 #' @name model_impute
 #' @rdname model_impute
@@ -50,15 +50,7 @@ setMethod(
 #' model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
 #' imputed <- impute(data = dataset, model = model)
 #' aggr <- aggregate_impute(imputed, grouping = c("Year", "Period"), fun = sum)
-#' extractor.fun <- function(model){
-#'   summary(model)$coefficients[, c("Estimate", "Std. Error")]
-#' }
-#' model_impute(
-#'   object = aggr,
-#'   model.fun = lm,
-#'   rhs = "0 + factor(Year)",
-#'   extractor.fun = extractor.fun
-#' )
+#' model_impute(object = aggr, model.fun = lm, rhs = "0 + factor(Year)")
 #' @include aggregatedImputed_class.R
 setMethod(
   f = "model_impute",
