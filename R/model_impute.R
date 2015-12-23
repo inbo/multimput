@@ -72,7 +72,10 @@ setMethod(
     extractor.args
   ){
     assert_that(inherits(model.fun, "function"))
-    assert_that(inherits(extractor.fun, "function"))
+    if (!missing(extractor.fun)) {
+      assert_that(inherits(extractor.fun, "function"))
+      extractor <- extractor.fun
+    }
     assert_that(is.character(rhs))
 
     if (missing(model.args)) {
@@ -96,7 +99,7 @@ setMethod(
         )
         model.args <- c(list(data = data), model.args)
         model <- do.call(model.fun, c(form, model.args))
-        do.call(extractor.fun, c(list(model), extractor.args))
+        do.call(extractor, c(list(model), extractor.args))
       }
     )
     estimate <- sapply(
