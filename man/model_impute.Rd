@@ -7,13 +7,13 @@
 \alias{model_impute,aggregatedImputed-method}
 \title{Model an imputed dataset}
 \usage{
-model_impute(object, model.fun, rhs, model.args, extractor, extractor.args)
+model_impute(object, model.fun, rhs, model.args, extractor.fun, extractor.args)
 
-\S4method{model_impute}{ANY}(object, model.fun, rhs, model.args, extractor,
+\S4method{model_impute}{ANY}(object, model.fun, rhs, model.args, extractor.fun,
   extractor.args)
 
 \S4method{model_impute}{aggregatedImputed}(object, model.fun, rhs, model.args,
-  extractor, extractor.args)
+  extractor.fun, extractor.args)
 }
 \arguments{
 \item{object}{the imputed dataset}
@@ -24,7 +24,7 @@ model_impute(object, model.fun, rhs, model.args, extractor, extractor.args)
 
 \item{model.args}{an optional list of arguments to pass to the model function.}
 
-\item{extractor}{a function which return a \code{matrix} or \code{data.frame}. The first column should contain the estimate, the second the standard error of the estimate}
+\item{extractor.fun}{a function which return a \code{matrix} or \code{data.frame}. The first column should contain the estimate, the second the standard error of the estimate. \code{\link{extractor}} will be used when missing.}
 
 \item{extractor.args}{an optional list of arguments to pass to the extractor function.}
 }
@@ -37,14 +37,6 @@ dataset$Count[sample(nrow(dataset), 50)] <- NA
 model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
 imputed <- impute(data = dataset, model = model)
 aggr <- aggregate_impute(imputed, grouping = c("Year", "Period"), fun = sum)
-extractor <- function(model){
-  summary(model)$coefficients[, c("Estimate", "Std. Error")]
-}
-model_impute(
-  object = aggr,
-  model.fun = lm,
-  rhs = "0 + factor(Year)",
-  extractor = extractor
-)
+model_impute(object = aggr, model.fun = lm, rhs = "0 + factor(Year)")
 }
 

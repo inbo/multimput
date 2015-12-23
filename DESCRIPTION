@@ -23,7 +23,6 @@ Suggests:
     INLA,
     snowfall,
     ggplot2,
-    mgcv,
     knitr,
     rmarkdown
 Roxygen: list(wrap = FALSE)
@@ -34,6 +33,7 @@ Collate:
     'aggregate_impute.R'
     'aggregatedImputed_class.R'
     'datasets.R'
+    'extractor.R'
     'generateData.R'
     'import_S3_classes.R'
     'imputeINLA.R'
@@ -53,4 +53,5 @@ Collate:
     'summarizeImputationGLM.R'
     'summarizeImputationGLMnb.R'
     'testMethods.R'
+    'zzz_test_extractor.R'
 VignetteBuilder: knitr

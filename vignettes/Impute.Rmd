@@ -126,7 +126,7 @@ raw.lm <- impute(imp.lm, data = dataset)
 raw.inla.p <- impute(imp.inla.p)
 raw.inla.nb <- impute(imp.inla.nb)
 raw.better <- impute(imp.better)
-raw.better.199 <- impute(imp.better, n.imp = 9)
+raw.better.9 <- impute(imp.better, n.imp = 9)
 ```
 
 # Aggregate the imputated dataset
@@ -154,56 +154,57 @@ aggr.better <- aggregate_impute(
   grouping = c("fYear", "fPeriod", "Year"), 
   fun = sum
 )
-aggr.better.199 <- aggregate_impute(
-  raw.better.199, 
-  grouping = c("fYear", "fPeriod", "Year"), 
-  fun = sum
-)
 ```
 
 # Model the aggregated imputed dataset
 
 ## Simple example
 
-`model_impute()` will apply the `model.fun` to each imputation set. The covariates are defined in the `rhs` argument. The tricky part of this function the  `extractor` argument. This is a user defined function which must have an argument called `model`. The function should return a `data.frame` or `matrix` with two columuns. The first column hold the estimate of a parameter of the `model`, the second column their standard error. Each row represents a parameter.
+`model_impute()` will apply the `model.fun` to each imputation set. The covariates are defined in the `rhs` argument. When the user doesn't specify an `extractor.fun`, `model_impute()` will rely on `extractor()` to do the heavy lifting. This will return in many cases the estimates of all parameters and their standard errors. 
 
 ```{r model_aggregate_lm}
+model_impute(
+  aggr.lm, 
+  model.fun = lm, 
+  rhs = "0 + fYear + fPeriod"
+)
+model_impute(
+  aggr.better, 
+  model.fun = glm, 
+  rhs = "0 + fYear + fPeriod",
+  model.args = list(family = "poisson")
+)
+```
+
+## A custom `extractor.fun`
+
+Sometimes `extractor()` can't handle the `model.fun`. Or the user is in interested in another set of parameters. In such case the use can specify his own `extractor` and pass it to `extractor.fun`. This is a user defined function which must have an argument called `model`. The function should return a `data.frame` or `matrix` with two columuns. The first column hold the estimate of a parameter of the `model`, the second column their standard error. Each row represents a parameter. 
+
+The `extractor.fun` function requires more work from the user. This cost is compensated by the high degree of flexibility. The user doesn't depend on the predefined extractor functions. This is illustrated by the following examples.
+
+
+```{r model_aggregate_lm_bis}
+# extra only the parameters fYear3 and fYear10
 extractor.lm <- function(model){
-  summary(model)$coefficients[, c("Estimate", "Std. Error")]
-}  
+  result <- summary(model)$coefficients[, c("Estimate", "Std. Error")]
+  result[c("fYear3", "fYear10"), ]
+}
 model_impute(
   aggr.lm, 
   model.fun = lm, 
-  rhs = "0 + fYear + fPeriod", 
-  extractor = extractor.lm
+  rhs = "0 + fYear + fPeriod",
+  extractor.fun = extractor.lm
 )
 ```
 
-## Return only the parameters associated with `fYear`
-
-The `extractor` function requires more work from the user. This cost is compensated by the high degree of flexibility. The user doesn't depend on the predefined extractor functions. This is illustrated by the following examples.
-
-```{r model_aggregate_lm2}
-extractor.lm2 <- function(model){
-  cf <- summary(model)$coefficients
-  cf[grepl("fYear", rownames(cf)), c("Estimate", "Std. Error")]
-}  
-model_impute(
-  aggr.lm, 
-  model.fun = lm, 
-  rhs = "0 + fYear + fPeriod", 
-  extractor = extractor.lm2
-)
-```
 
 ## Predict a smoother for predefined values
 
-Note that we pass extra arguments to the `extractor` function through the `extractor.args` argument. This has to be a list. We recommend to use a named list to avoid confusion.
+Note that we pass extra arguments to the `extractor.fun` function through the `extractor.args` argument. This has to be a list. We recommend to use a named list to avoid confusion.
 
 ```{r model_aggregate_lm3}
-library(mgcv)
 new.set <- expand.grid(
-  Year = pretty(dataset$Year, 20),
+  Year = pretty(dataset$Year, 40),
   fPeriod = dataset$fPeriod[1]
 )
 extractor.lm3 <- function(model, newdata){
@@ -213,17 +214,18 @@ extractor.lm3 <- function(model, newdata){
     predictions$se.fit
   )
 }  
-model.gam <- model_impute(
-  aggr.lm, 
-  model.fun = gam, 
-  rhs = "s(Year) + fPeriod", 
-  extractor = extractor.lm3,
+model.poly <- model_impute(
+  aggr.better, 
+  model.fun = glm, 
+  rhs = "poly(Year, 4) + fPeriod", 
+  model.args = list(family = poisson),
+  extractor.fun = extractor.lm3,
   extractor.args = list(newdata = new.set)
 )
-model.gam <- cbind(new.set, model.gam)
-model.gam$LCL <- qnorm(0.025, mean = model.gam$Estimate, sd = model.gam$SE)
-model.gam$UCL <- qnorm(0.975, mean = model.gam$Estimate, sd = model.gam$SE)
-ggplot(model.gam, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
+model.poly <- cbind(new.set, model.poly)
+model.poly$LCL <- qnorm(0.025, mean = model.poly$Estimate, sd = model.poly$SE)
+model.poly$UCL <- qnorm(0.975, mean = model.poly$Estimate, sd = model.poly$SE)
+ggplot(model.poly, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
   geom_ribbon(alpha = 0.1) + 
   geom_line()
 ```
@@ -243,21 +245,21 @@ model.p <- model_impute(
   model.fun = inla,
   rhs = "0 + fYear + f(fPeriod, model = 'iid')",
   model.args = list(family = "nbinomial"),
-  extractor = extractor.inla
+  extractor.fun = extractor.inla
 )
 model.nb <- model_impute(
   object = aggr.inla.nb,
   model.fun = inla,
   rhs = "0 + fYear + f(fPeriod, model = 'iid')",
   model.args = list(family = "nbinomial"),
-  extractor = extractor.inla
+  extractor.fun = extractor.inla
 )
 model.better <- model_impute(
   object = aggr.better,
   model.fun = inla,
   rhs = "0 + fYear + f(fPeriod, model = 'iid')",
   model.args = list(family = "nbinomial"),
-  extractor = extractor.inla
+  extractor.fun = extractor.inla
 )
 aggr.complete <- aggregate(
   dataset[, "Count", drop = FALSE],
