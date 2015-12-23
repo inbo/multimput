@@ -146,5 +146,13 @@ describe("model_impute", {
       ),
       "object 'junk' not found"
     )
+    expect_error(
+      model_impute(
+        aggr,
+        model.fun = aov,
+        rhs = "Year"
+      ),
+      "Currently, no default extractor\\(\\) for a aovlm model is available"
+    )
   })
 })
