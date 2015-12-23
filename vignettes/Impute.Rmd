@@ -165,36 +165,43 @@ aggr.better.199 <- aggregate_impute(
 
 ## Simple example
 
-`model_impute()` will apply the `model.fun` to each imputation set. The covariates are defined in the `rhs` argument. The tricky part of this function the  `extractor.fun` argument. This is a user defined function which must have an argument called `model`. The function should return a `data.frame` or `matrix` with two columuns. The first column hold the estimate of a parameter of the `model`, the second column their standard error. Each row represents a parameter.
+`model_impute()` will apply the `model.fun` to each imputation set. The covariates are defined in the `rhs` argument. When the user doesn't specify an `extractor.fun`, `model_impute()` will rely on `extractor()` to do the heavy lifting. This will return in many cases the estimates of all parameters and their standard errors. 
 
 ```{r model_aggregate_lm}
-extractor.lm <- function(model){
-  summary(model)$coefficients[, c("Estimate", "Std. Error")]
-}  
 model_impute(
   aggr.lm, 
   model.fun = lm, 
-  rhs = "0 + fYear + fPeriod", 
+  rhs = "0 + fYear + fPeriod"
+)
+model_impute(
+  aggr.better, 
+  model.fun = glm, 
+  rhs = "0 + fYear + fPeriod",
+  model.args = list(family = "poisson")
+)
+```
+
+## A custom `extractor.fun`
+
+Sometimes `extractor()` can't handle the `model.fun`. Or the user is in interested in another set of parameters. In such case the use can specify his own `extractor` and pass it to `extractor.fun`. This is a user defined function which must have an argument called `model`. The function should return a `data.frame` or `matrix` with two columuns. The first column hold the estimate of a parameter of the `model`, the second column their standard error. Each row represents a parameter. 
+
+The `extractor.fun` function requires more work from the user. This cost is compensated by the high degree of flexibility. The user doesn't depend on the predefined extractor functions. This is illustrated by the following examples.
+
+
+```{r model_aggregate_lm_bis}
+# extra only the parameters fYear3 and fYear10
+extractor.lm <- function(model){
+  result <- summary(model)$coefficients[, c("Estimate", "Std. Error")]
+  result[c("fYear3", "fYear10"), ]
+}
+model_impute(
+  aggr.lm, 
+  model.fun = lm, 
+  rhs = "0 + fYear + fPeriod",
   extractor.fun = extractor.lm
 )
 ```
 
-## Return only the parameters associated with `fYear`
-
-The `extractor.fun` function requires more work from the user. This cost is compensated by the high degree of flexibility. The user doesn't depend on the predefined extractor functions. This is illustrated by the following examples.
-
-```{r model_aggregate_lm2}
-extractor.lm2 <- function(model){
-  cf <- summary(model)$coefficients
-  cf[grepl("fYear", rownames(cf)), c("Estimate", "Std. Error")]
-}  
-model_impute(
-  aggr.lm, 
-  model.fun = lm, 
-  rhs = "0 + fYear + fPeriod", 
-  extractor.fun = extractor.lm2
-)
-```
 
 ## Predict a smoother for predefined values
 
