@@ -12,7 +12,7 @@ describe("model_impute", {
       aggr,
       model.fun = lm,
       rhs = "0 + factor(Year)",
-      extractor = extractor
+      extractor.fun = extractor
     )
     aggr.base <- aggregate(Count ~ Year + Period, data = dataset, FUN = sum)
     model.base <- lm(Count ~ 0 + factor(Year), data = aggr.base)
@@ -35,7 +35,7 @@ describe("model_impute", {
         aggr,
         model.fun = lm,
         rhs = "0 + factor(Year)",
-        extractor = extractor
+        extractor.fun = extractor
       ),
       "matrix"
     )
@@ -67,9 +67,9 @@ describe("model_impute", {
         aggr,
         model.fun = lm,
         rhs = "0 + factor(Year)",
-        extractor = "junk"
+        extractor.fun = "junk"
       ),
-      "extractor does not inherit from class function"
+      "extractor.fun does not inherit from class function"
     )
     extractor <- function(model){
       summary(model)$coefficients[, c("Estimate", "Std. Error")]
@@ -80,7 +80,7 @@ describe("model_impute", {
         model.fun = lm,
         rhs = "0 + factor(Year)",
         model.args = "junk",
-        extractor = extractor
+        extractor.fun = extractor
       ),
       "model.args does not inherit from class list"
     )
@@ -90,7 +90,7 @@ describe("model_impute", {
         model.fun = lm,
         rhs = "0 + factor(Year)",
         extractor.args = "junk",
-        extractor = extractor
+        extractor.fun = extractor
       ),
       "extractor.args does not inherit from class list"
     )
@@ -99,7 +99,7 @@ describe("model_impute", {
         aggr,
         model.fun = lm,
         rhs = NA,
-        extractor = extractor
+        extractor.fun = extractor
       ),
       "rhs is not a character vector"
     )
@@ -108,7 +108,7 @@ describe("model_impute", {
         aggr,
         model.fun = lm,
         rhs = ~factor(Year),
-        extractor = extractor
+        extractor.fun = extractor
       ),
       "rhs is not a character vector"
     )
@@ -117,7 +117,7 @@ describe("model_impute", {
         aggr,
         model.fun = lm,
         rhs = "junk",
-        extractor = extractor
+        extractor.fun = extractor
       ),
       "object 'junk' not found"
     )
