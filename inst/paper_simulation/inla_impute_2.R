@@ -18,7 +18,7 @@ singleRun <- function(run, path, seeds){
       Observed ~ f(Year, model = "rw1", replicate = as.integer(Site)) + Period,
     n.sim = 199
   ))
-  if(class(imputation) == "try-error"){
+  if (class(imputation) == "try-error") {
     return()
   }
   filename <- sprintf("%s/imp_%s_rw.rda", path, run)

@@ -34,7 +34,7 @@ to.do <- gsub("\\.rda$", "", to.do)
 rm(datasetpath)
 
 path <- paste(tempdir, "inla", sep = "/")
-if(file.exists(path)){
+if (file.exists(path)) {
   done <- list.files(
     path,
     pattern =

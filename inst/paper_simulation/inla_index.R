@@ -119,7 +119,7 @@ done <- gsub("\\.rda$", "", done)
 to.do <- to.do[!to.do %in% done]
 rm(done)
 
-if(n.cpu > 1){
+if (n.cpu > 1) {
   sfInit(parallel = TRUE, cpus = n.cpu)
   results <- sfClusterApplyLB(
     to.do,
