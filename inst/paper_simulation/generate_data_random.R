@@ -90,7 +90,7 @@ if (file.exists(path)) {
 }
 
 
-if(n.cpu > 1){
+if (n.cpu > 1) {
   sfInit(parallel = TRUE, cpus = n.cpu)
   results <- sfClusterApplyLB(
     to.do,
