@@ -17,7 +17,7 @@ singleRun <- function(run, path, seeds){
     formula = Observed ~ Year + Period + f(Site, model = "iid"),
     n.sim = 199
   ))
-  if(class(imputation) == "try-error"){
+  if (class(imputation) == "try-error") {
     return()
   }
   filename <- sprintf("%s/imp_%s.rda", path, run)
@@ -35,7 +35,7 @@ to.do <- gsub("\\.rda$", "", to.do)
 rm(datasetpath)
 
 path <- paste(tempdir, "inla", sep = "/")
-if(file.exists(path)){
+if (file.exists(path)) {
   done <- list.files(
     path,
     pattern = "^imp_[[:digit:]]{4}_[[:digit:]]_[[:digit:]]_[[:digit:]]\\.rda$"
@@ -48,7 +48,7 @@ if(file.exists(path)){
   dir.create(path)
 }
 
-if(n.cpu > 1){
+if (n.cpu > 1) {
   sfInit(parallel = TRUE, cpus = n.cpu)
   results <- sfClusterApplyLB(
     to.do,
