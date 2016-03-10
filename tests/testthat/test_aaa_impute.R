@@ -2,6 +2,9 @@ describe("impute", {
   context("impute")
   dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
   dataset$Count[sample(nrow(dataset), 50)] <- NA
+  dataset$fYear <- factor(dataset$Year)
+  dataset$fPeriod <- factor(dataset$Period)
+  dataset$fSite <- factor(dataset$Site)
   n.imp <- 50L
   it("handles lm", {
     model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
@@ -151,8 +154,6 @@ describe("impute", {
       impute(model = "junk"),
       "impute\\(\\) can't handle a model of class character at this moment."
     )
-    dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
-    dataset$Count[sample(nrow(dataset), 50)] <- NA
     model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
     expect_error(
       impute(model = model, data = "junk"),
@@ -204,6 +205,84 @@ describe("impute", {
     expect_error(
       impute(model),
       "Imputations from the 'gamma' family not yet defined"
+    )
+
+    model <- lme4::glmer(
+      Count ~ factor(Year) + fPeriod + (1 | fSite),
+      data = dataset,
+      family = poisson
+    )
+    expect_error(
+      impute(model, dataset),
+      "impute can't handle factor\\(\\) in the model"
+    )
+    expect_error(
+      impute(model = model, data = "junk"),
+      "data does not inherit from class data.frame"
+    )
+    expect_error(
+      impute(model = model, data = dataset, n.imp = -1),
+      "n.imp is not a count \\(a single positive integer\\)"
+    )
+    expect_error(
+      impute(model = model, data = dataset, n.imp = 0),
+      "n.imp is not a count \\(a single positive integer\\)"
+    )
+    expect_error(
+      impute(model = model, data = dataset, n.imp = "junk"),
+      "n.imp is not a count \\(a single positive integer\\)"
+    )
+
+    model <- lme4::glmer(
+      Count ~ fYear + fPeriod + (1 | fSite),
+      data = dataset,
+      family = poisson
+    )
+    wrong.dataset <- dataset
+    wrong.dataset$fPeriod <- NULL
+    expect_error(
+      impute(model = model, data = wrong.dataset),
+      "object 'fPeriod' not found"
+    )
+    wrong.dataset <- dataset
+    wrong.dataset$Count <- NULL
+    expect_error(
+      impute(model = model, data = wrong.dataset),
+      "data does not have name Count"
+    )
+  })
+
+
+  it("handles glmerMod objects", {
+    model <- lme4::glmer(
+      Count ~ fYear + fPeriod + (1 | fSite),
+      data = dataset,
+      family = poisson
+    )
+    expect_is(
+      imputed <- impute(model, dataset),
+      "rawImputed"
+    )
+    expect_identical(
+      ncol(imputed@Imputation),
+      19L
+    )
+    expect_identical(
+      nrow(imputed@Imputation),
+      sum(is.na(dataset$Count))
+    )
+
+    expect_is(
+      imputed <- impute(model, dataset, n.imp = n.imp),
+      "rawImputed"
+    )
+    expect_identical(
+      ncol(imputed@Imputation),
+      n.imp
+    )
+    expect_identical(
+      nrow(imputed@Imputation),
+      sum(is.na(dataset$Count))
     )
   })
 })
