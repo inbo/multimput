@@ -39,7 +39,7 @@ missingVolunteer <- function(
     ),
     ncol = length(years)
   )
-  for (i in seq(2, length(years), by = 1)) {
+  for(i in seq(2, length(years), by = 1)){
     selected[, i] <- selected[, i] +
       selected[, i - 1] * probability.continu[, i - 1]
   }

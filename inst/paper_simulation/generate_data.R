@@ -58,7 +58,7 @@ singleRun <- function(run, path, seeds, n.site = 40, n.year = 24, n.period = 6){
 
 to.do <- sprintf("%04i_0_0_0", seq_len(n.run))
 path <- paste(tempdir, "dataset", sep = "/")
-if (file.exists(path)) {
+if(file.exists(path)){
   done <- list.files(path, pattern = "^run_[[:digit:]]{4}_0_0_0\\.rda$")
   done <- gsub("^run_", "", done)
   done <- gsub("\\.rda$", "", done)
@@ -68,7 +68,7 @@ if (file.exists(path)) {
   dir.create(path)
 }
 
-if (n.cpu > 1) {
+if(n.cpu > 1){
   sfInit(parallel = TRUE, cpus = n.cpu)
   results <- sfClusterApplyLB(
     to.do,
