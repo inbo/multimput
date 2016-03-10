@@ -253,9 +253,18 @@ describe("impute", {
   })
 
 
+  dataset <- generateData(
+    n.year = 10,
+    n.site = 50,
+    n.run = 1,
+    year.factor = TRUE,
+    period.factor = TRUE,
+    site.factor = TRUE
+  )
+  dataset$Count[sample(nrow(dataset), 50)] <- NA
   it("handles glmerMod objects", {
     model <- lme4::glmer(
-      Count ~ fYear + fPeriod + (1 | fSite),
+      Count ~ Year + Period + (1 | Site),
       data = dataset,
       family = poisson
     )
