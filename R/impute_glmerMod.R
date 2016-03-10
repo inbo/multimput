@@ -66,7 +66,7 @@ and refit the model."
         } else {
           hash <- x
         }
-        paste("~0 + ", hash) %>% #no lint
+        paste("~0 + ", hash) %>% #nolint
             as.formula() %>%
             model.matrix(data = data[missing.obs, ]) %>%
             tcrossprod(t(random[[x]]))
