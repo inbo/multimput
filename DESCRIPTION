@@ -17,6 +17,7 @@ Imports:
     assertthat,
     MASS,
     geepack,
+    lme4,
     mvtnorm,
     digest,
     plyr
