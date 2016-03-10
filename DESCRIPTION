@@ -17,6 +17,8 @@ Imports:
     assertthat,
     MASS,
     geepack,
+    mvtnorm,
+    digest,
     plyr
 Suggests:
     testthat,
@@ -42,6 +44,7 @@ Collate:
     'imputeUnderhill.R'
     'imputeUnderhillAltered.R'
     'impute_generic.R'
+    'impute_glmerMod.R'
     'impute_inla.R'
     'impute_lm.R'
     'imputedTotals.R'
