@@ -31,8 +31,8 @@ and refit the model."
     call <- model@call %>%
       as.character()
     mm <- call[grepl("~", call)] %>%
-      gsub(pattern = "^.*~", replace = "~") %>%
-      gsub(pattern = "\\+ \\(.*\\|.*\\)", replace = "") %>%
+      gsub(pattern = "^.*~", replacement = "~") %>%
+      gsub(pattern = "\\+ \\(.*\\|.*\\)", replacement = "") %>%
       as.formula() %>%
       model.matrix(data = data[missing.obs, ])
     fixed <- rmvnorm(
