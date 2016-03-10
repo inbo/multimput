@@ -51,7 +51,7 @@ and refit the model."
           rnorm(
             n.imp * nrow(x),
             mean = x[, 1],
-            sd = sqrt(attr(x, "postVar")[1, ,])
+            sd = sqrt(attr(x, "postVar")[1, ,]) #nolint
           ) %>%
             matrix(ncol = n.imp)
         }
@@ -66,7 +66,7 @@ and refit the model."
         } else {
           hash <- x
         }
-        paste("~0 + ", hash) %>%
+        paste("~0 + ", hash) %>% #no lint
             as.formula() %>%
             model.matrix(data = data[missing.obs, ]) %>%
             tcrossprod(t(random[[x]]))
