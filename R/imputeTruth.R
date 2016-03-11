@@ -6,6 +6,7 @@
 #' @param n.sim the number of simulations
 #' @export
 #' @return A matrix with one row for each missing value. Each column is on imputation.
+#' @template deprecated
 
 imputeTruth <- function(
   data,
@@ -14,8 +15,13 @@ imputeTruth <- function(
   respons = "Observed",
   n.sim = 499
 ){
+  # nocov start
+  .Deprecated(
+    new = "impute"
+  )
   missing.data <- which(is.na(data[, respons]))
   sapply(seq_len(n.sim), function(i){
     rnbinom(length(missing.data), mu = data[missing.data, mean], size = size)
   })
+  # nocov end
 }
