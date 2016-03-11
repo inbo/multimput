@@ -24,13 +24,13 @@
 <tr class="even">
 <td align="left">Develop</td>
 <td align="left"><a href="https://app.wercker.com/project/bykey/b4d00d5173468e492a589578cb4647aa"><img src="https://app.wercker.com/status/b4d00d5173468e492a589578cb4647aa/m/develop" title="wercker status" alt="wercker status" /></a></td>
-<td align="left"><a href="https://codecov.io/github/ThierryO/multimput?branch=master"><img src="https://codecov.io/github/ThierryO/multimput/coverage.svg?branch=develop" alt="codecov.io" /></a></td>
+<td align="left"><a href="https://codecov.io/github/ThierryO/multimput?branch=develop"><img src="https://codecov.io/github/ThierryO/multimput/coverage.svg?branch=develop" alt="codecov.io" /></a></td>
 <td align="left"><img src="https://codecov.io/github/ThierryO/multimput/branch.svg?branch=develop" alt="codecov.io" /></td>
 </tr>
 </tbody>
 </table>
 
-CAUTION: github flavoured markdown doesn't support the rendering of math at this moment. The information below is available as a vignette within the package. The math will be rendered in the vignette. To read the vignette one needs to install the package first.
+CAUTION: GitHub flavoured markdown doesn't support the rendering of mathematics at this moment. The information below is available as a vignette within the package. The mathematics will be rendered in the vignette. To read the vignette one needs to install the package first.
 
 Installation instruction
 ========================
