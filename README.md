@@ -137,26 +137,38 @@ Create the imputation model
 We will create several models, mainly to illustrate the capabilities of the `multimput` package. Hence several of the models are not good for a real life application.
 
 ``` r
+# a simple linear model
 imp.lm <- lm(Observed ~ fYear + fPeriod + fSite, data = dataset)
 library(INLA)
-#> Loading required package: sp
-#> Loading required package: Matrix
-#> Loading required package: splines
+# a mixed model with Poisson distribution
+# fYear and fPeriod are the fixed effects
+# Site are independent and identically distributed random intercepts
 imp.inla.p <- inla(
   Observed ~ fYear + fPeriod + f(Site, model = "iid"), 
   data = dataset, 
   family = "poisson", 
   control.predictor = list(compute = TRUE)
 )
+# the same model as imp.inla.p but with negative binomial distribution
 imp.inla.nb <- inla(
   Observed ~ fYear + fPeriod + f(fSite, model = "iid"), 
   data = dataset, 
   family = "nbinomial", 
   control.predictor = list(compute = TRUE)
 )
+# a mixed model with negative binomial distribution
+# fPeriod is a fixed effect
+# f(Year, model = "rw1") is a global temporal trend 
+#     modelled as a first order random walk
+#     delta_i = Year_i - Year_{i-1} with delta_i \sim N(0, \sigma_{rw1})
+# f(YearCopy, model = "ar1", replicate = Site) is a temporal trend per Site
+#     modelled as an first order autoregressive model
+#     Year_i_k = \rho Year_{i-1}_k + \epsilon_i_k with \epsilon_i_k \sim N(0, \sigma_{ar1})
 dataset$YearCopy <- dataset$Year
 imp.better <- inla(
-  Observed ~ f(Year, model = "rw1") + f(YearCopy, model = "ar1", replicate = Site) + 
+  Observed ~ 
+    f(Year, model = "rw1") + 
+    f(YearCopy, model = "ar1", replicate = Site) + 
     fPeriod, 
   data = dataset, 
   family = "nbinomial", 
@@ -178,11 +190,11 @@ raw.lm <- impute(imp.lm, data = dataset)
 raw.inla.p <- impute(imp.inla.p)
 raw.inla.nb <- impute(imp.inla.nb)
 raw.better <- impute(imp.better)
-raw.better.199 <- impute(imp.better, n.imp = 9)
+raw.better.9 <- impute(imp.better, n.imp = 9)
 ```
 
-Aggregate the imputated dataset
-===============================
+Aggregate the imputed dataset
+=============================
 
 Suppose that we are interested in the sum of the counts over all sites for each combination of year and period. Then we must aggregate the imputations on year and period. The resulting object will only contain the imputated response and the grouping variables. The easiest way to have a variable like year both a continuous and factor is to add both `Year` and `fYear` to the `grouping`.
 
@@ -207,8 +219,8 @@ aggr.better <- aggregate_impute(
   grouping = c("fYear", "fPeriod", "Year"), 
   fun = sum
 )
-aggr.better.199 <- aggregate_impute(
-  raw.better.199, 
+aggr.better.9 <- aggregate_impute(
+  raw.better.9, 
   grouping = c("fYear", "fPeriod", "Year"), 
   fun = sum
 )

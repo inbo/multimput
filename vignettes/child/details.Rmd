@@ -87,23 +87,38 @@ ggplot(dataset, aes(x = Year, y = Mu, group = Site)) +
 We will create several models, mainly to illustrate the capabilities of the `multimput` package. Hence several of the models are not good for a real life application.
 
 ```{r imputation_model}
+# a simple linear model
 imp.lm <- lm(Observed ~ fYear + fPeriod + fSite, data = dataset)
 library(INLA)
+# a mixed model with Poisson distribution
+# fYear and fPeriod are the fixed effects
+# Site are independent and identically distributed random intercepts
 imp.inla.p <- inla(
   Observed ~ fYear + fPeriod + f(Site, model = "iid"), 
   data = dataset, 
   family = "poisson", 
   control.predictor = list(compute = TRUE)
 )
+# the same model as imp.inla.p but with negative binomial distribution
 imp.inla.nb <- inla(
   Observed ~ fYear + fPeriod + f(fSite, model = "iid"), 
   data = dataset, 
   family = "nbinomial", 
   control.predictor = list(compute = TRUE)
 )
+# a mixed model with negative binomial distribution
+# fPeriod is a fixed effect
+# f(Year, model = "rw1") is a global temporal trend 
+#     modelled as a first order random walk
+#     delta_i = Year_i - Year_{i-1} with delta_i \sim N(0, \sigma_{rw1})
+# f(YearCopy, model = "ar1", replicate = Site) is a temporal trend per Site
+#     modelled as an first order autoregressive model
+#     Year_i_k = \rho Year_{i-1}_k + \epsilon_i_k with \epsilon_i_k \sim N(0, \sigma_{ar1})
 dataset$YearCopy <- dataset$Year
 imp.better <- inla(
-  Observed ~ f(Year, model = "rw1") + f(YearCopy, model = "ar1", replicate = Site) + 
+  Observed ~ 
+    f(Year, model = "rw1") + 
+    f(YearCopy, model = "ar1", replicate = Site) + 
     fPeriod, 
   data = dataset, 
   family = "nbinomial", 
