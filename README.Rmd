@@ -1,0 +1,24 @@
+---
+output:
+  md_document:
+    variant: markdown_github
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+| Branch  | Build status | Code | coverage |
+| ------- | ------------ | ---- | -------- |
+| Master  | [![wercker status](https://app.wercker.com/status/b4d00d5173468e492a589578cb4647aa/m/master "wercker status")](https://app.wercker.com/project/bykey/b4d00d5173468e492a589578cb4647aa) | [![codecov.io](https://codecov.io/github/ThierryO/multimput/coverage.svg?branch=master)](https://codecov.io/github/ThierryO/multimput?branch=master) | ![codecov.io](https://codecov.io/github/ThierryO/multimput/branch.svg?branch=master) |
+| Develop | [![wercker status](https://app.wercker.com/status/b4d00d5173468e492a589578cb4647aa/m/develop "wercker status")](https://app.wercker.com/project/bykey/b4d00d5173468e492a589578cb4647aa) | [![codecov.io](https://codecov.io/github/ThierryO/multimput/coverage.svg?branch=develop)](https://codecov.io/github/ThierryO/multimput?branch=master) | ![codecov.io](https://codecov.io/github/ThierryO/multimput/branch.svg?branch=develop)|
+
+
+```{r child="vignettes/child/details.Rmd"}
+```
