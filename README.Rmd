@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 | Branch  | Build status | Code | coverage |
 | ------- | ------------ | ---- | -------- |
 | Master  | [![wercker status](https://app.wercker.com/status/b4d00d5173468e492a589578cb4647aa/m/master "wercker status")](https://app.wercker.com/project/bykey/b4d00d5173468e492a589578cb4647aa) | [![codecov.io](https://codecov.io/github/ThierryO/multimput/coverage.svg?branch=master)](https://codecov.io/github/ThierryO/multimput?branch=master) | ![codecov.io](https://codecov.io/github/ThierryO/multimput/branch.svg?branch=master) |
-| Develop | [![wercker status](https://app.wercker.com/status/b4d00d5173468e492a589578cb4647aa/m/develop "wercker status")](https://app.wercker.com/project/bykey/b4d00d5173468e492a589578cb4647aa) | [![codecov.io](https://codecov.io/github/ThierryO/multimput/coverage.svg?branch=develop)](https://codecov.io/github/ThierryO/multimput?branch=master) | ![codecov.io](https://codecov.io/github/ThierryO/multimput/branch.svg?branch=develop)|
+| Develop | [![wercker status](https://app.wercker.com/status/b4d00d5173468e492a589578cb4647aa/m/develop "wercker status")](https://app.wercker.com/project/bykey/b4d00d5173468e492a589578cb4647aa) | [![codecov.io](https://codecov.io/github/ThierryO/multimput/coverage.svg?branch=develop)](https://codecov.io/github/ThierryO/multimput?branch=develop) | ![codecov.io](https://codecov.io/github/ThierryO/multimput/branch.svg?branch=develop)|
 
 CAUTION: GitHub flavoured markdown doesn't support the rendering of mathematics at this moment. The information below is available as a vignette within the package. The mathematics will be rendered in the vignette. To read the vignette one needs to install the package first. 
 

@@ -23,4 +23,7 @@ A matrix with one row for each missing value. Each column is on imputation.
 \description{
 impute missing data using multiple imputation
 }
+\note{
+Deprecated function. Only relevant to run the code in the folder \code{hpc} and \code{paper_simulation}.
+}
 

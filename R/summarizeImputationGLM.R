@@ -2,7 +2,12 @@
 #' @param data the multiple imputed dataset
 #' @param rhs the right hand side of the glm model to summarize the imputed data
 #' @export
+#' @template deprecated
 summarizeImputationGLM <- function(data, rhs){
+  # nocov start
+  .Deprecated(
+    new = "model_impute"
+  )
   imputations <- grep("^Imputation", colnames(data))
   raw.output <- do.call(rbind, lapply(seq_along(imputations), function(i){
     model <- glm(
@@ -37,4 +42,5 @@ summarizeImputationGLM <- function(data, rhs){
   output$SE <- sqrt(output$Var + (1 + 1 / length(imputations)) * B$Index)
   output$Var <- NULL
   output
+  # nocov end
 }

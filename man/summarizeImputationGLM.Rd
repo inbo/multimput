@@ -14,4 +14,7 @@ summarizeImputationGLM(data, rhs)
 \description{
 summarize the imputed dataset with a glm model
 }
+\note{
+Deprecated function. Only relevant to run the code in the folder \code{hpc} and \code{paper_simulation}.
+}
 

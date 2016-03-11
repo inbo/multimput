@@ -6,3 +6,4 @@
 ^\.travis\.yml$
 ^.*\.png$
 ^README\.Rmd$
+^man\-roxygen$
