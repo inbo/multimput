@@ -1,0 +1,284 @@
+```{r settings, echo = FALSE}
+knitr::opts_chunk$set(
+  fig.width = 7.1,
+  fig.height = 5
+)
+```
+
+# Very short intro to multiple imputation
+
+1. Create the imputation model
+1. Generate imputations for the missing observation
+1. Aggregate the imputed data
+1. Model the aggregated imputed data
+
+# Short intro to multiple imputation
+
+The imputations are based on a model $Y \sim X \beta$ which the user has to specify. For a missing value $i$ with covariates $x_i$, we draw a random value $y_i$ from the distribution of $\hat{y}_i$. In case of a linear model, we sample a normal distribution $y_i \sim N(\hat{y}_i, \sigma_i)$. An imputation set $j$ holds an impute value $y_i$ for each missing value.
+
+With the missing values replaced by imputation set $j$, the dataset is complete. So we can apply the analysis that we wanted to do in the first place. This can, but don't has to, include aggregating the dataset prior to analysis. The analysis results in a set of coefficients $b_{kj}$ and the standard error $\sigma_{kj}$. Offcourse, this set will depend on the imputed values of the imputation set $j$. Another imputation set has different imputed values and will hence lead to different coefficients.
+
+Therefor the imputation, aggregation and analysis is repeated for $J$ different imputation sets, resulting in $J$ sets of coefficients and there standard errors. They are aggregated by the formulas below. The coefficient will be the average of the coefficient in all imputation sets. The standard error of a coefficient is the square root of a sum of two parts. The first part is the average of the squared standard error in all imputation sets. The second part is the variance of the coefficient among the imputation sets, multiplied by a correction factor $1 + \frac{1}{J}$. 
+
+$$\hat{b}_k = \frac{\sum_{j = 1}^Jb_{kj}}{J}$$
+$$\hat{\sigma}_k = \sqrt{\frac{\sum_{j = 1}^J \sigma^2_{kj}}{J} + (1 + \frac{1}{J}) 
+\frac{\sum_{j = 1}^J(b_{kj} - \hat{b}_k) ^ 2}{J - 1}}$$
+
+# The dataset
+
+First, let's generate a dataset and set some observations missing. `generateData()` creates a balanced dataset with repeated visits of a number of sites. Each site is visited several years and multiple times per year. Have a look at the help-file of `generateData()` for more details on the model. 
+
+```{r generate_data}
+library(multimput)
+set.seed(123)
+prop.missing <- 0.5
+dataset <- generateData(
+  n.year = 10, n.period = 6, n.site = 50, 
+  n.run = 1
+)
+dataset$Observed <- dataset$Count
+which.missing <- sample(nrow(dataset), size = nrow(dataset) * prop.missing)
+dataset$Observed[which.missing] <- NA
+dataset$fYear <- factor(dataset$Year)
+dataset$fPeriod <- factor(dataset$Period)
+dataset$fSite <- factor(dataset$Site)
+str(dataset)
+```
+
+Variables in dataset
+
+Year
+  ~ The year of the observation as an integer
+  
+fYear
+  ~ The year of the observation as a factor
+
+Period
+  ~ The period of the observation as an integer
+  
+fPeriod
+  ~ The period of the observation as a factor
+  
+Site
+  ~ The ID of the site as an integer
+  
+fSite
+  ~ The ID of the site as a factor
+  
+Mu
+  ~ The expected value of a negative binomial distribution
+  
+Count
+  ~ A realisation of a negative binomial distribution with expected value `Mu`
+  
+Observed
+  ~ The `Count` variable with missing data
+
+```{r plot_data}
+library(ggplot2)
+ggplot(dataset, aes(x = Year, y = Mu, group = Site)) + 
+  geom_line() + 
+  facet_wrap(~Period) + 
+  scale_y_log10()
+```
+
+# Create the imputation model
+
+We will create several models, mainly to illustrate the capabilities of the `multimput` package. Hence several of the models are not good for a real life application.
+
+```{r imputation_model}
+imp.lm <- lm(Observed ~ fYear + fPeriod + fSite, data = dataset)
+library(INLA)
+imp.inla.p <- inla(
+  Observed ~ fYear + fPeriod + f(Site, model = "iid"), 
+  data = dataset, 
+  family = "poisson", 
+  control.predictor = list(compute = TRUE)
+)
+imp.inla.nb <- inla(
+  Observed ~ fYear + fPeriod + f(fSite, model = "iid"), 
+  data = dataset, 
+  family = "nbinomial", 
+  control.predictor = list(compute = TRUE)
+)
+dataset$YearCopy <- dataset$Year
+imp.better <- inla(
+  Observed ~ f(Year, model = "rw1") + f(YearCopy, model = "ar1", replicate = Site) + 
+    fPeriod, 
+  data = dataset, 
+  family = "nbinomial", 
+  control.predictor = list(compute = TRUE)
+)
+```
+
+# Apply the imputation model
+
+Most models have a `predict` method. In such a case `impute()` requires both a `model` and a `data` argument. Note that this implies that one can apply an imputation on any dataset as long as the dataset contains the necessary variables.
+
+`inla` do the prediction simultaneously with the model fitting. Hence the model contains all required information and the `data` is not used.
+
+`n.imp` is the number of imputations. The default is `n.imp = 19`.
+
+```{r impute}
+raw.lm <- impute(imp.lm, data = dataset)
+raw.inla.p <- impute(imp.inla.p)
+raw.inla.nb <- impute(imp.inla.nb)
+raw.better <- impute(imp.better)
+raw.better.199 <- impute(imp.better, n.imp = 9)
+```
+
+# Aggregate the imputated dataset
+
+Suppose that we are interested in the sum of the counts over all sites for each combination of year and period. Then we must aggregate the imputations on year and period. The resulting object will only contain the imputated response and the grouping variables. The easiest way to have a variable like year both a continuous and factor is to add both `Year` and `fYear` to the `grouping`.
+
+```{r aggregate}
+aggr.lm <- aggregate_impute(
+  raw.lm, 
+  grouping = c("fYear", "fPeriod", "Year"), 
+  fun = sum
+)
+aggr.inla.p <- aggregate_impute(
+  raw.inla.p, 
+  grouping = c("fYear", "fPeriod", "Year"), 
+  fun = sum
+)
+aggr.inla.nb <- aggregate_impute(
+  raw.inla.nb, 
+  grouping = c("fYear", "fPeriod", "Year"), 
+  fun = sum
+)
+aggr.better <- aggregate_impute(
+  raw.better, 
+  grouping = c("fYear", "fPeriod", "Year"), 
+  fun = sum
+)
+aggr.better.199 <- aggregate_impute(
+  raw.better.199, 
+  grouping = c("fYear", "fPeriod", "Year"), 
+  fun = sum
+)
+```
+
+# Model the aggregated imputed dataset
+
+## Simple example
+
+`model_impute()` will apply the `model.fun` to each imputation set. The covariates are defined in the `rhs` argument. The tricky part of this function the  `extractor` argument. This is a user defined function which must have an argument called `model`. The function should return a `data.frame` or `matrix` with two columuns. The first column hold the estimate of a parameter of the `model`, the second column their standard error. Each row represents a parameter.
+
+```{r model_aggregate_lm}
+extractor.lm <- function(model){
+  summary(model)$coefficients[, c("Estimate", "Std. Error")]
+}  
+model_impute(
+  aggr.lm, 
+  model.fun = lm, 
+  rhs = "0 + fYear + fPeriod", 
+  extractor = extractor.lm
+)
+```
+
+## Return only the parameters associated with `fYear`
+
+The `extractor` function requires more work from the user. This cost is compensated by the high degree of flexibility. The user doesn't depend on the predefined extractor functions. This is illustrated by the following examples.
+
+```{r model_aggregate_lm2}
+extractor.lm2 <- function(model){
+  cf <- summary(model)$coefficients
+  cf[grepl("fYear", rownames(cf)), c("Estimate", "Std. Error")]
+}  
+model_impute(
+  aggr.lm, 
+  model.fun = lm, 
+  rhs = "0 + fYear + fPeriod", 
+  extractor = extractor.lm2
+)
+```
+
+## Predict a smoother for predefined values
+
+Note that we pass extra arguments to the `extractor` function through the `extractor.args` argument. This has to be a list. We recommend to use a named list to avoid confusion.
+
+```{r model_aggregate_lm3}
+library(mgcv)
+new.set <- expand.grid(
+  Year = pretty(dataset$Year, 20),
+  fPeriod = dataset$fPeriod[1]
+)
+extractor.lm3 <- function(model, newdata){
+  predictions <- predict(model, newdata = newdata, se.fit = TRUE)
+  cbind(
+    predictions$fit,
+    predictions$se.fit
+  )
+}  
+model.gam <- model_impute(
+  aggr.lm, 
+  model.fun = gam, 
+  rhs = "s(Year) + fPeriod", 
+  extractor = extractor.lm3,
+  extractor.args = list(newdata = new.set)
+)
+model.gam <- cbind(new.set, model.gam)
+model.gam$LCL <- qnorm(0.025, mean = model.gam$Estimate, sd = model.gam$SE)
+model.gam$UCL <- qnorm(0.975, mean = model.gam$Estimate, sd = model.gam$SE)
+ggplot(model.gam, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
+  geom_ribbon(alpha = 0.1) + 
+  geom_line()
+```
+
+## Compare the results using different imputation models
+
+```{r model_inla}
+covar <- data.frame(
+  Year = sort(unique(dataset$Year))
+)
+extractor.inla <- function(model){
+  fe <- model$summary.fixed[, c("mean", "sd")]
+  fe[grepl("fYear", rownames(fe)), ]
+}
+model.p <- model_impute(
+  object = aggr.inla.p,
+  model.fun = inla,
+  rhs = "0 + fYear + f(fPeriod, model = 'iid')",
+  model.args = list(family = "nbinomial"),
+  extractor = extractor.inla
+)
+model.nb <- model_impute(
+  object = aggr.inla.nb,
+  model.fun = inla,
+  rhs = "0 + fYear + f(fPeriod, model = 'iid')",
+  model.args = list(family = "nbinomial"),
+  extractor = extractor.inla
+)
+model.better <- model_impute(
+  object = aggr.better,
+  model.fun = inla,
+  rhs = "0 + fYear + f(fPeriod, model = 'iid')",
+  model.args = list(family = "nbinomial"),
+  extractor = extractor.inla
+)
+aggr.complete <- aggregate(
+  dataset[, "Count", drop = FALSE],
+  dataset[, c("fYear", "fPeriod")],
+  FUN = sum
+)
+m.complete <- inla(
+  Count ~ 0 + fYear + f(fPeriod, model = "iid"),
+  data = aggr.complete,
+  family = "nbinomial"
+)
+model.complete <- extractor.inla(m.complete)
+colnames(model.complete) <- c("Estimate", "SE")
+parameters <- rbind(
+  cbind(covar, model.p, Model = "poisson"),
+  cbind(covar, model.nb, Model = "negative binomial"),
+  cbind(covar, model.better, Model = "better"),
+  cbind(covar, model.complete, Model = "complete")
+)
+parameters$LCL <- qnorm(0.025, mean = parameters$Estimate, sd = parameters$SE)
+parameters$UCL <- qnorm(0.975, mean = parameters$Estimate, sd = parameters$SE)
+ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
+  geom_ribbon(, alpha = 0.2) + 
+  geom_line() + 
+  facet_wrap(~Model)
+```
