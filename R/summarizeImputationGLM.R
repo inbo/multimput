@@ -3,6 +3,9 @@
 #' @param rhs the right hand side of the glm model to summarize the imputed data
 #' @export
 summarizeImputationGLM <- function(data, rhs){
+  .Deprecated(
+    new = "model_impute"
+  )
   imputations <- grep("^Imputation", colnames(data))
   raw.output <- do.call(rbind, lapply(seq_along(imputations), function(i){
     model <- glm(

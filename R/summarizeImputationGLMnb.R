@@ -4,6 +4,9 @@
 #' @export
 #' @importFrom MASS glm.nb
 summarizeImputationGLM.nb <- function(data, rhs){
+  .Deprecated(
+    new = "model_impute"
+  )
   imputations <- grep("^Imputation", colnames(data))
   raw.output <- do.call(rbind, lapply(seq_along(imputations), function(i){
     model <- glm.nb(
