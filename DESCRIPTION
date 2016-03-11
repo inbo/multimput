@@ -16,7 +16,6 @@ Imports:
     tidyr,
     assertthat,
     MASS,
-    geepack,
     lme4,
     mvtnorm,
     digest,
@@ -56,5 +55,4 @@ Collate:
     'model_impute.R'
     'summarizeImputationGLM.R'
     'summarizeImputationGLMnb.R'
-    'testMethods.R'
 VignetteBuilder: knitr
