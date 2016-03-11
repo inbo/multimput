@@ -8,12 +8,13 @@
 #' @importFrom MASS glm.nb
 #' @template deprecated
 
-imputeUnderhill <- function( #nocov start
+imputeUnderhill <- function(
   data,
   formula = Observed ~ Year + Month + Site,
   initial = 0,
   family = c("nbinomial", "poisson")
 ){
+  # nocov start
   .Deprecated(
     new = "impute"
   )
@@ -42,4 +43,5 @@ imputeUnderhill <- function( #nocov start
     }
   }
   return(list(data = data, iterations = iterations))
-} #nocov end
+  # nocov end
+}

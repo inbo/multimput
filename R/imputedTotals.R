@@ -6,7 +6,8 @@
 #' @return a dataset containing the totals for each imputations. The first few columns will contains the \code{rhs} variables.
 #' @template deprecated
 #' @export
-imputedTotals <- function(data, imputations, variable, rhs){ #nocov start
+imputedTotals <- function(data, imputations, variable, rhs){
+  #nocov start
   .Deprecated(
     new = "aggregate_impute"
   )
@@ -35,4 +36,5 @@ imputedTotals <- function(data, imputations, variable, rhs){ #nocov start
     rhs,
     totals
   )
-} #nocov end
+  # nocov end
+}

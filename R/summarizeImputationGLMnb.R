@@ -4,7 +4,8 @@
 #' @export
 #' @importFrom MASS glm.nb
 #' @template deprecated
-summarizeImputationGLM.nb <- function(data, rhs){ #nocov start
+summarizeImputationGLM.nb <- function(data, rhs){
+  #nocov start
   .Deprecated(
     new = "model_impute"
   )
@@ -41,4 +42,5 @@ summarizeImputationGLM.nb <- function(data, rhs){ #nocov start
   output$SE <- sqrt(output$Var + (1 + 1 / length(imputations)) * B$Index)
   output$Var <- NULL
   output
-} #nocov end
+  # nocov end
+}
