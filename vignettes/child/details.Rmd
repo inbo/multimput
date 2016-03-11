@@ -14,15 +14,15 @@ knitr::opts_chunk$set(
 
 # Short intro to multiple imputation
 
-The imputations are based on a model $Y \sim X \beta$ which the user has to specify. For a missing value $i$ with covariates $x_i$, we draw a random value $y_i$ from the distribution of $\hat{y}_i$. In case of a linear model, we sample a normal distribution $y_i \sim N(\hat{y}_i, \sigma_i)$. An imputation set $j$ holds an impute value $y_i$ for each missing value.
+The imputations are based on a model $Y \sim X \beta^*$ which the user has to specify. For a missing value $i$ with covariates $x_i$, we draw a random value $y_i$ from the distribution of $\hat{y}_i$. In case of a linear model, we sample a normal distribution $y_i \sim N(\hat{y}_i, \sigma_i)$. An imputation set $l$ holds an impute value $y_i$ for each missing value.
 
-With the missing values replaced by imputation set $j$, the dataset is complete. So we can apply the analysis that we wanted to do in the first place. This can, but don't has to, include aggregating the dataset prior to analysis. The analysis results in a set of coefficients $b_{kj}$ and the standard error $\sigma_{kj}$. Offcourse, this set will depend on the imputed values of the imputation set $j$. Another imputation set has different imputed values and will hence lead to different coefficients.
+With the missing values replaced by imputation set $l$, the dataset is complete. So we can apply the analysis that we wanted to do in the first place. This can, but don't has to, include aggregating the dataset prior to analysis. The analysis results in a set of coefficients ${\gamma_a}_l$ and their standard error ${\sigma_a}_l$. Offcourse, this set will depend on the imputed values of the imputation set $l$. Another imputation set has different imputed values and will hence lead to different coefficients.
 
-Therefor the imputation, aggregation and analysis is repeated for $J$ different imputation sets, resulting in $J$ sets of coefficients and there standard errors. They are aggregated by the formulas below. The coefficient will be the average of the coefficient in all imputation sets. The standard error of a coefficient is the square root of a sum of two parts. The first part is the average of the squared standard error in all imputation sets. The second part is the variance of the coefficient among the imputation sets, multiplied by a correction factor $1 + \frac{1}{J}$. 
+Therefor the imputation, aggregation and analysis is repeated for $L$ different imputation sets, resulting in $L$ sets of coefficients and their standard errors. They are aggregated by the formulas below. The coefficient will be the average of the coefficient in all imputation sets. The standard error of a coefficient is the square root of a sum of two parts. The first part is the average of the squared standard error in all imputation sets. The second part is the variance of the coefficient among the imputation sets, multiplied by a correction factor $1 + \frac{1}{L}$. 
 
-$$\hat{b}_k = \frac{\sum_{j = 1}^Jb_{kj}}{J}$$
-$$\hat{\sigma}_k = \sqrt{\frac{\sum_{j = 1}^J \sigma^2_{kj}}{J} + (1 + \frac{1}{J}) 
-\frac{\sum_{j = 1}^J(b_{kj} - \hat{b}_k) ^ 2}{J - 1}}$$
+$$\bar{\gamma}_a = \frac{\sum_{l = 1}^L{\gamma_a}_l}{L}$$
+$$\bar{\sigma}_a = \sqrt{\frac{\sum_{l = 1}^J {{\sigma_a^2}_l}}{L} + (1 + \frac{1}{L}) 
+\frac{\sum_{l = 1}^L({\gamma_a}_l - \bar{\gamma}_a) ^ 2}{L - 1}}$$
 
 # The dataset
 
