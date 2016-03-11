@@ -4,3 +4,5 @@
 ^\.lintr$
 ^\.git$
 ^\.travis\.yml$
+^.*\.png$
+^README\.Rmd$

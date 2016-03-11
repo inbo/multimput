@@ -76,7 +76,7 @@ to.do <- sprintf(
 )
 
 path <- paste(tempdir, "dataset", sep = "/")
-if(file.exists(path)){
+if (file.exists(path)) {
   done <- list.files(
     path,
     pattern = "^run_[[:digit:]]{4}_1_[[:digit:]]_0\\.rda$"
@@ -90,7 +90,7 @@ if(file.exists(path)){
 }
 
 
-if(n.cpu > 1){
+if (n.cpu > 1) {
   sfInit(parallel = TRUE, cpus = n.cpu)
   results <- sfClusterApplyLB(
     to.do,

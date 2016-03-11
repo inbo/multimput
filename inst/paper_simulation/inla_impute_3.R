@@ -34,7 +34,7 @@ to.do <- gsub("\\.rda$", "", to.do)
 rm(datasetpath)
 
 path <- paste(tempdir, "inla", sep = "/")
-if(file.exists(path)){
+if (file.exists(path)) {
   done <- list.files(
     path,
     pattern =
@@ -48,7 +48,7 @@ if(file.exists(path)){
   dir.create(path)
 }
 
-if(n.cpu > 1){
+if (n.cpu > 1) {
   sfInit(parallel = TRUE, cpus = n.cpu)
   results <- sfClusterApplyLB(
     to.do,
