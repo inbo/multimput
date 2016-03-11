@@ -6,13 +6,17 @@
 #' @export
 #' @return A list with two elements: \code{data} with imputed values and \code{iterations} which is the number of iterations
 #' @importFrom MASS glm.nb
+#' @template deprecated
 
-imputeUnderhill <- function(
+imputeUnderhill <- function( #nocov start
   data,
   formula = Observed ~ Year + Month + Site,
   initial = 0,
   family = c("nbinomial", "poisson")
 ){
+  .Deprecated(
+    new = "impute"
+  )
   family <- match.arg(family)
   missing.data <- which(is.na(data[, as.character(formula[2])]))
   data$Observed[missing.data] <- initial
@@ -38,4 +42,4 @@ imputeUnderhill <- function(
     }
   }
   return(list(data = data, iterations = iterations))
-}
+} #nocov end
