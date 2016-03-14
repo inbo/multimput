@@ -139,10 +139,20 @@ We will create several models, mainly to illustrate the capabilities of the `mul
 ``` r
 # a simple linear model
 imp.lm <- lm(Observed ~ fYear + fPeriod + fSite, data = dataset)
+# a mixed model with Poisson distribution
+# fYear and fPeriod are the fixed effects
+# Site are independent and identically distributed random intercepts
+library(lme4)
+imp.glmm <- glmer(
+  Observed ~ fYear + fPeriod + (1 | fSite), 
+  data = dataset, 
+  family = poisson
+)
 library(INLA)
 # a mixed model with Poisson distribution
 # fYear and fPeriod are the fixed effects
 # Site are independent and identically distributed random intercepts
+# the same model as imp.glmm
 imp.inla.p <- inla(
   Observed ~ fYear + fPeriod + f(Site, model = "iid"), 
   data = dataset, 
@@ -187,6 +197,7 @@ Most models have a `predict` method. In such a case `impute()` requires both a `
 
 ``` r
 raw.lm <- impute(imp.lm, data = dataset)
+raw.glmm <- impute(imp.glmm, data = dataset)
 raw.inla.p <- impute(imp.inla.p)
 raw.inla.nb <- impute(imp.inla.nb)
 raw.better <- impute(imp.better)
@@ -201,6 +212,11 @@ Suppose that we are interested in the sum of the counts over all sites for each 
 ``` r
 aggr.lm <- aggregate_impute(
   raw.lm, 
+  grouping = c("fYear", "fPeriod", "Year"), 
+  fun = sum
+)
+aggr.glmm <- aggregate_impute(
+  raw.glmm, 
   grouping = c("fYear", "fPeriod", "Year"), 
   fun = sum
 )
@@ -232,7 +248,9 @@ Model the aggregated imputed dataset
 Simple example
 --------------
 
-`model_impute()` will apply the `model.fun` to each imputation set. The covariates are defined in the `rhs` argument. The tricky part of this function the `extractor` argument. This is a user defined function which must have an argument called `model`. The function should return a `data.frame` or `matrix` with two columuns. The first column hold the estimate of a parameter of the `model`, the second column their standard error. Each row represents a parameter.
+`model_impute()` will apply the `model.fun` to each imputation set. The covariates are defined in the `rhs` argument. So `model.fun = lm` in combination with `rhs = "0 + fYear + fPeriod"` is equivalent to `lm(ImputedResponse ~ 0 + fYear + fPeriod, data = ImputedData)`.
+
+The tricky part of this function the `extractor` argument. This is a user defined function which must have an argument called `model`. The function should return a `data.frame` or `matrix` with two columuns. The first column hold the estimate of a parameter of the `model`, the second column their standard error. Each row represents a parameter.
 
 ``` r
 extractor.lm <- function(model){
@@ -298,8 +316,6 @@ Note that we pass extra arguments to the `extractor` function through the `extra
 
 ``` r
 library(mgcv)
-#> Loading required package: nlme
-#> This is mgcv 1.8-12. For overview type 'help("mgcv-package")'.
 new.set <- expand.grid(
   Year = pretty(dataset$Year, 20),
   fPeriod = dataset$fPeriod[1]
@@ -331,14 +347,143 @@ ggplot(model.gam, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) +
 Compare the results using different imputation models
 -----------------------------------------------------
 
+### Modelling aggregated data with `glm.nb`
+
+Suppose that we are interested in a yearly relative index taking into account the average seasonal pattern. With a complete dataset (without missing values) we could model it like the example below: a generalised linear model with negative binomial distribution because we have counts that are likely overdispersed. `fYear` models the yearly index and `fPeriod` the average seasonal pattern. The `0 +` part removes the intercept for the model. This simple trick gives direct estimates for the effect of `fYear`.
+
+Only the effects of `fYear` are needed for the index. Therefore the extractor functions selects only the parameters who's rowname contains fYear. In case that we want the first year to be used as a reference (index year 1 = 100%), we can substract the estimate for this year from all estimates. The result are the indices relative to the first year, but still in the log scale. Note that the estimated index for year 1 will be 0 and \(log(100\%) = 0\).
+
 ``` r
+library(MASS)
+aggr.complete <- aggregate(
+  dataset[, "Count", drop = FALSE],
+  dataset[, c("fYear", "fPeriod")],
+  FUN = sum
+)
+model.complete <- glm.nb(Count ~ 0 + fYear + fPeriod, data = aggr.complete)
+summary(model.complete)
+#> 
+#> Call:
+#> glm.nb(formula = Count ~ 0 + fYear + fPeriod, data = aggr.complete, 
+#>     init.theta = 31.78765186, link = log)
+#> 
+#> Deviance Residuals: 
+#>      Min        1Q    Median        3Q       Max  
+#> -2.71783  -0.47073   0.00869   0.47030   2.62272  
+#> 
+#> Coefficients:
+#>          Estimate Std. Error z value Pr(>|z|)    
+#> fYear1    6.72514    0.09016  74.590  < 2e-16 ***
+#> fYear2    6.83730    0.09005  75.929  < 2e-16 ***
+#> fYear3    7.06993    0.08985  78.684  < 2e-16 ***
+#> fYear4    7.09550    0.08983  78.985  < 2e-16 ***
+#> fYear5    6.94750    0.08995  77.237  < 2e-16 ***
+#> fYear6    7.13813    0.08980  79.487  < 2e-16 ***
+#> fYear7    7.23272    0.08974  80.597  < 2e-16 ***
+#> fYear8    7.16345    0.08979  79.784  < 2e-16 ***
+#> fYear9    7.05221    0.08987  78.475  < 2e-16 ***
+#> fYear10   7.10071    0.08983  79.046  < 2e-16 ***
+#> fPeriod2  0.36211    0.08027   4.511 6.44e-06 ***
+#> fPeriod3  0.41944    0.08024   5.227 1.72e-07 ***
+#> fPeriod4  0.34524    0.08027   4.301 1.70e-05 ***
+#> fPeriod5 -0.02515    0.08045  -0.313    0.755    
+#> fPeriod6 -0.47112    0.08076  -5.833 5.44e-09 ***
+#> ---
+#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#> 
+#> (Dispersion parameter for Negative Binomial(31.7877) family taken to be 1)
+#> 
+#>     Null deviance: 541101.695  on 60  degrees of freedom
+#> Residual deviance:     60.596  on 45  degrees of freedom
+#> AIC: 852.28
+#> 
+#> Number of Fisher Scoring iterations: 1
+#> 
+#> 
+#>               Theta:  31.79 
+#>           Std. Err.:  5.96 
+#> 
+#>  2 x log-likelihood:  -820.275
+extractor.logindex <- function(model){
+  coef <- summary(model)$coefficients
+  log.index <- coef[grepl("fYear", rownames(coef)), c("Estimate", "Std. Error")]
+  log.index[, "Estimate"] <- log.index[, "Estimate"] - log.index["fYear1", "Estimate"]
+  log.index
+}  
+```
+
+Now that we have a relevant model and exatractor function, we can apply them to the aggregate imputed datasets.
+
+``` r
+model.glmm <- model_impute(
+  object = aggr.glmm,
+  model.fun = glm.nb,
+  rhs = "0 + fYear + fPeriod",
+  extractor = extractor.logindex
+)
+model.p <- model_impute(
+  object = aggr.inla.p,
+  model.fun = glm.nb,
+  rhs = "0 + fYear + fPeriod",
+  extractor = extractor.logindex
+)
+model.nb <- model_impute(
+  object = aggr.inla.nb,
+  model.fun = glm.nb,
+  rhs = "0 + fYear + fPeriod",
+  extractor = extractor.logindex
+)
+model.better <- model_impute(
+  object = aggr.better,
+  model.fun = glm.nb,
+  rhs = "0 + fYear + fPeriod",
+  extractor = extractor.logindex
+)
+model.complete <- extractor.logindex(model.complete)
+colnames(model.complete) <- c("Estimate", "SE")
 covar <- data.frame(
   Year = sort(unique(dataset$Year))
 )
+# combine all results and add the Year
+parameters <- rbind(
+  cbind(covar, model.glmm, Model = "glmm"),
+  cbind(covar, model.p, Model = "poisson"),
+  cbind(covar, model.nb, Model = "negative binomial"),
+  cbind(covar, model.better, Model = "better"),
+  cbind(covar, model.complete, Model = "complete")
+)
+# calculate the confidence intervals in the log scale
+parameters$LCL <- qnorm(0.025, mean = parameters$Estimate, sd = parameters$SE)
+parameters$UCL <- qnorm(0.975, mean = parameters$Estimate, sd = parameters$SE)
+# convert estimate and confidence interval to the original scale
+parameters[, c("Estimate", "LCL", "UCL")] <- exp(parameters[, c("Estimate", "LCL", "UCL")])
+ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
+  geom_hline(yintercept = 1, linetype = 3) +
+  geom_ribbon(alpha = 0.2) + 
+  geom_line() + 
+  facet_wrap(~Model)
+```
+
+![](README-model_glmnb-1.png)<!-- -->
+
+### Modelling aggregated data with `inla`
+
+The example below does something similar. Two things are different: 1) instead of `glm.nb` we use `inla` to model the imputed totals. 2) we model the seasonal pattern as a random intercept instead of a fixed effect.
+
+``` r
 extractor.inla <- function(model){
   fe <- model$summary.fixed[, c("mean", "sd")]
-  fe[grepl("fYear", rownames(fe)), ]
+  log.index <- fe[grepl("fYear", rownames(fe)), ]
+  log.index[, "mean"] <- log.index[, "mean"] - log.index["fYear1", "mean"]
+  log.index
 }
+model.p <- model_impute(
+  object = aggr.glmm,
+  model.fun = inla,
+  rhs = "0 + fYear + f(fPeriod, model = 'iid')",
+  model.args = list(family = "nbinomial"),
+  extractor = extractor.inla
+)
 model.p <- model_impute(
   object = aggr.inla.p,
   model.fun = inla,
@@ -360,11 +505,6 @@ model.better <- model_impute(
   model.args = list(family = "nbinomial"),
   extractor = extractor.inla
 )
-aggr.complete <- aggregate(
-  dataset[, "Count", drop = FALSE],
-  dataset[, c("fYear", "fPeriod")],
-  FUN = sum
-)
 m.complete <- inla(
   Count ~ 0 + fYear + f(fPeriod, model = "iid"),
   data = aggr.complete,
@@ -372,16 +512,22 @@ m.complete <- inla(
 )
 model.complete <- extractor.inla(m.complete)
 colnames(model.complete) <- c("Estimate", "SE")
+# combine all results and add the Year
 parameters <- rbind(
+  cbind(covar, model.glmm, Model = "glmm"),
   cbind(covar, model.p, Model = "poisson"),
   cbind(covar, model.nb, Model = "negative binomial"),
   cbind(covar, model.better, Model = "better"),
   cbind(covar, model.complete, Model = "complete")
 )
+# calculate the confidence intervals in the log scale
 parameters$LCL <- qnorm(0.025, mean = parameters$Estimate, sd = parameters$SE)
 parameters$UCL <- qnorm(0.975, mean = parameters$Estimate, sd = parameters$SE)
+# convert estimate and confidence interval to the original scale
+parameters[, c("Estimate", "LCL", "UCL")] <- exp(parameters[, c("Estimate", "LCL", "UCL")])
 ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
-  geom_ribbon(, alpha = 0.2) + 
+  geom_hline(yintercept = 1, linetype = 3) + 
+  geom_ribbon(alpha = 0.2) + 
   geom_line() + 
   facet_wrap(~Model)
 ```
