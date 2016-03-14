@@ -17,9 +17,9 @@ knitr::opts_chunk$set(
 
 The imputations are based on a model $Y \sim X \beta^*$ which the user has to specify. For a missing value $i$ with covariates $x_i$, we draw a random value $y_i$ from the distribution of $\hat{y}_i$. In case of a linear model, we sample a normal distribution $y_i \sim N(\hat{y}_i, \sigma_i)$. An imputation set $l$ holds an impute value $y_i$ for each missing value.
 
-With the missing values replaced by imputation set $l$, the dataset is complete. So we can apply the analysis that we wanted to do in the first place. This can, but don't has to, include aggregating the dataset prior to analysis. The analysis results in a set of coefficients ${\gamma_a}_l$ and their standard error ${\sigma_a}_l$. Offcourse, this set will depend on the imputed values of the imputation set $l$. Another imputation set has different imputed values and will hence lead to different coefficients.
+With the missing values replaced by imputation set $l$, the dataset is complete. So we can apply the analysis that we wanted to do in the first place. This can, but don't has to, include aggregating the dataset prior to analysis. The analysis results in a set of coefficients ${\gamma_a}_l$ and their standard error ${\sigma_a}_l$. Of course, this set will depend on the imputed values of the imputation set $l$. Another imputation set has different imputed values and will hence lead to different coefficients.
 
-Therefor the imputation, aggregation and analysis is repeated for $L$ different imputation sets, resulting in $L$ sets of coefficients and their standard errors. They are aggregated by the formulas below. The coefficient will be the average of the coefficient in all imputation sets. The standard error of a coefficient is the square root of a sum of two parts. The first part is the average of the squared standard error in all imputation sets. The second part is the variance of the coefficient among the imputation sets, multiplied by a correction factor $1 + \frac{1}{L}$. 
+Therefore the imputation, aggregation and analysis is repeated for $L$ different imputation sets, resulting in $L$ sets of coefficients and their standard errors. They are aggregated by the formulas below. The coefficient will be the average of the coefficient in all imputation sets. The standard error of a coefficient is the square root of a sum of two parts. The first part is the average of the squared standard error in all imputation sets. The second part is the variance of the coefficient among the imputation sets, multiplied by a correction factor $1 + \frac{1}{L}$. 
 
 $$\bar{\gamma}_a = \frac{\sum_{l = 1}^L{\gamma_a}_l}{L}$$
 $$\bar{\sigma}_a = \sqrt{\frac{\sum_{l = 1}^J {{\sigma_a^2}_l}}{L} + (1 + \frac{1}{L}) 
@@ -156,7 +156,7 @@ raw.better.9 <- impute(imp.better, n.imp = 9)
 
 # Aggregate the imputed dataset
 
-Suppose that we are interested in the sum of the counts over all sites for each combination of year and period. Then we must aggregate the imputations on year and period. The resulting object will only contain the imputated response and the grouping variables. The easiest way to have a variable like year both a continuous and factor is to add both `Year` and `fYear` to the `grouping`.
+Suppose that we are interested in the sum of the counts over all sites for each combination of year and period. Then we must aggregate the imputations on year and period. The resulting object will only contain the imputed response and the grouping variables. The easiest way to have a variable like year both a continuous and factor is to add both `Year` and `fYear` to the `grouping`.
 
 ```{r aggregate}
 aggr.lm <- aggregate_impute(
@@ -266,7 +266,7 @@ ggplot(model.gam, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) +
 
 Suppose that we are interested in a yearly relative index taking into account the average seasonal pattern. With a complete dataset (without missing values) we could model it like the example below: a generalised linear model with negative binomial distribution because we have counts that are likely overdispersed. `fYear` models the yearly index and `fPeriod` the average seasonal pattern. The `0 +` part removes the intercept for the model. This simple trick gives direct estimates for the effect of `fYear`.
 
-Only the effects of `fYear` are needed for the index. Therefore the extractor functions selects only the parameters who's rowname contains fYear. In case that we want the first year to be used as a reference (index year 1 = 100%), we can substract the estimate for this year from all estimates. The result are the indices relative to the first year, but still in the log scale. Note that the estimated index for year 1 will be 0 and $log(100\%) = 0$.
+Only the effects of `fYear` are needed for the index. Therefore the extractor functions selects only the parameters who's row name contains fYear. In case that we want the first year to be used as a reference (index year 1 = 100%), we can subtract the estimate for this year from all estimates. The result are the indices relative to the first year, but still in the log scale. Note that the estimated index for year 1 will be 0 and $log(100\%) = 0$.
 
 ```{r glmnb_complete}
 library(MASS)
@@ -285,7 +285,7 @@ extractor.logindex <- function(model){
 }  
 ```
 
-Now that we have a relevant model and exatractor function, we can apply them to the aggregate imputed datasets.
+Now that we have a relevant model and extractor function, we can apply them to the aggregate imputed datasets.
 
 ```{r model_glmnb}
 model.glmm <- model_impute(
