@@ -1,8 +1,8 @@
 Package: multimput
 Type: Package
 Title: Using Multiple Imputation to Address Missing Data
-Version: 0.2.2
-Date: 2016-03-10
+Version: 0.2.3
+Date: 2016-03-14
 Author: Thierry Onkelinx, Koen Devos, Paul Quataert
 Maintainer: Thierry.Onkelinx <Thierry.Onkelinx@inbo.be>
 Description: Accompaning package for the paper: "Working with population totals
