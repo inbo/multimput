@@ -7,9 +7,9 @@
 generateData(intercept = 2, n.year = 24, n.period = 6, n.site = 20,
   year.factor = FALSE, period.factor = FALSE, site.factor = FALSE,
   trend = 0.01, sd.rw.year = 0.1, amplitude.period = 1,
-  sd.phase.period = 0.2, sd.site = 1, sd.rw.site = 0.02,
-  sd.noise = 0.01, size = 2, n.run = 10, as.list = FALSE,
-  details = FALSE)
+  mean.phase.period = 0, sd.phase.period = 0.2, sd.site = 1,
+  sd.rw.site = 0.02, sd.noise = 0.01, size = 2, n.run = 10,
+  as.list = FALSE, details = FALSE)
 }
 \arguments{
 \item{intercept}{the global mean on the log-scale}
@@ -31,6 +31,8 @@ generateData(intercept = 2, n.year = 24, n.period = 6, n.site = 20,
 \item{sd.rw.year}{the standard deviation of the year effects on the log-scale}
 
 \item{amplitude.period}{the amplitude of the periodic effect on the log-scale}
+
+\item{mean.phase.period}{the mean of the phase of the periodic effect among years. Defaults to 0.}
 
 \item{sd.phase.period}{the standard deviation of the phase of the periodic effect among years}
 
