@@ -11,6 +11,7 @@
 #' @param trend the longterm linear trend on the log-scale
 #' @param sd.rw.year the standard deviation of the year effects on the log-scale
 #' @param amplitude.period the amplitude of the periodic effect on the log-scale
+#' @param mean.phase.period the mean of the phase of the periodic effect among years. Defaults to 0.
 #' @param sd.phase.period the standard deviation of the phase of the periodic effect among years
 #' @param sd.site the standard deviation of the site effects on the log-scale
 #' @param sd.rw.site the standard deviation of the random walk along year per site on the log-scale
@@ -33,6 +34,7 @@ generateData <- function(
   trend = 0.01,
   sd.rw.year = 0.1,
   amplitude.period = 1,
+  mean.phase.period = 0,
   sd.phase.period = 0.2,
   sd.site = 1,
   sd.rw.site = 0.02,
@@ -49,7 +51,7 @@ generateData <- function(
     Site = seq_len(n.site)
   )
   year.rw.effect <- cumsum(rnorm(n.year, mean = 0, sd = sd.rw.year))
-  phase <- rnorm(n.year + 1, mean = 0, sd = sd.phase.period)
+  phase <- rnorm(n.year + 1, mean = mean.phase.period, sd = sd.phase.period)
   site.rw.effect <- rbind(
     rnorm(
       n.site,

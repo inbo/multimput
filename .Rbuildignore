@@ -7,3 +7,4 @@
 ^.*\.png$
 ^README\.Rmd$
 ^man\-roxygen$
+.*_cache$
