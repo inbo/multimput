@@ -6,6 +6,7 @@ build:
         code: |
           Rscript -e 'devtools::install_github("hadley/dplyr")'
           Rscript -e 'install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable")'
+          Rscript -e 'install.packages(c("covr", "lintr"))'
     - jimhester/r-dependencies
     - inbobmk/r-check
     - inbobmk/r-coverage
