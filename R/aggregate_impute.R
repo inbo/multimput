@@ -58,7 +58,8 @@ setMethod(
       }
     ) %>%
       do.call(what = bind_rows) %>%
-      spread_(key_col = "Imputation", value_col = response)
+      spread_(key_col = "Imputation", value_col = response) %>%
+      ungroup()
     new(
       "aggregatedImputed",
       Covariate = total %>%
