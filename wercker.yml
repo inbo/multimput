@@ -4,8 +4,8 @@ build:
     - script:
         name: installation of packages not covered by jimhester/r-dependencies
         code: |
+          Rscript -e 'install.packages(c("devtools", "covr", "lintr", "sp"))'
           Rscript -e 'install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable")'
-          Rscript -e 'install.packages(c("devtools", "covr", "lintr"))'
           Rscript -e 'devtools::install_github("hadley/dplyr")'
     - jimhester/r-dependencies
     - inbobmk/r-check
