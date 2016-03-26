@@ -21,7 +21,7 @@
 <tr class="even">
 <td align="left">Develop</td>
 <td align="left"><a href="https://app.wercker.com/project/bykey/7484a875f74afd6c1864cd86fdae6c71"><img src="https://app.wercker.com/status/7484a875f74afd6c1864cd86fdae6c71/s/develop" title="wercker status" alt="wercker status" /></a></td>
-<td align="left"><a href="https://codecov.io/github/INBO-BMK/multimput?branch=develop"><img src="https://codecov.io/github/INBO-BMK/multimput/coverage.svg?branch=master" alt="codecov.io" /></a></td>
+<td align="left"><a href="https://codecov.io/github/INBO-BMK/multimput?branch=develop"><img src="https://codecov.io/github/INBO-BMK/multimput/coverage.svg?branch=develop" alt="codecov.io" /></a></td>
 </tr>
 </tbody>
 </table>
@@ -34,6 +34,8 @@ Installation instructions
 This package requires the `INLA` package. You need to install it with `install.packages("INLA", repos = "https://www.math.ntnu.no/inla/R/stable")`. If this fails you can use `devtools::install_github("INBO-BMK/INLA")`. Note that the latter is just a read-only mirror which is infrequently updated. Hence installing `INLA` from <https://www.math.ntnu.no/inla> is highly recommended.
 
 When `INLA` is installed, we can install `multimput` with `devtools::install_github("INBO-BMK/multimput", build_vignettes = TRUE)`. To view the vignette use `vignette("Impute", package = "multimput")`
+
+A docker image with all the required dependencies is available from <https://hub.docker.com/r/inbobmk/multimput/>. Use `docker pull inbobmk/multimput` to get it.
 
 Very short intro to multiple imputation
 =======================================
