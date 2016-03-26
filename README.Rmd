@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 | Branch  | Build status | Code coverage |
 | ------- | ------------ | ------------- |
 | Master  | [![wercker status](https://app.wercker.com/status/7484a875f74afd6c1864cd86fdae6c71/s/master "wercker status")](https://app.wercker.com/project/bykey/7484a875f74afd6c1864cd86fdae6c71) | [![codecov.io](https://codecov.io/github/INBO-BMK/multimput/coverage.svg?branch=master)](https://codecov.io/github/INBO-BMK/multimput?branch=master) |
-| Develop | [![wercker status](https://app.wercker.com/status/7484a875f74afd6c1864cd86fdae6c71/s/develop "wercker status")](https://app.wercker.com/project/bykey/7484a875f74afd6c1864cd86fdae6c71) | [![codecov.io](https://codecov.io/github/INBO-BMK/multimput/coverage.svg?branch=master)](https://codecov.io/github/INBO-BMK/multimput?branch=develop) |
+| Develop | [![wercker status](https://app.wercker.com/status/7484a875f74afd6c1864cd86fdae6c71/s/develop "wercker status")](https://app.wercker.com/project/bykey/7484a875f74afd6c1864cd86fdae6c71) | [![codecov.io](https://codecov.io/github/INBO-BMK/multimput/coverage.svg?branch=develop)](https://codecov.io/github/INBO-BMK/multimput?branch=develop) |
 
 CAUTION: GitHub flavoured markdown doesn't support the rendering of mathematics at this moment. Hence the mathematics in this README are not rendered properly. The information below is also available as a vignette within the package. The mathematics will be rendered in the vignette. To read the vignette one needs to install the package first. 
 

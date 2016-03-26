@@ -21,7 +21,7 @@
 <tr class="even">
 <td align="left">Develop</td>
 <td align="left"><a href="https://app.wercker.com/project/bykey/7484a875f74afd6c1864cd86fdae6c71"><img src="https://app.wercker.com/status/7484a875f74afd6c1864cd86fdae6c71/s/develop" title="wercker status" alt="wercker status" /></a></td>
-<td align="left"><a href="https://codecov.io/github/INBO-BMK/multimput?branch=develop"><img src="https://codecov.io/github/INBO-BMK/multimput/coverage.svg?branch=master" alt="codecov.io" /></a></td>
+<td align="left"><a href="https://codecov.io/github/INBO-BMK/multimput?branch=develop"><img src="https://codecov.io/github/INBO-BMK/multimput/coverage.svg?branch=develop" alt="codecov.io" /></a></td>
 </tr>
 </tbody>
 </table>
