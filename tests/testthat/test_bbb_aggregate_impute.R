@@ -6,9 +6,10 @@ describe("aggregate_impute", {
   imputed <- impute(data = dataset, model = model)
   grouping <- c("Year", "Period")
   fun <- sum
+  aggr <- aggregate_impute(imputed, grouping = grouping, fun = fun)
   it("handles rawImputed", {
     expect_is(
-      aggr <- aggregate_impute(imputed, grouping = grouping, fun = fun),
+      aggr,
       "aggregatedImputed"
     )
     expect_identical(
@@ -36,8 +37,9 @@ describe("aggregate_impute", {
     imputed <- impute(model, dataset, n.imp = n.imp)
     grouping <- c("Year", "Period")
     fun <- sum
+    aggr <- aggregate_impute(imputed, grouping = grouping, fun = fun)
     expect_is(
-      aggr <- aggregate_impute(imputed, grouping = grouping, fun = fun),
+      aggr,
       "aggregatedImputed"
     )
     apply(
