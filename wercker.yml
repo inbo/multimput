@@ -4,3 +4,41 @@ build:
     - inbobmk/r-check
     - inbobmk/r-coverage
     - inbobmk/r-lint
+
+deploy:
+  master:
+    - script:
+        name: install package
+        code: |
+          Rscript -e 'devtools::install(pkg = ".", build_vignettes = TRUE, upgrade_dependencies = FALSE)'
+          export CURRENT_VERSION=$(grep 'Version: .*' DESCRIPTION | awk '{print $2}')
+          rm -r /pipeline
+
+    - internal/docker-push:
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
+        tag: $CURRENT_VERSION
+        repository: inbobmk/multimput
+        cmd: R --no-save --no-restore
+
+    - internal/docker-push:
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
+        tag: latest
+        repository: inbobmk/multimput
+        cmd: R --no-save --no-restore
+
+  develop:
+    - script:
+        name: install package
+        code: |
+          Rscript -e 'devtools::install(pkg = ".", build_vignettes = TRUE, upgrade_dependencies = FALSE)'
+          export CURRENT_VERSION=$(grep 'Version: .*' DESCRIPTION | awk '{print $2}')
+          rm -r /pipeline
+
+    - internal/docker-push:
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
+        tag: dev-$CURRENT_VERSION
+        repository: inbobmk/multimput
+        cmd: R --no-save --no-restore
