@@ -35,6 +35,8 @@ This package requires the `INLA` package. You need to install it with `install.p
 
 When `INLA` is installed, we can install `multimput` with `devtools::install_github("INBO-BMK/multimput", build_vignettes = TRUE)`. To view the vignette use `vignette("Impute", package = "multimput")`
 
+A docker image with all the required dependencies is available from <https://hub.docker.com/r/inbobmk/multimput/>. Use `docker pull inbobmk/multimput` to get it.
+
 Very short intro to multiple imputation
 =======================================
 
