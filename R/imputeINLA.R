@@ -5,6 +5,7 @@
 #' @param family "nbinomial" for a negative binomial distribution or "poisson" for a Poisson distribution
 #' @export
 #' @return A matrix with one row for each missing value. Each column is on imputation.
+#' @template deprecated
 
 imputeINLA <- function(
   data,
@@ -12,6 +13,10 @@ imputeINLA <- function(
   n.sim = 499,
   family = c("nbinomial", "poisson")
 ){
+  # nocov start
+  .Deprecated(
+    new = "impute"
+  )
   family <- match.arg(family)
   missing.data <- which(is.na(data[, as.character(formula[2])]))
   if (!requireNamespace("INLA", quietly = TRUE)) {
@@ -38,4 +43,5 @@ imputeINLA <- function(
       rpois(nrow(mu), lambda = exp(mu[, i]))
     })
   }
+  # nocov end
 }

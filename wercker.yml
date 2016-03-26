@@ -1,11 +1,44 @@
-box: rocker/hadleyverse
+box: inbobmk/r-multimput
 build:
   steps:
+    - inbobmk/r-check
+    - inbobmk/r-coverage
+    - inbobmk/r-lint
+
+deploy:
+  master:
     - script:
-        name: installation of packages not covered by jimhester/r-dependencies
+        name: install package
         code: |
-          Rscript -e 'install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable")'
-    - jimhester/r-dependencies
-    - jimhester/r-check
-    - jimhester/r-coverage
-    - jimhester/r-lint
+          Rscript -e 'devtools::install(pkg = ".", build_vignettes = TRUE, upgrade_dependencies = FALSE)'
+          export CURRENT_VERSION=$(grep 'Version: .*' DESCRIPTION | awk '{print $2}')
+          rm -r /pipeline
+
+    - internal/docker-push:
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
+        tag: $CURRENT_VERSION
+        repository: inbobmk/multimput
+        cmd: R --no-save --no-restore
+
+    - internal/docker-push:
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
+        tag: latest
+        repository: inbobmk/multimput
+        cmd: R --no-save --no-restore
+
+  develop:
+    - script:
+        name: install package
+        code: |
+          Rscript -e 'devtools::install(pkg = ".", build_vignettes = TRUE, upgrade_dependencies = FALSE)'
+          export CURRENT_VERSION=$(grep 'Version: .*' DESCRIPTION | awk '{print $2}')
+          rm -r /pipeline
+
+    - internal/docker-push:
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
+        tag: dev-$CURRENT_VERSION
+        repository: inbobmk/multimput
+        cmd: R --no-save --no-restore

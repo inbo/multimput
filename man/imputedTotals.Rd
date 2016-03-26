@@ -21,4 +21,7 @@ a dataset containing the totals for each imputations. The first few columns will
 \description{
 Calculate the totals over an imputed dataset
 }
+\note{
+Deprecated function. Only relevant to run the code in the folder \code{hpc} and \code{paper_simulation}.
+}
 

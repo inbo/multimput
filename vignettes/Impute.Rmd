@@ -10,6 +10,7 @@ vignette: >
   %\VignetteDepends{ggplot2}
   %\VignetteDepends{INLA}
   %\VignetteDepends{mgcv}
+  %\VignetteDepends{MASS}
 ---
 
 ```{r child="child/details.Rmd"}

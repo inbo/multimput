@@ -3,11 +3,16 @@
 #' @param formula A formula defining the model to use for the imputation
 #' @export
 #' @return A matrix with one row for each missing value. Each column is on imputation.
+#' @template deprecated
 
 imputeINLAfit <- function(
   data,
   formula = Observed ~ Year + Month + f(Site, model = "iid")
 ){
+  # nocov start
+  .Deprecated(
+    new = "impute"
+  )
   missing.data <- which(is.na(data[, as.character(formula[2])]))
   if (!requireNamespace("INLA", quietly = TRUE)) {
     stop("the INLA package is required for this function")
@@ -21,4 +26,5 @@ imputeINLAfit <- function(
   data$Observed[missing.data] <-
     model$summary.fitted.values[missing.data, "mean"]
   return(data)
+  # nocov end
 }

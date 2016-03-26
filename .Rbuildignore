@@ -6,3 +6,8 @@
 ^\.travis\.yml$
 ^.*\.png$
 ^README\.Rmd$
+^man\-roxygen$
+.*_cache$
+^_projects$
+^_builds$
+^_steps$

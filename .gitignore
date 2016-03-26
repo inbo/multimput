@@ -3,3 +3,7 @@
 .RData
 *.Rproj
 inst/doc
+*_cache
+_projects
+_builds
+_steps

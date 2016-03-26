@@ -3,41 +3,39 @@
 <colgroup>
 <col width="11%" />
 <col width="18%" />
-<col width="6%" />
-<col width="12%" />
+<col width="19%" />
 </colgroup>
 <thead>
 <tr class="header">
 <th align="left">Branch</th>
 <th align="left">Build status</th>
-<th align="left">Code</th>
-<th align="left">coverage</th>
+<th align="left">Code coverage</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="left">Master</td>
-<td align="left"><a href="https://app.wercker.com/project/bykey/b4d00d5173468e492a589578cb4647aa"><img src="https://app.wercker.com/status/b4d00d5173468e492a589578cb4647aa/m/master" title="wercker status" alt="wercker status" /></a></td>
-<td align="left"><a href="https://codecov.io/github/ThierryO/multimput?branch=master"><img src="https://codecov.io/github/ThierryO/multimput/coverage.svg?branch=master" alt="codecov.io" /></a></td>
-<td align="left"><img src="https://codecov.io/github/ThierryO/multimput/branch.svg?branch=master" alt="codecov.io" /></td>
+<td align="left"><a href="https://app.wercker.com/project/bykey/7484a875f74afd6c1864cd86fdae6c71"><img src="https://app.wercker.com/status/7484a875f74afd6c1864cd86fdae6c71/s/master" title="wercker status" alt="wercker status" /></a></td>
+<td align="left"><a href="https://codecov.io/github/INBO-BMK/multimput?branch=master"><img src="https://codecov.io/github/INBO-BMK/multimput/coverage.svg?branch=master" alt="codecov.io" /></a></td>
 </tr>
 <tr class="even">
 <td align="left">Develop</td>
-<td align="left"><a href="https://app.wercker.com/project/bykey/b4d00d5173468e492a589578cb4647aa"><img src="https://app.wercker.com/status/b4d00d5173468e492a589578cb4647aa/m/develop" title="wercker status" alt="wercker status" /></a></td>
-<td align="left"><a href="https://codecov.io/github/ThierryO/multimput?branch=master"><img src="https://codecov.io/github/ThierryO/multimput/coverage.svg?branch=develop" alt="codecov.io" /></a></td>
-<td align="left"><img src="https://codecov.io/github/ThierryO/multimput/branch.svg?branch=develop" alt="codecov.io" /></td>
+<td align="left"><a href="https://app.wercker.com/project/bykey/7484a875f74afd6c1864cd86fdae6c71"><img src="https://app.wercker.com/status/7484a875f74afd6c1864cd86fdae6c71/s/develop" title="wercker status" alt="wercker status" /></a></td>
+<td align="left"><a href="https://codecov.io/github/INBO-BMK/multimput?branch=develop"><img src="https://codecov.io/github/INBO-BMK/multimput/coverage.svg?branch=develop" alt="codecov.io" /></a></td>
 </tr>
 </tbody>
 </table>
 
-CAUTION: github flavoured markdown doesn't support the rendering of math at this moment. The information below is available as a vignette within the package. The math will be rendered in the vignette. To read the vignette one needs to install the package first.
+CAUTION: GitHub flavoured markdown doesn't support the rendering of mathematics at this moment. Hence the mathematics in this README are not rendered properly. The information below is also available as a vignette within the package. The mathematics will be rendered in the vignette. To read the vignette one needs to install the package first.
 
-Installation instruction
-========================
+Installation instructions
+=========================
 
 This package requires the `INLA` package. You need to install it with `install.packages("INLA", repos = "https://www.math.ntnu.no/inla/R/stable")`. If this fails you can use `devtools::install_github("INBO-BMK/INLA")`. Note that the latter is just a read-only mirror which is infrequently updated. Hence installing `INLA` from <https://www.math.ntnu.no/inla> is highly recommended.
 
-When `INLA` is installed, we can install `multimput` with `devtools::install_github("ThierryO/multimput", build_vignettes = TRUE)`. To view the vignette use `vignette("Impute", package = "multimput")`
+When `INLA` is installed, we can install `multimput` with `devtools::install_github("INBO-BMK/multimput", build_vignettes = TRUE)`. To view the vignette use `vignette("Impute", package = "multimput")`
+
+A docker image with all the required dependencies is available from <https://hub.docker.com/r/inbobmk/multimput/>. Use `docker pull inbobmk/multimput` to get it.
 
 Very short intro to multiple imputation
 =======================================
@@ -50,14 +48,14 @@ Very short intro to multiple imputation
 Short intro to multiple imputation
 ==================================
 
-The imputations are based on a model \(Y \sim X \beta\) which the user has to specify. For a missing value \(i\) with covariates \(x_i\), we draw a random value \(y_i\) from the distribution of \(\hat{y}_i\). In case of a linear model, we sample a normal distribution \(y_i \sim N(\hat{y}_i, \sigma_i)\). An imputation set \(j\) holds an impute value \(y_i\) for each missing value.
+The imputations are based on a model \(Y \sim X \beta^*\) which the user has to specify. For a missing value \(i\) with covariates \(x_i\), we draw a random value \(y_i\) from the distribution of \(\hat{y}_i\). In case of a linear model, we sample a normal distribution \(y_i \sim N(\hat{y}_i, \sigma_i)\). An imputation set \(l\) holds an impute value \(y_i\) for each missing value.
 
-With the missing values replaced by imputation set \(j\), the dataset is complete. So we can apply the analysis that we wanted to do in the first place. This can, but don't has to, include aggregating the dataset prior to analysis. The analysis results in a set of coefficients \(b_{kj}\) and the standard error \(\sigma_{kj}\). Offcourse, this set will depend on the imputed values of the imputation set \(j\). Another imputation set has different imputed values and will hence lead to different coefficients.
+With the missing values replaced by imputation set \(l\), the dataset is complete. So we can apply the analysis that we wanted to do in the first place. This can, but don't has to, include aggregating the dataset prior to analysis. The analysis results in a set of coefficients \({\gamma_a}_l\) and their standard error \({\sigma_a}_l\). Of course, this set will depend on the imputed values of the imputation set \(l\). Another imputation set has different imputed values and will hence lead to different coefficients.
 
-Therefor the imputation, aggregation and analysis is repeated for \(J\) different imputation sets, resulting in \(J\) sets of coefficients and there standard errors. They are aggregated by the formulas below. The coefficient will be the average of the coefficient in all imputation sets. The standard error of a coefficient is the square root of a sum of two parts. The first part is the average of the squared standard error in all imputation sets. The second part is the variance of the coefficient among the imputation sets, multiplied by a correction factor \(1 + \frac{1}{J}\).
+Therefore the imputation, aggregation and analysis is repeated for \(L\) different imputation sets, resulting in \(L\) sets of coefficients and their standard errors. They are aggregated by the formulas below. The coefficient will be the average of the coefficient in all imputation sets. The standard error of a coefficient is the square root of a sum of two parts. The first part is the average of the squared standard error in all imputation sets. The second part is the variance of the coefficient among the imputation sets, multiplied by a correction factor \(1 + \frac{1}{L}\).
 
-\[\hat{b}_k = \frac{\sum_{j = 1}^Jb_{kj}}{J}\] \[\hat{\sigma}_k = \sqrt{\frac{\sum_{j = 1}^J \sigma^2_{kj}}{J} + (1 + \frac{1}{J}) 
-\frac{\sum_{j = 1}^J(b_{kj} - \hat{b}_k) ^ 2}{J - 1}}\]
+\[\bar{\gamma}_a = \frac{\sum_{l = 1}^L{\gamma_a}_l}{L}\] \[\bar{\sigma}_a = \sqrt{\frac{\sum_{l = 1}^J {{\sigma_a^2}_l}}{L} + (1 + \frac{1}{L}) 
+\frac{\sum_{l = 1}^L({\gamma_a}_l - \bar{\gamma}_a) ^ 2}{L - 1}}\]
 
 The dataset
 ===========
@@ -137,26 +135,48 @@ Create the imputation model
 We will create several models, mainly to illustrate the capabilities of the `multimput` package. Hence several of the models are not good for a real life application.
 
 ``` r
+# a simple linear model
 imp.lm <- lm(Observed ~ fYear + fPeriod + fSite, data = dataset)
+# a mixed model with Poisson distribution
+# fYear and fPeriod are the fixed effects
+# Site are independent and identically distributed random intercepts
+library(lme4)
+imp.glmm <- glmer(
+  Observed ~ fYear + fPeriod + (1 | fSite), 
+  data = dataset, 
+  family = poisson
+)
 library(INLA)
-#> Loading required package: sp
-#> Loading required package: Matrix
-#> Loading required package: splines
+# a mixed model with Poisson distribution
+# fYear and fPeriod are the fixed effects
+# Site are independent and identically distributed random intercepts
+# the same model as imp.glmm
 imp.inla.p <- inla(
   Observed ~ fYear + fPeriod + f(Site, model = "iid"), 
   data = dataset, 
   family = "poisson", 
   control.predictor = list(compute = TRUE)
 )
+# the same model as imp.inla.p but with negative binomial distribution
 imp.inla.nb <- inla(
   Observed ~ fYear + fPeriod + f(fSite, model = "iid"), 
   data = dataset, 
   family = "nbinomial", 
   control.predictor = list(compute = TRUE)
 )
+# a mixed model with negative binomial distribution
+# fPeriod is a fixed effect
+# f(Year, model = "rw1") is a global temporal trend 
+#     modelled as a first order random walk
+#     delta_i = Year_i - Year_{i-1} with delta_i \sim N(0, \sigma_{rw1})
+# f(YearCopy, model = "ar1", replicate = Site) is a temporal trend per Site
+#     modelled as an first order autoregressive model
+#     Year_i_k = \rho Year_{i-1}_k + \epsilon_i_k with \epsilon_i_k \sim N(0, \sigma_{ar1})
 dataset$YearCopy <- dataset$Year
 imp.better <- inla(
-  Observed ~ f(Year, model = "rw1") + f(YearCopy, model = "ar1", replicate = Site) + 
+  Observed ~ 
+    f(Year, model = "rw1") + 
+    f(YearCopy, model = "ar1", replicate = Site) + 
     fPeriod, 
   data = dataset, 
   family = "nbinomial", 
@@ -175,20 +195,26 @@ Most models have a `predict` method. In such a case `impute()` requires both a `
 
 ``` r
 raw.lm <- impute(imp.lm, data = dataset)
+raw.glmm <- impute(imp.glmm, data = dataset)
 raw.inla.p <- impute(imp.inla.p)
 raw.inla.nb <- impute(imp.inla.nb)
 raw.better <- impute(imp.better)
-raw.better.199 <- impute(imp.better, n.imp = 9)
+raw.better.9 <- impute(imp.better, n.imp = 9)
 ```
 
-Aggregate the imputated dataset
-===============================
+Aggregate the imputed dataset
+=============================
 
-Suppose that we are interested in the sum of the counts over all sites for each combination of year and period. Then we must aggregate the imputations on year and period. The resulting object will only contain the imputated response and the grouping variables. The easiest way to have a variable like year both a continuous and factor is to add both `Year` and `fYear` to the `grouping`.
+Suppose that we are interested in the sum of the counts over all sites for each combination of year and period. Then we must aggregate the imputations on year and period. The resulting object will only contain the imputed response and the grouping variables. The easiest way to have a variable like year both a continuous and factor is to add both `Year` and `fYear` to the `grouping`.
 
 ``` r
 aggr.lm <- aggregate_impute(
   raw.lm, 
+  grouping = c("fYear", "fPeriod", "Year"), 
+  fun = sum
+)
+aggr.glmm <- aggregate_impute(
+  raw.glmm, 
   grouping = c("fYear", "fPeriod", "Year"), 
   fun = sum
 )
@@ -207,8 +233,8 @@ aggr.better <- aggregate_impute(
   grouping = c("fYear", "fPeriod", "Year"), 
   fun = sum
 )
-aggr.better.199 <- aggregate_impute(
-  raw.better.199, 
+aggr.better.9 <- aggregate_impute(
+  raw.better.9, 
   grouping = c("fYear", "fPeriod", "Year"), 
   fun = sum
 )
@@ -220,7 +246,9 @@ Model the aggregated imputed dataset
 Simple example
 --------------
 
-`model_impute()` will apply the `model.fun` to each imputation set. The covariates are defined in the `rhs` argument. The tricky part of this function the `extractor` argument. This is a user defined function which must have an argument called `model`. The function should return a `data.frame` or `matrix` with two columuns. The first column hold the estimate of a parameter of the `model`, the second column their standard error. Each row represents a parameter.
+`model_impute()` will apply the `model.fun` to each imputation set. The covariates are defined in the `rhs` argument. So `model.fun = lm` in combination with `rhs = "0 + fYear + fPeriod"` is equivalent to `lm(ImputedResponse ~ 0 + fYear + fPeriod, data = ImputedData)`.
+
+The tricky part of this function the `extractor` argument. This is a user defined function which must have an argument called `model`. The function should return a `data.frame` or `matrix` with two columuns. The first column hold the estimate of a parameter of the `model`, the second column their standard error. Each row represents a parameter.
 
 ``` r
 extractor.lm <- function(model){
@@ -286,8 +314,6 @@ Note that we pass extra arguments to the `extractor` function through the `extra
 
 ``` r
 library(mgcv)
-#> Loading required package: nlme
-#> This is mgcv 1.8-12. For overview type 'help("mgcv-package")'.
 new.set <- expand.grid(
   Year = pretty(dataset$Year, 20),
   fPeriod = dataset$fPeriod[1]
@@ -319,14 +345,143 @@ ggplot(model.gam, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) +
 Compare the results using different imputation models
 -----------------------------------------------------
 
+### Modelling aggregated data with `glm.nb`
+
+Suppose that we are interested in a yearly relative index taking into account the average seasonal pattern. With a complete dataset (without missing values) we could model it like the example below: a generalised linear model with negative binomial distribution because we have counts that are likely overdispersed. `fYear` models the yearly index and `fPeriod` the average seasonal pattern. The `0 +` part removes the intercept for the model. This simple trick gives direct estimates for the effect of `fYear`.
+
+Only the effects of `fYear` are needed for the index. Therefore the extractor functions selects only the parameters who's row name contains fYear. In case that we want the first year to be used as a reference (index year 1 = 100%), we can subtract the estimate for this year from all estimates. The result are the indices relative to the first year, but still in the log scale. Note that the estimated index for year 1 will be 0 and \(log(100\%) = 0\).
+
 ``` r
+library(MASS)
+aggr.complete <- aggregate(
+  dataset[, "Count", drop = FALSE],
+  dataset[, c("fYear", "fPeriod")],
+  FUN = sum
+)
+model.complete <- glm.nb(Count ~ 0 + fYear + fPeriod, data = aggr.complete)
+summary(model.complete)
+#> 
+#> Call:
+#> glm.nb(formula = Count ~ 0 + fYear + fPeriod, data = aggr.complete, 
+#>     init.theta = 31.78765186, link = log)
+#> 
+#> Deviance Residuals: 
+#>      Min        1Q    Median        3Q       Max  
+#> -2.71783  -0.47073   0.00869   0.47030   2.62272  
+#> 
+#> Coefficients:
+#>          Estimate Std. Error z value Pr(>|z|)    
+#> fYear1    6.72514    0.09016  74.590  < 2e-16 ***
+#> fYear2    6.83730    0.09005  75.929  < 2e-16 ***
+#> fYear3    7.06993    0.08985  78.684  < 2e-16 ***
+#> fYear4    7.09550    0.08983  78.985  < 2e-16 ***
+#> fYear5    6.94750    0.08995  77.237  < 2e-16 ***
+#> fYear6    7.13813    0.08980  79.487  < 2e-16 ***
+#> fYear7    7.23272    0.08974  80.597  < 2e-16 ***
+#> fYear8    7.16345    0.08979  79.784  < 2e-16 ***
+#> fYear9    7.05221    0.08987  78.475  < 2e-16 ***
+#> fYear10   7.10071    0.08983  79.046  < 2e-16 ***
+#> fPeriod2  0.36211    0.08027   4.511 6.44e-06 ***
+#> fPeriod3  0.41944    0.08024   5.227 1.72e-07 ***
+#> fPeriod4  0.34524    0.08027   4.301 1.70e-05 ***
+#> fPeriod5 -0.02515    0.08045  -0.313    0.755    
+#> fPeriod6 -0.47112    0.08076  -5.833 5.44e-09 ***
+#> ---
+#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#> 
+#> (Dispersion parameter for Negative Binomial(31.7877) family taken to be 1)
+#> 
+#>     Null deviance: 541101.695  on 60  degrees of freedom
+#> Residual deviance:     60.596  on 45  degrees of freedom
+#> AIC: 852.28
+#> 
+#> Number of Fisher Scoring iterations: 1
+#> 
+#> 
+#>               Theta:  31.79 
+#>           Std. Err.:  5.96 
+#> 
+#>  2 x log-likelihood:  -820.275
+extractor.logindex <- function(model){
+  coef <- summary(model)$coefficients
+  log.index <- coef[grepl("fYear", rownames(coef)), c("Estimate", "Std. Error")]
+  log.index[, "Estimate"] <- log.index[, "Estimate"] - log.index["fYear1", "Estimate"]
+  log.index
+}  
+```
+
+Now that we have a relevant model and extractor function, we can apply them to the aggregate imputed datasets.
+
+``` r
+model.glmm <- model_impute(
+  object = aggr.glmm,
+  model.fun = glm.nb,
+  rhs = "0 + fYear + fPeriod",
+  extractor = extractor.logindex
+)
+model.p <- model_impute(
+  object = aggr.inla.p,
+  model.fun = glm.nb,
+  rhs = "0 + fYear + fPeriod",
+  extractor = extractor.logindex
+)
+model.nb <- model_impute(
+  object = aggr.inla.nb,
+  model.fun = glm.nb,
+  rhs = "0 + fYear + fPeriod",
+  extractor = extractor.logindex
+)
+model.better <- model_impute(
+  object = aggr.better,
+  model.fun = glm.nb,
+  rhs = "0 + fYear + fPeriod",
+  extractor = extractor.logindex
+)
+model.complete <- extractor.logindex(model.complete)
+colnames(model.complete) <- c("Estimate", "SE")
 covar <- data.frame(
   Year = sort(unique(dataset$Year))
 )
+# combine all results and add the Year
+parameters <- rbind(
+  cbind(covar, model.glmm, Model = "glmm"),
+  cbind(covar, model.p, Model = "poisson"),
+  cbind(covar, model.nb, Model = "negative binomial"),
+  cbind(covar, model.better, Model = "better"),
+  cbind(covar, model.complete, Model = "complete")
+)
+# calculate the confidence intervals in the log scale
+parameters$LCL <- qnorm(0.025, mean = parameters$Estimate, sd = parameters$SE)
+parameters$UCL <- qnorm(0.975, mean = parameters$Estimate, sd = parameters$SE)
+# convert estimate and confidence interval to the original scale
+parameters[, c("Estimate", "LCL", "UCL")] <- exp(parameters[, c("Estimate", "LCL", "UCL")])
+ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
+  geom_hline(yintercept = 1, linetype = 3) +
+  geom_ribbon(alpha = 0.2) + 
+  geom_line() + 
+  facet_wrap(~Model)
+```
+
+![](README-model_glmnb-1.png)<!-- -->
+
+### Modelling aggregated data with `inla`
+
+The example below does something similar. Two things are different: 1) instead of `glm.nb` we use `inla` to model the imputed totals. 2) we model the seasonal pattern as a random intercept instead of a fixed effect.
+
+``` r
 extractor.inla <- function(model){
   fe <- model$summary.fixed[, c("mean", "sd")]
-  fe[grepl("fYear", rownames(fe)), ]
+  log.index <- fe[grepl("fYear", rownames(fe)), ]
+  log.index[, "mean"] <- log.index[, "mean"] - log.index["fYear1", "mean"]
+  log.index
 }
+model.p <- model_impute(
+  object = aggr.glmm,
+  model.fun = inla,
+  rhs = "0 + fYear + f(fPeriod, model = 'iid')",
+  model.args = list(family = "nbinomial"),
+  extractor = extractor.inla
+)
 model.p <- model_impute(
   object = aggr.inla.p,
   model.fun = inla,
@@ -348,11 +503,6 @@ model.better <- model_impute(
   model.args = list(family = "nbinomial"),
   extractor = extractor.inla
 )
-aggr.complete <- aggregate(
-  dataset[, "Count", drop = FALSE],
-  dataset[, c("fYear", "fPeriod")],
-  FUN = sum
-)
 m.complete <- inla(
   Count ~ 0 + fYear + f(fPeriod, model = "iid"),
   data = aggr.complete,
@@ -360,16 +510,22 @@ m.complete <- inla(
 )
 model.complete <- extractor.inla(m.complete)
 colnames(model.complete) <- c("Estimate", "SE")
+# combine all results and add the Year
 parameters <- rbind(
+  cbind(covar, model.glmm, Model = "glmm"),
   cbind(covar, model.p, Model = "poisson"),
   cbind(covar, model.nb, Model = "negative binomial"),
   cbind(covar, model.better, Model = "better"),
   cbind(covar, model.complete, Model = "complete")
 )
+# calculate the confidence intervals in the log scale
 parameters$LCL <- qnorm(0.025, mean = parameters$Estimate, sd = parameters$SE)
 parameters$UCL <- qnorm(0.975, mean = parameters$Estimate, sd = parameters$SE)
+# convert estimate and confidence interval to the original scale
+parameters[, c("Estimate", "LCL", "UCL")] <- exp(parameters[, c("Estimate", "LCL", "UCL")])
 ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
-  geom_ribbon(, alpha = 0.2) + 
+  geom_hline(yintercept = 1, linetype = 3) + 
+  geom_ribbon(alpha = 0.2) + 
   geom_line() + 
   facet_wrap(~Model)
 ```
