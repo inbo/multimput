@@ -26,14 +26,14 @@
 </tbody>
 </table>
 
-CAUTION: GitHub flavoured markdown doesn't support the rendering of mathematics at this moment. The information below is available as a vignette within the package. The mathematics will be rendered in the vignette. To read the vignette one needs to install the package first.
+CAUTION: GitHub flavoured markdown doesn't support the rendering of mathematics at this moment. Hence the mathematics in this README are not rendered properly. The information below is also available as a vignette within the package. The mathematics will be rendered in the vignette. To read the vignette one needs to install the package first.
 
-Installation instruction
-========================
+Installation instructions
+=========================
 
 This package requires the `INLA` package. You need to install it with `install.packages("INLA", repos = "https://www.math.ntnu.no/inla/R/stable")`. If this fails you can use `devtools::install_github("INBO-BMK/INLA")`. Note that the latter is just a read-only mirror which is infrequently updated. Hence installing `INLA` from <https://www.math.ntnu.no/inla> is highly recommended.
 
-When `INLA` is installed, we can install `multimput` with `devtools::install_github("ThierryO/multimput", build_vignettes = TRUE)`. To view the vignette use `vignette("Impute", package = "multimput")`
+When `INLA` is installed, we can install `multimput` with `devtools::install_github("INBO-BMK/multimput", build_vignettes = TRUE)`. To view the vignette use `vignette("Impute", package = "multimput")`
 
 Very short intro to multiple imputation
 =======================================
