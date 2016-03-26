@@ -3,41 +3,37 @@
 <colgroup>
 <col width="11%" />
 <col width="18%" />
-<col width="6%" />
-<col width="12%" />
+<col width="19%" />
 </colgroup>
 <thead>
 <tr class="header">
 <th align="left">Branch</th>
 <th align="left">Build status</th>
-<th align="left">Code</th>
-<th align="left">coverage</th>
+<th align="left">Code coverage</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="left">Master</td>
-<td align="left"><a href="https://app.wercker.com/project/bykey/b4d00d5173468e492a589578cb4647aa"><img src="https://app.wercker.com/status/b4d00d5173468e492a589578cb4647aa/m/master" title="wercker status" alt="wercker status" /></a></td>
-<td align="left"><a href="https://codecov.io/github/ThierryO/multimput?branch=master"><img src="https://codecov.io/github/ThierryO/multimput/coverage.svg?branch=master" alt="codecov.io" /></a></td>
-<td align="left"><img src="https://codecov.io/github/ThierryO/multimput/branch.svg?branch=master" alt="codecov.io" /></td>
+<td align="left"><a href="https://app.wercker.com/project/bykey/7484a875f74afd6c1864cd86fdae6c71"><img src="https://app.wercker.com/status/7484a875f74afd6c1864cd86fdae6c71/s/master" title="wercker status" alt="wercker status" /></a></td>
+<td align="left"><a href="https://codecov.io/github/INBO-BMK/multimput?branch=master"><img src="https://codecov.io/github/INBO-BMK/multimput/coverage.svg?branch=master" alt="codecov.io" /></a></td>
 </tr>
 <tr class="even">
 <td align="left">Develop</td>
-<td align="left"><a href="https://app.wercker.com/project/bykey/b4d00d5173468e492a589578cb4647aa"><img src="https://app.wercker.com/status/b4d00d5173468e492a589578cb4647aa/m/develop" title="wercker status" alt="wercker status" /></a></td>
-<td align="left"><a href="https://codecov.io/github/ThierryO/multimput?branch=develop"><img src="https://codecov.io/github/ThierryO/multimput/coverage.svg?branch=develop" alt="codecov.io" /></a></td>
-<td align="left"><img src="https://codecov.io/github/ThierryO/multimput/branch.svg?branch=develop" alt="codecov.io" /></td>
+<td align="left"><a href="https://app.wercker.com/project/bykey/7484a875f74afd6c1864cd86fdae6c71"><img src="https://app.wercker.com/status/7484a875f74afd6c1864cd86fdae6c71/s/develop" title="wercker status" alt="wercker status" /></a></td>
+<td align="left"><a href="https://codecov.io/github/INBO-BMK/multimput?branch=develop"><img src="https://codecov.io/github/INBO-BMK/multimput/coverage.svg?branch=master" alt="codecov.io" /></a></td>
 </tr>
 </tbody>
 </table>
 
-CAUTION: GitHub flavoured markdown doesn't support the rendering of mathematics at this moment. The information below is available as a vignette within the package. The mathematics will be rendered in the vignette. To read the vignette one needs to install the package first.
+CAUTION: GitHub flavoured markdown doesn't support the rendering of mathematics at this moment. Hence the mathematics in this README are not rendered properly. The information below is also available as a vignette within the package. The mathematics will be rendered in the vignette. To read the vignette one needs to install the package first.
 
-Installation instruction
-========================
+Installation instructions
+=========================
 
 This package requires the `INLA` package. You need to install it with `install.packages("INLA", repos = "https://www.math.ntnu.no/inla/R/stable")`. If this fails you can use `devtools::install_github("INBO-BMK/INLA")`. Note that the latter is just a read-only mirror which is infrequently updated. Hence installing `INLA` from <https://www.math.ntnu.no/inla> is highly recommended.
 
-When `INLA` is installed, we can install `multimput` with `devtools::install_github("ThierryO/multimput", build_vignettes = TRUE)`. To view the vignette use `vignette("Impute", package = "multimput")`
+When `INLA` is installed, we can install `multimput` with `devtools::install_github("INBO-BMK/multimput", build_vignettes = TRUE)`. To view the vignette use `vignette("Impute", package = "multimput")`
 
 Very short intro to multiple imputation
 =======================================
