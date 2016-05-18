@@ -1,30 +1,10 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-<table style="width:49%;">
-<colgroup>
-<col width="11%" />
-<col width="18%" />
-<col width="19%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">Branch</th>
-<th align="left">Build status</th>
-<th align="left">Code coverage</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Master</td>
-<td align="left"><a href="https://app.wercker.com/project/bykey/7484a875f74afd6c1864cd86fdae6c71"><img src="https://app.wercker.com/status/7484a875f74afd6c1864cd86fdae6c71/s/master" title="wercker status" alt="wercker status" /></a></td>
-<td align="left"><a href="https://codecov.io/github/INBO-BMK/multimput?branch=master"><img src="https://codecov.io/github/INBO-BMK/multimput/coverage.svg?branch=master" alt="codecov.io" /></a></td>
-</tr>
-<tr class="even">
-<td align="left">Develop</td>
-<td align="left"><a href="https://app.wercker.com/project/bykey/7484a875f74afd6c1864cd86fdae6c71"><img src="https://app.wercker.com/status/7484a875f74afd6c1864cd86fdae6c71/s/develop" title="wercker status" alt="wercker status" /></a></td>
-<td align="left"><a href="https://codecov.io/github/INBO-BMK/multimput?branch=develop"><img src="https://codecov.io/github/INBO-BMK/multimput/coverage.svg?branch=develop" alt="codecov.io" /></a></td>
-</tr>
-</tbody>
-</table>
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.48423.svg)](http://dx.doi.org/10.5281/zenodo.48423)
+
+| Branch  | Build status                                                                                                                                                                           | Code coverage                                                                                                                                  |
+|---------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
+| Master  | [![wercker status](https://app.wercker.com/status/5f154cd480de20b68cde62705e817436/s/master "wercker status")](https://app.wercker.com/project/bykey/5f154cd480de20b68cde62705e817436) | [![codecov.io](https://codecov.io/github/inbo/multimput/coverage.svg?branch=master)](https://codecov.io/github/inbo/multimput?branch=master)   |
+| Develop | [![wercker status](https://app.wercker.com/status/5f154cd480de20b68cde62705e817436/s/master "wercker status")](https://app.wercker.com/project/bykey/5f154cd480de20b68cde62705e817436) | [![codecov.io](https://codecov.io/github/inbo/multimput/coverage.svg?branch=develop)](https://codecov.io/github/inbo/multimput?branch=develop) |
 
 CAUTION: GitHub flavoured markdown doesn't support the rendering of mathematics at this moment. Hence the mathematics in this README are not rendered properly. The information below is also available as a vignette within the package. The mathematics will be rendered in the vignette. To read the vignette one needs to install the package first.
 

@@ -5,6 +5,7 @@
 #' @importFrom digest digest
 #' @importFrom dplyr %>%
 #' @importClassesFrom lme4 glmerMod
+#' @importFrom stats model.matrix vcov rnorm as.formula rpois rbinom
 #' @include impute_generic.R
 setMethod(
   f = "impute",
