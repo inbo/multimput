@@ -123,10 +123,10 @@ generateData <- function(
 
   relevant <- function(x, details){
     if (details) {
-      dots <- c("Year", "Period", "Site", "Mu", "Count", "YearEffect",
-          "PeriodEffect", "SiteEffect")
+      dots <- c("Year", "Period", "Site", "Mu", "YearEffect", "PeriodEffect",
+        "SiteEffect", "Run", "Count")
     } else {
-      dots <- c("Year", "Period", "Site", "Mu", "Count")
+      dots <- c("Year", "Period", "Site", "Mu", "Run", "Count")
     }
     x %>%
       select_(.dots = dots) %>%
