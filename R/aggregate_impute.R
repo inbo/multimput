@@ -28,6 +28,9 @@ setMethod(
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
 #' @importFrom tidyr spread_
+#' @import dplyr
+#' @importFrom dplyr %>% group_by_ summarise_each_ funs mutate_ bind_rows ungroup select_
+#' @importFrom methods new
 #' @examples
 #' dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
 #' dataset$Count[sample(nrow(dataset), 50)] <- NA
