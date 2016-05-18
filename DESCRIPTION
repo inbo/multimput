@@ -20,8 +20,7 @@ Imports:
     MASS,
     lme4,
     mvtnorm,
-    digest,
-    plyr
+    digest
 Suggests:
     testthat,
     INLA,
@@ -29,6 +28,7 @@ Suggests:
     ggplot2,
     mgcv,
     knitr,
+    plyr,
     rmarkdown
 Roxygen: list(wrap = FALSE)
 LazyData: TRUE
