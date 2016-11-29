@@ -1,6 +1,7 @@
 #' @rdname impute
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that is.count has_name
+#' @importFrom stats terms predict rt
 #' @param data The dataset holding both the observed and the missing values
 #' @examples
 #' dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)

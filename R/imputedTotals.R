@@ -5,6 +5,7 @@
 #' @param rhs the right hand side of the formula for the aggregation
 #' @return a dataset containing the totals for each imputations. The first few columns will contains the \code{rhs} variables.
 #' @template deprecated
+#' @importFrom stats aggregate
 #' @export
 imputedTotals <- function(data, imputations, variable, rhs){
   #nocov start

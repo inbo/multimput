@@ -1,8 +1,8 @@
 Package: multimput
 Type: Package
 Title: Using Multiple Imputation to Address Missing Data
-Version: 0.2.3
-Date: 2016-03-26
+Version: 0.2.4
+Date: 2016-05-18
 Authors@R: c(person("Thierry", "Onkelinx", role = c("aut", "cre"), email = "thierry.onkelinx@inbo.be"),
   person("Koen", "Devos", role = "aut"),
   person("Paul", "Quataert", role = "aut"))
@@ -11,17 +11,16 @@ Description: Accompaning package for the paper: "Working with population totals
 License: GPL-3
 URL: http://dx.doi.org/10.5281/zenodo.48423
 Depends:
+    dplyr,
     R (>= 3.0.0)
 Imports:
     methods,
-    dplyr,
     tidyr,
     assertthat,
     MASS,
     lme4,
     mvtnorm,
-    digest,
-    plyr
+    digest
 Suggests:
     testthat,
     INLA,
@@ -29,6 +28,7 @@ Suggests:
     ggplot2,
     mgcv,
     knitr,
+    plyr,
     rmarkdown
 Roxygen: list(wrap = FALSE)
 LazyData: TRUE

@@ -44,6 +44,7 @@ setMethod(
 #' @rdname model_impute
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
+#' @importFrom stats var
 #' @examples
 #' dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
 #' dataset$Count[sample(nrow(dataset), 50)] <- NA

@@ -3,6 +3,7 @@
 #' @param rhs the right hand side of the glm model to summarize the imputed data
 #' @export
 #' @importFrom MASS glm.nb
+#' @importFrom stats coef
 #' @template deprecated
 summarizeImputationGLM.nb <- function(data, rhs){
   #nocov start

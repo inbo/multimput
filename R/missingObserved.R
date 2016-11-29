@@ -8,6 +8,7 @@
 #' @param site.variable The name of the variable holding the sites
 #' @param year.variable The name of the variable holding the years
 #' @param period.variable The name of the variable holding the period
+#' @importFrom utils data
 #' @export
 missingObserved <- function(
   dataset,
