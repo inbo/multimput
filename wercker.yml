@@ -17,8 +17,8 @@ buildold:
     - inbobmk/r-coverage
     - inbobmk/r-lint
 
-deploy:
-  master:
+master:
+  deploy:
     - script:
         name: install package
         code: |
@@ -40,7 +40,8 @@ deploy:
         repository: inbobmk/multimput
         cmd: R --no-save --no-restore
 
-  develop:
+develop:
+  deploy:
     - script:
         name: install package
         code: |
