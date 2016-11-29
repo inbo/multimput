@@ -1,4 +1,4 @@
-box: inbobmk/rstable:3.3.0
+box: inbobmk/rstable:3.3.2
 build:
   steps:
     - inbobmk/r-check
@@ -11,14 +11,14 @@ builddedicated:
     - inbobmk/r-coverage
     - inbobmk/r-lint
 buildold:
-  box: inbobmk/rstable:3.2.3
+  box: inbobmk/rstable:3.3.0
   steps:
     - inbobmk/r-check
     - inbobmk/r-coverage
     - inbobmk/r-lint
 
-deploy:
-  master:
+master:
+  deploy:
     - script:
         name: install package
         code: |
@@ -40,7 +40,8 @@ deploy:
         repository: inbobmk/multimput
         cmd: R --no-save --no-restore
 
-  develop:
+develop:
+  deploy:
     - script:
         name: install package
         code: |
