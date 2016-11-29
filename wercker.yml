@@ -1,5 +1,17 @@
-box: inbobmk/r-multimput
+box: inbobmk/rstable:3.3.0
 build:
+  steps:
+    - inbobmk/r-check
+    - inbobmk/r-coverage
+    - inbobmk/r-lint
+builddedicated:
+  box: inbobmk/r-multimput
+  steps:
+    - inbobmk/r-check
+    - inbobmk/r-coverage
+    - inbobmk/r-lint
+buildold:
+  box: inbobmk/rstable:3.2.3
   steps:
     - inbobmk/r-check
     - inbobmk/r-coverage

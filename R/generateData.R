@@ -22,7 +22,8 @@
 #' @param details add variables containing the year, period and site effects. Defaults tot FALSE
 #' @export
 #' @return A \code{data.frame} with five variables. \code{Year}, \code{Month} and \code{Site} are factors identifying the location and time of monitoring. \code{Mu} is the true mean of the negative binomial distribution in the original scale. \code{Count} are the simulated counts.
-#' @importFrom plyr dlply
+#' @importFrom stats rnorm rnbinom
+#' @importFrom dplyr %>% group_by_ do_
 generateData <- function(
   intercept = 2,
   n.year = 24,
@@ -116,22 +117,23 @@ generateData <- function(
   #generate the counts
   dataset$Count <- rnbinom(nrow(dataset), size = size, mu = dataset$Mu)
 
-  if (as.list) {
-    if (details) {
-      dataset <- dlply(dataset, "Run", function(x){
-        x[
-          ,
-          c(
-            "Year", "Period", "Site", "Mu", "Count", "YearEffect",
-            "PeriodEffect", "SiteEffect"
-          )
-        ]
-      })
-    } else {
-    dataset <- dlply(dataset, "Run", function(x){
-      x[, c("Year", "Period", "Site", "Mu", "Count")]
-    })
+  if (!as.list) {
+    return(dataset)
   }
-}
-  dataset
+
+  relevant <- function(x, details){
+    if (details) {
+      dots <- c("Year", "Period", "Site", "Mu", "YearEffect", "PeriodEffect",
+        "SiteEffect", "Run", "Count")
+    } else {
+      dots <- c("Year", "Period", "Site", "Mu", "Run", "Count")
+    }
+    x %>%
+      select_(.dots = dots) %>%
+      as.data.frame()
+  }
+  dataset <- dataset %>%
+    group_by_(~Run) %>%
+    do_(List = ~relevant(., details = details))
+  return(dataset$List)
 }

@@ -6,6 +6,7 @@
 #' @export
 #' @return A list with two elements: \code{data} with imputed values and \code{iterations} which is the number of iterations
 #' @importFrom MASS glm.nb
+#' @importFrom stats glm poisson
 #' @template deprecated
 
 imputeUnderhill <- function(

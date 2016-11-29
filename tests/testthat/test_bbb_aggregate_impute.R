@@ -60,7 +60,7 @@ describe("aggregate_impute", {
     )
     expect_error(
       aggregate_impute(imputed, grouping = "junk", fun = sum),
-      "unknown variable to group by : junk"
+      "unknown.*junk"
     )
     expect_error(
       aggregate_impute(imputed, grouping = imputed),
