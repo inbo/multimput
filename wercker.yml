@@ -8,14 +8,10 @@ builddedicated:
   box: inbobmk/r-multimput
   steps:
     - inbobmk/r-check
-    - inbobmk/r-coverage
-    - inbobmk/r-lint
 buildold:
   box: inbobmk/rstable:3.3.0
   steps:
     - inbobmk/r-check
-    - inbobmk/r-coverage
-    - inbobmk/r-lint
 
 master:
   deploy:
