@@ -17,6 +17,11 @@ When `INLA` is installed, we can install `multimput` with `devtools::install_git
 
 A docker image with all the required dependencies is available from <https://hub.docker.com/r/inbobmk/multimput/>. Use `docker pull inbobmk/multimput` to get it.
 
+The `multimput` package
+=======================
+
+The `multimput` package was originally intended to provide the data and code to replicate the results of Onkelinx, Devos, and Quataert (2016). The functions were all rewrite to make them more user-friendly and more generic. The original code and data are currently only available for historic purposes.
+
 Very short intro to multiple imputation
 =======================================
 
@@ -28,14 +33,15 @@ Very short intro to multiple imputation
 Short intro to multiple imputation
 ==================================
 
-The imputations are based on a model \(Y \sim X \beta^*\) which the user has to specify. For a missing value \(i\) with covariates \(x_i\), we draw a random value \(y_i\) from the distribution of \(\hat{y}_i\). In case of a linear model, we sample a normal distribution \(y_i \sim N(\hat{y}_i, \sigma_i)\). An imputation set \(l\) holds an impute value \(y_i\) for each missing value.
+The imputations are based on a model *Y* ∼ *X**β*<sup>\*</sup> which the user has to specify. For a missing value *i* with covariates *x*<sub>*i*</sub>, we draw a random value *y*<sub>*i*</sub> from the distribution of $\\hat{y}\_i$. In case of a linear model, we sample a normal distribution $y\_i \\sim N(\\hat{y}\_i, \\sigma\_i)$. An imputation set *l* holds an impute value *y*<sub>*i*</sub> for each missing value.
 
-With the missing values replaced by imputation set \(l\), the dataset is complete. So we can apply the analysis that we wanted to do in the first place. This can, but don't has to, include aggregating the dataset prior to analysis. The analysis results in a set of coefficients \({\gamma_a}_l\) and their standard error \({\sigma_a}_l\). Of course, this set will depend on the imputed values of the imputation set \(l\). Another imputation set has different imputed values and will hence lead to different coefficients.
+With the missing values replaced by imputation set *l*, the dataset is complete. So we can apply the analysis that we wanted to do in the first place. This can, but don't has to, include aggregating the dataset prior to analysis. The analysis results in a set of coefficients *γ*<sub>*a*</sub><sub>*l*</sub> and their standard error *σ*<sub>*a*</sub><sub>*l*</sub>. Of course, this set will depend on the imputed values of the imputation set *l*. Another imputation set has different imputed values and will hence lead to different coefficients.
 
-Therefore the imputation, aggregation and analysis is repeated for \(L\) different imputation sets, resulting in \(L\) sets of coefficients and their standard errors. They are aggregated by the formulas below. The coefficient will be the average of the coefficient in all imputation sets. The standard error of a coefficient is the square root of a sum of two parts. The first part is the average of the squared standard error in all imputation sets. The second part is the variance of the coefficient among the imputation sets, multiplied by a correction factor \(1 + \frac{1}{L}\).
+Therefore the imputation, aggregation and analysis is repeated for *L* different imputation sets, resulting in *L* sets of coefficients and their standard errors. They are aggregated by the formulas below. The coefficient will be the average of the coefficient in all imputation sets. The standard error of a coefficient is the square root of a sum of two parts. The first part is the average of the squared standard error in all imputation sets. The second part is the variance of the coefficient among the imputation sets, multiplied by a correction factor $1 + \\frac{1}{L}$.
 
-\[\bar{\gamma}_a = \frac{\sum_{l = 1}^L{\gamma_a}_l}{L}\] \[\bar{\sigma}_a = \sqrt{\frac{\sum_{l = 1}^J {{\sigma_a^2}_l}}{L} + (1 + \frac{1}{L}) 
-\frac{\sum_{l = 1}^L({\gamma_a}_l - \bar{\gamma}_a) ^ 2}{L - 1}}\]
+$$\\bar{\\gamma}\_a = \\frac{\\sum\_{l = 1}^L{\\gamma\_a}\_l}{L}$$
+$$\\bar{\\sigma}\_a = \\sqrt{\\frac{\\sum\_{l = 1}^J {{\\sigma\_a^2}\_l}}{L} + (1 + \\frac{1}{L}) 
+\\frac{\\sum\_{l = 1}^L({\\gamma\_a}\_l - \\bar{\\gamma}\_a) ^ 2}{L - 1}}$$
 
 The dataset
 ===========
@@ -107,7 +113,7 @@ ggplot(dataset, aes(x = Year, y = Mu, group = Site)) +
   scale_y_log10()
 ```
 
-![](README-plot_data-1.png)<!-- -->
+![](README-plot_data-1.png)
 
 Create the imputation model
 ===========================
@@ -135,14 +141,14 @@ imp.inla.p <- inla(
   Observed ~ fYear + fPeriod + f(Site, model = "iid"), 
   data = dataset, 
   family = "poisson", 
-  control.predictor = list(compute = TRUE)
+  control.predictor = list(compute = TRUE, link = 1)
 )
 # the same model as imp.inla.p but with negative binomial distribution
 imp.inla.nb <- inla(
   Observed ~ fYear + fPeriod + f(fSite, model = "iid"), 
   data = dataset, 
   family = "nbinomial", 
-  control.predictor = list(compute = TRUE)
+  control.predictor = list(compute = TRUE, link = 1)
 )
 # a mixed model with negative binomial distribution
 # fPeriod is a fixed effect
@@ -160,7 +166,7 @@ imp.better <- inla(
     fPeriod, 
   data = dataset, 
   family = "nbinomial", 
-  control.predictor = list(compute = TRUE)
+  control.predictor = list(compute = TRUE, link = 1)
 )
 ```
 
@@ -320,7 +326,7 @@ ggplot(model.gam, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) +
   geom_line()
 ```
 
-![](README-model_aggregate_lm3-1.png)<!-- -->
+![](README-model_aggregate_lm3-1.png)
 
 Compare the results using different imputation models
 -----------------------------------------------------
@@ -329,7 +335,7 @@ Compare the results using different imputation models
 
 Suppose that we are interested in a yearly relative index taking into account the average seasonal pattern. With a complete dataset (without missing values) we could model it like the example below: a generalised linear model with negative binomial distribution because we have counts that are likely overdispersed. `fYear` models the yearly index and `fPeriod` the average seasonal pattern. The `0 +` part removes the intercept for the model. This simple trick gives direct estimates for the effect of `fYear`.
 
-Only the effects of `fYear` are needed for the index. Therefore the extractor functions selects only the parameters who's row name contains fYear. In case that we want the first year to be used as a reference (index year 1 = 100%), we can subtract the estimate for this year from all estimates. The result are the indices relative to the first year, but still in the log scale. Note that the estimated index for year 1 will be 0 and \(log(100\%) = 0\).
+Only the effects of `fYear` are needed for the index. Therefore the extractor functions selects only the parameters who's row name contains fYear. In case that we want the first year to be used as a reference (index year 1 = 100%), we can subtract the estimate for this year from all estimates. The result are the indices relative to the first year, but still in the log scale. Note that the estimated index for year 1 will be 0 and *l**o**g*(100%) = 0.
 
 ``` r
 library(MASS)
@@ -442,7 +448,7 @@ ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) +
   facet_wrap(~Model)
 ```
 
-![](README-model_glmnb-1.png)<!-- -->
+![](README-model_glmnb-1.png)
 
 ### Modelling aggregated data with `inla`
 
@@ -510,4 +516,9 @@ ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) +
   facet_wrap(~Model)
 ```
 
-![](README-model_inla-1.png)<!-- -->
+![](README-model_inla-1.png)
+
+References
+==========
+
+Onkelinx, Thierry, Koen Devos, and Paul Quataert. 2016. “Working with Population Totals in the Presence of Missing Data Comparing Imputation Methods in Terms of Bias and Precision.” *Journal of Ornithology*, 1–13. doi:[10.1007/s10336-016-1404-9](https://doi.org/10.1007/s10336-016-1404-9).

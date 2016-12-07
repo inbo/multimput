@@ -6,6 +6,10 @@ knitr::opts_chunk$set(
 )
 ```
 
+# The `multimput` package
+
+The `multimput` package was originally intended to provide the data and code to replicate the results of @Onkelinx2016. The functions were all rewrite to make them more user-friendly and more generic. The original code and data are currently only available for historic purposes. 
+
 # Very short intro to multiple imputation
 
 1. Create the imputation model
@@ -402,3 +406,5 @@ ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) +
   geom_line() + 
   facet_wrap(~Model)
 ```
+
+# References
