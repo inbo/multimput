@@ -53,6 +53,14 @@ describe("aggregate_impute", {
       }
     )
   })
+
+  it("subsets the dataset", {
+    aggr <- aggregate_impute(imputed, grouping = grouping, fun = fun, filter = list(~Year <= 5))
+    expect_lte(max(aggr@Covariate$Year), 5)
+    aggr <- aggregate_impute(imputed, grouping = grouping, fun = fun, filter = list(~Year > 5))
+    expect_gt(min(aggr@Covariate$Year), 5)
+  })
+
   it("checks the sanity of the arguments", {
     expect_error(
       aggregate_impute(object = "junk"),
@@ -73,6 +81,10 @@ describe("aggregate_impute", {
     expect_error(
       aggregate_impute(imputed, grouping = "Year", fun = "junk"),
       "fun does not inherit from class function"
+    )
+    expect_error(
+      aggregate_impute(imputed, grouping = "Year", fun = sum, filter = "junk"),
+      "filter is not a list"
     )
   })
 })

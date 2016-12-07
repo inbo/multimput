@@ -7,11 +7,11 @@
 \alias{aggregate_impute,rawImputed-method}
 \title{Aggregate an imputed dataset}
 \usage{
-aggregate_impute(object, grouping, fun)
+aggregate_impute(object, grouping, fun, filter)
 
-\S4method{aggregate_impute}{ANY}(object, grouping, fun)
+\S4method{aggregate_impute}{ANY}(object, grouping, fun, filter)
 
-\S4method{aggregate_impute}{rawImputed}(object, grouping, fun)
+\S4method{aggregate_impute}{rawImputed}(object, grouping, fun, filter)
 }
 \arguments{
 \item{object}{a rawImputed object}
@@ -19,6 +19,8 @@ aggregate_impute(object, grouping, fun)
 \item{grouping}{a vector of variables names to group the aggregation on}
 
 \item{fun}{the function to aggregate}
+
+\item{filter}{an optional argument to filter the raw dataset before aggregation. Will be passed to the \code{.dots} argument of \code{\link[dplyr]{filter_}}}
 }
 \description{
 Aggregate an imputed dataset
