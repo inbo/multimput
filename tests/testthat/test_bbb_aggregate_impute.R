@@ -55,9 +55,19 @@ describe("aggregate_impute", {
   })
 
   it("subsets the dataset", {
-    aggr <- aggregate_impute(imputed, grouping = grouping, fun = fun, filter = list(~Year <= 5))
+    aggr <- aggregate_impute(
+      imputed,
+      grouping = grouping,
+      fun = fun,
+      filter = list(~Year <= 5)
+    )
     expect_lte(max(aggr@Covariate$Year), 5)
-    aggr <- aggregate_impute(imputed, grouping = grouping, fun = fun, filter = list(~Year > 5))
+    aggr <- aggregate_impute(
+      imputed,
+      grouping = grouping,
+      fun = fun,
+      filter = list(~Year > 5)
+    )
     expect_gt(min(aggr@Covariate$Year), 5)
   })
 
