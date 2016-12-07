@@ -8,7 +8,7 @@ Authors@R: c(person("Thierry", "Onkelinx", role = c("aut", "cre"), email = "thie
   person("Paul", "Quataert", role = "aut"))
 Description: Accompaning package for the paper: "Working with population totals
     in the presence of with missing data".
-License: GPL-3
+License: GPL-3 | file LICENSE
 URL: http://dx.doi.org/10.5281/zenodo.48423
 Depends:
     dplyr,
