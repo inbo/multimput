@@ -49,7 +49,7 @@ describe("impute", {
       Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
       data = dataset,
       family = "poisson",
-      control.predictor = list(compute = TRUE)
+      control.predictor = list(compute = TRUE, link = 1)
     )
     expect_is(
       imputed <- impute(model),
@@ -90,7 +90,7 @@ describe("impute", {
       Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
       data = dataset,
       family = "nbinomial",
-      control.predictor = list(compute = TRUE)
+      control.predictor = list(compute = TRUE, link = 1)
     )
     expect_is(
       imputed <- impute(model),
@@ -200,7 +200,7 @@ describe("impute", {
       Mu ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
       data = dataset,
       family = "gamma",
-      control.predictor = list(compute = TRUE)
+      control.predictor = list(compute = TRUE, link = 1)
     )
     expect_error(
       impute(model),

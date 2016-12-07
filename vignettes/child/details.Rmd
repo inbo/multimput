@@ -108,14 +108,14 @@ imp.inla.p <- inla(
   Observed ~ fYear + fPeriod + f(Site, model = "iid"), 
   data = dataset, 
   family = "poisson", 
-  control.predictor = list(compute = TRUE)
+  control.predictor = list(compute = TRUE, link = 1)
 )
 # the same model as imp.inla.p but with negative binomial distribution
 imp.inla.nb <- inla(
   Observed ~ fYear + fPeriod + f(fSite, model = "iid"), 
   data = dataset, 
   family = "nbinomial", 
-  control.predictor = list(compute = TRUE)
+  control.predictor = list(compute = TRUE, link = 1)
 )
 # a mixed model with negative binomial distribution
 # fPeriod is a fixed effect
@@ -133,7 +133,7 @@ imp.better <- inla(
     fPeriod, 
   data = dataset, 
   family = "nbinomial", 
-  control.predictor = list(compute = TRUE)
+  control.predictor = list(compute = TRUE, link = 1)
 )
 ```
 
