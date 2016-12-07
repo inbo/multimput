@@ -69,6 +69,13 @@ describe("aggregate_impute", {
       filter = list(~Year > 5)
     )
     expect_gt(min(aggr@Covariate$Year), 5)
+    aggr <- aggregate_impute(
+      imputed,
+      grouping = grouping,
+      fun = fun,
+      join = data.frame(Year = seq(2L, 10L, by = 2L))
+    )
+    expect_identical(unique(aggr@Covariate$Year), seq(2L, 10L, by = 2L))
   })
 
   it("checks the sanity of the arguments", {
