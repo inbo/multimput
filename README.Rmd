@@ -26,9 +26,9 @@ CAUTION: GitHub flavoured markdown doesn't support the rendering of mathematics 
 
 # Installation instructions
 
-This package requires the `INLA` package. You need to install it with `install.packages("INLA", repos = "https://www.math.ntnu.no/inla/R/stable")`. If this fails you can use `devtools::install_github("INBO-BMK/INLA")`. Note that the latter is just a read-only mirror which is infrequently updated. Hence installing `INLA` from https://www.math.ntnu.no/inla is highly recommended.
+This package requires the `INLA` package. You need to install it with `install.packages("INLA", repos = "https://www.math.ntnu.no/inla/R/stable")`. If this fails you can use `devtools::install_github("inbo/INLA")`. Note that the latter is just a read-only mirror which is infrequently updated. Hence installing `INLA` from https://www.math.ntnu.no/inla is highly recommended.
 
-When `INLA` is installed, we can install `multimput` with `devtools::install_github("INBO-BMK/multimput", build_vignettes = TRUE)`. To view the vignette use `vignette("Impute", package = "multimput")`
+When `INLA` is installed, you can install `multimput` with `devtools::install_github("inbo/multimput", build_vignettes = TRUE)`. To view the vignette use `vignette("Impute", package = "multimput")`
 
 A docker image with all the required dependencies is available from https://hub.docker.com/r/inbobmk/multimput/. Use `docker pull inbobmk/multimput` to get it.
 
