@@ -5,6 +5,7 @@
 #' @param model.args an optional list of arguments to pass to the model function.
 #' @param extractor a function which return a \code{matrix} or \code{data.frame}. The first column should contain the estimate, the second the standard error of the estimate
 #' @param extractor.args an optional list of arguments to pass to the extractor function.
+#' @inheritParams aggregate_impute
 #' @name model_impute
 #' @rdname model_impute
 #' @exportMethod model_impute
@@ -18,7 +19,8 @@ setGeneric(
     rhs,
     model.args,
     extractor,
-    extractor.args
+    extractor.args,
+    filter
 ){
     standard.generic("model_impute") # nocov
   }
@@ -35,7 +37,8 @@ setMethod(
     rhs,
     model.args,
     extractor,
-    extractor.args
+    extractor.args,
+    filter
   ){
     stop("model_impute() doesn't handle a '", class(object), "' object")
   }
@@ -44,6 +47,7 @@ setMethod(
 #' @rdname model_impute
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
+#' @importFrom dplyr %>% group_by_ bind_rows add_rownames filter_ summarise_ n mutate_ transmute_
 #' @importFrom stats var
 #' @examples
 #' dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
@@ -70,7 +74,8 @@ setMethod(
     rhs,
     model.args,
     extractor,
-    extractor.args
+    extractor.args,
+    filter
   ){
     assert_that(inherits(model.fun, "function"))
     assert_that(inherits(extractor, "function"))
@@ -87,8 +92,18 @@ setMethod(
       assert_that(inherits(extractor.args, "list"))
     }
 
+    id_column <- paste0("ID", sha1(Sys.time()))
+    object@Covariate <- object@Covariate %>%
+      mutate_(.dots = setNames("seq_len(n())", id_column))
+    if (!missing(filter)) {
+      object@Covariate <- object@Covariate %>%
+        filter_(.dots = filter)
+    }
+
+    object@Imputation <- object@Imputation[object@Covariate[[id_column]], ]
+
     form <- as.formula(paste("Imputed", rhs, sep = "~"))
-    raw.coef <- lapply(
+    lapply(
       seq_len(ncol(object@Imputation)),
       function(i){
         data <- cbind(
@@ -97,26 +112,28 @@ setMethod(
         )
         model.args <- c(list(data = data), model.args)
         model <- do.call(model.fun, c(form, model.args))
-        do.call(extractor, c(list(model), extractor.args))
+        do.call(extractor, c(list(model), extractor.args)) %>%
+          as.data.frame() %>%
+          add_rownames("Variable")
       }
-    )
-    estimate <- sapply(
-      raw.coef,
-      function(x){
-        x[, 1]
-      }
-    )
-    variance <- sapply(
-      raw.coef,
-      function(x){
-        x[, 2] ^ 2
-      }
-    )
-    cbind(
-      Estimate = rowMeans(estimate),
-      SE = sqrt(
-        rowMeans(variance) + (1 + 1 / ncol(estimate)) * diag(var(t(estimate)))
+    ) %>%
+      bind_rows() %>%
+      select_(Parameter = 1, Estimate = 2, SE = 3) %>%
+      mutate_(
+        Parameter = ~factor(Parameter, levels = unique(Parameter))
+      ) %>%
+      group_by_(~Parameter) %>%
+      summarise_(
+        SE = ~sqrt(mean(SE ^ 2) + var(Estimate) * (n() + 1) / n()),
+        Estimate = ~mean(Estimate)
+      ) %>%
+      ungroup() %>%
+      transmute_(
+        ~Parameter,
+        ~Estimate,
+        ~SE,
+        LCL = ~qnorm(0.025, Estimate, SE),
+        UCL = ~qnorm(0.975, Estimate, SE)
       )
-    )
   }
 )
