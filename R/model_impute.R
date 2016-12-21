@@ -47,7 +47,8 @@ setMethod(
 #' @rdname model_impute
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
-#' @importFrom dplyr %>% group_by_ bind_rows add_rownames filter_ summarise_ n mutate_ transmute_
+#' @importFrom dplyr %>% group_by_ bind_rows filter_ summarise_ n mutate_ transmute_
+#' @importFrom tibble rownames_to_column
 #' @importFrom stats var
 #' @examples
 #' dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
@@ -114,7 +115,7 @@ setMethod(
         model <- do.call(model.fun, c(form, model.args))
         do.call(extractor, c(list(model), extractor.args)) %>%
           as.data.frame() %>%
-          add_rownames("Variable")
+          rownames_to_column("Variable")
       }
     ) %>%
       bind_rows() %>%
