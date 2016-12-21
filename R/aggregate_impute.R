@@ -50,12 +50,25 @@ setMethod(
     assert_that(inherits(fun, "function"))
 
     id_column <- paste0("ID", sha1(Sys.time()))
+    minimum_column <- paste0("Minimum", sha1(Sys.time()))
     response <- object@Response
     data <- object@Data %>%
       mutate_(.dots = "ifelse(is.na(%1$s), cumsum(is.na(%1$s)), NA)" %>%
         sprintf(response) %>%
         setNames(id_column)
       )
+    if (object@Minimum == "") {
+      data <- data %>%
+        mutate_(.dots = list(-Inf) %>%
+          setNames(minimum_column)
+        )
+    } else {
+      data <- data %>%
+        mutate_(.dots = "%s" %>%
+          sprintf(object@Minimum) %>%
+          setNames(minimum_column)
+        )
+    }
     imputation <- object@Imputation
 
     if (!missing(filter)) {
@@ -90,7 +103,10 @@ setMethod(
     total <- lapply(
       seq_len(ncol(imputation)),
       function(i) {
-        data[missing.obs, response] <- imputation[, i]
+        data[missing.obs, response] <- pmax(
+          imputation[, i],
+          data[missing.obs, minimum_column]
+        )
         data %>%
           group_by_(.dots = grouping) %>%
           summarise_each_(funs = funs(fun), vars = response) %>%
