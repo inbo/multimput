@@ -83,12 +83,16 @@ and refit the model."
       stop(model@resp$family$family, " family not yet handled.")
     ) %>%
       matrix(ncol = n.imp)
+    dots <- list(...)
+    if (is.null(dots$minimum)) {
+      dots$minimum <- ""
+    }
     new(
       "rawImputed",
       Data = data,
       Response = response,
       Imputation = y,
-      Minimum = ""
+      Minimum = dots$minimum
     )
   }
 )
