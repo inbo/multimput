@@ -64,7 +64,8 @@ a reproducible example at https://github.com/ThierryO/multimput/issues"
       "rawImputed",
       Data = model$.args$data,
       Response = response,
-      Imputation = imputation
+      Imputation = imputation,
+      Minimum = ""
     )
   }
 )

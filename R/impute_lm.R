@@ -32,7 +32,8 @@ setMethod(
       "rawImputed",
       Data = data,
       Response = response,
-      Imputation = prediction$fit + rt.value * prediction$se.pred
+      Imputation = prediction$fit + rt.value * prediction$se.pred,
+      Minimum = ""
     )
   }
 )

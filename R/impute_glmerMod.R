@@ -87,7 +87,8 @@ and refit the model."
       "rawImputed",
       Data = data,
       Response = response,
-      Imputation = y
+      Imputation = y,
+      Minimum = ""
     )
   }
 )
