@@ -6,6 +6,7 @@
 #' @param extractor a function which return a \code{matrix} or \code{data.frame}. The first column should contain the estimate, the second the standard error of the estimate
 #' @param extractor.args an optional list of arguments to pass to the extractor function.
 #' @inheritParams aggregate_impute
+#' @param mutate an optional argument to alter the aggregated dataset. Will be passed to the \code{.dots} argument of \code{\link[dplyr]{mutate_}}. This is mainly useful for simple convertions, e.g. factors to numbers and viceversa
 #' @name model_impute
 #' @rdname model_impute
 #' @exportMethod model_impute
@@ -20,7 +21,8 @@ setGeneric(
     model.args,
     extractor,
     extractor.args,
-    filter
+    filter,
+    mutate
 ){
     standard.generic("model_impute") # nocov
   }
@@ -38,7 +40,8 @@ setMethod(
     model.args,
     extractor,
     extractor.args,
-    filter
+    filter,
+    mutate
   ){
     stop("model_impute() doesn't handle a '", class(object), "' object")
   }
@@ -76,7 +79,8 @@ setMethod(
     model.args,
     extractor,
     extractor.args,
-    filter
+    filter,
+    mutate
   ){
     assert_that(inherits(model.fun, "function"))
     assert_that(inherits(extractor, "function"))
@@ -99,6 +103,10 @@ setMethod(
     if (!missing(filter)) {
       object@Covariate <- object@Covariate %>%
         filter_(.dots = filter)
+    }
+    if (!missing(mutate)) {
+      object@Covariate <- object@Covariate %>%
+        mutate_(.dots = mutate)
     }
 
     object@Imputation <- object@Imputation[object@Covariate[[id_column]], ]

@@ -165,32 +165,32 @@ Suppose that we are interested in the sum of the counts over all sites for each 
 ```{r aggregate}
 aggr.lm <- aggregate_impute(
   raw.lm, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 aggr.glmm <- aggregate_impute(
   raw.glmm, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 aggr.inla.p <- aggregate_impute(
   raw.inla.p, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 aggr.inla.nb <- aggregate_impute(
   raw.inla.nb, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 aggr.better <- aggregate_impute(
   raw.better, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 aggr.better.9 <- aggregate_impute(
   raw.better.9, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 ```
@@ -254,7 +254,8 @@ model.gam <- model_impute(
   model.fun = gam, 
   rhs = "s(Year) + fPeriod", 
   extractor = extractor.lm3,
-  extractor.args = list(newdata = new.set)
+  extractor.args = list(newdata = new.set),
+  mutate = list(Year = ~as.integer(levels(fYear))[fYear])
 )
 model.gam <- cbind(new.set, model.gam)
 ggplot(model.gam, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 

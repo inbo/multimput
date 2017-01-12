@@ -196,32 +196,32 @@ Suppose that we are interested in the sum of the counts over all sites for each 
 ``` r
 aggr.lm <- aggregate_impute(
   raw.lm, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 aggr.glmm <- aggregate_impute(
   raw.glmm, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 aggr.inla.p <- aggregate_impute(
   raw.inla.p, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 aggr.inla.nb <- aggregate_impute(
   raw.inla.nb, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 aggr.better <- aggregate_impute(
   raw.better, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 aggr.better.9 <- aggregate_impute(
   raw.better.9, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 ```
@@ -246,22 +246,24 @@ model_impute(
   rhs = "0 + fYear + fPeriod", 
   extractor = extractor.lm
 )
-#>           Estimate       SE
-#> fYear1    915.6794 143.7884
-#> fYear2   1039.5812 144.8056
-#> fYear3   1319.8559 137.0545
-#> fYear4   1248.5774 136.5014
-#> fYear5   1034.5023 142.1748
-#> fYear6   1543.1000 160.2901
-#> fYear7   1641.6491 135.1280
-#> fYear8   1325.5156 141.3124
-#> fYear9   1184.6325 131.2830
-#> fYear10  1092.5166 146.4315
-#> fPeriod2  394.9609 136.6279
-#> fPeriod3  536.5071 136.9948
-#> fPeriod4  354.1306 129.3417
-#> fPeriod5 -125.4260 133.4333
-#> fPeriod6 -421.7390 131.9829
+#> # A tibble: 15 × 5
+#>    Parameter  Estimate       SE       LCL       UCL
+#>       <fctr>     <dbl>    <dbl>     <dbl>     <dbl>
+#> 1     fYear1  915.6794 143.7884  633.8593 1197.4994
+#> 2     fYear2 1039.5812 144.8056  755.7674 1323.3950
+#> 3     fYear3 1319.8559 137.0545 1051.2339 1588.4778
+#> 4     fYear4 1248.5774 136.5014  981.0396 1516.1152
+#> 5     fYear5 1034.5023 142.1748  755.8449 1313.1597
+#> 6     fYear6 1543.1000 160.2901 1228.9372 1857.2629
+#> 7     fYear7 1641.6491 135.1280 1376.8030 1906.4952
+#> 8     fYear8 1325.5156 141.3124 1048.5484 1602.4827
+#> 9     fYear9 1184.6325 131.2830  927.3226 1441.9425
+#> 10   fYear10 1092.5166 146.4315  805.5161 1379.5170
+#> 11  fPeriod2  394.9609 136.6279  127.1752  662.7466
+#> 12  fPeriod3  536.5071 136.9948  268.0021  805.0120
+#> 13  fPeriod4  354.1306 129.3417  100.6254  607.6357
+#> 14  fPeriod5 -125.4260 133.4333 -386.9504  136.0985
+#> 15  fPeriod6 -421.7390 131.9829 -680.4207 -163.0573
 ```
 
 Return only the parameters associated with `fYear`
@@ -280,17 +282,19 @@ model_impute(
   rhs = "0 + fYear + fPeriod", 
   extractor = extractor.lm2
 )
-#>          Estimate       SE
-#> fYear1   915.6794 143.7884
-#> fYear2  1039.5812 144.8056
-#> fYear3  1319.8559 137.0545
-#> fYear4  1248.5774 136.5014
-#> fYear5  1034.5023 142.1748
-#> fYear6  1543.1000 160.2901
-#> fYear7  1641.6491 135.1280
-#> fYear8  1325.5156 141.3124
-#> fYear9  1184.6325 131.2830
-#> fYear10 1092.5166 146.4315
+#> # A tibble: 10 × 5
+#>    Parameter  Estimate       SE       LCL      UCL
+#>       <fctr>     <dbl>    <dbl>     <dbl>    <dbl>
+#> 1     fYear1  915.6794 143.7884  633.8593 1197.499
+#> 2     fYear2 1039.5812 144.8056  755.7674 1323.395
+#> 3     fYear3 1319.8559 137.0545 1051.2339 1588.478
+#> 4     fYear4 1248.5774 136.5014  981.0396 1516.115
+#> 5     fYear5 1034.5023 142.1748  755.8449 1313.160
+#> 6     fYear6 1543.1000 160.2901 1228.9372 1857.263
+#> 7     fYear7 1641.6491 135.1280 1376.8030 1906.495
+#> 8     fYear8 1325.5156 141.3124 1048.5484 1602.483
+#> 9     fYear9 1184.6325 131.2830  927.3226 1441.942
+#> 10   fYear10 1092.5166 146.4315  805.5161 1379.517
 ```
 
 Predict a smoother for predefined values
@@ -316,11 +320,10 @@ model.gam <- model_impute(
   model.fun = gam, 
   rhs = "s(Year) + fPeriod", 
   extractor = extractor.lm3,
-  extractor.args = list(newdata = new.set)
+  extractor.args = list(newdata = new.set),
+  mutate = list(Year = ~as.integer(levels(fYear))[fYear])
 )
 model.gam <- cbind(new.set, model.gam)
-model.gam$LCL <- qnorm(0.025, mean = model.gam$Estimate, sd = model.gam$SE)
-model.gam$UCL <- qnorm(0.975, mean = model.gam$Estimate, sd = model.gam$SE)
 ggplot(model.gam, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
   geom_ribbon(alpha = 0.1) + 
   geom_line()
@@ -425,6 +428,13 @@ model.better <- model_impute(
 )
 model.complete <- extractor.logindex(model.complete)
 colnames(model.complete) <- c("Estimate", "SE")
+model.complete <- model.complete %>%
+  as.data.frame() %>%
+  mutate(
+    LCL = qnorm(0.025, Estimate, SE),
+    UCL = qnorm(0.975, Estimate, SE),
+    Parameter = paste0("fYear", sort(unique(dataset$Year)))
+  )
 covar <- data.frame(
   Year = sort(unique(dataset$Year))
 )
@@ -436,9 +446,6 @@ parameters <- rbind(
   cbind(covar, model.better, Model = "better"),
   cbind(covar, model.complete, Model = "complete")
 )
-# calculate the confidence intervals in the log scale
-parameters$LCL <- qnorm(0.025, mean = parameters$Estimate, sd = parameters$SE)
-parameters$UCL <- qnorm(0.975, mean = parameters$Estimate, sd = parameters$SE)
 # convert estimate and confidence interval to the original scale
 parameters[, c("Estimate", "LCL", "UCL")] <- exp(parameters[, c("Estimate", "LCL", "UCL")])
 ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
@@ -496,6 +503,13 @@ m.complete <- inla(
 )
 model.complete <- extractor.inla(m.complete)
 colnames(model.complete) <- c("Estimate", "SE")
+model.complete <- model.complete %>%
+  as.data.frame() %>%
+  mutate(
+    LCL = qnorm(0.025, Estimate, SE),
+    UCL = qnorm(0.975, Estimate, SE),
+    Parameter = paste0("fYear", sort(unique(dataset$Year)))
+  )
 # combine all results and add the Year
 parameters <- rbind(
   cbind(covar, model.glmm, Model = "glmm"),
@@ -504,9 +518,6 @@ parameters <- rbind(
   cbind(covar, model.better, Model = "better"),
   cbind(covar, model.complete, Model = "complete")
 )
-# calculate the confidence intervals in the log scale
-parameters$LCL <- qnorm(0.025, mean = parameters$Estimate, sd = parameters$SE)
-parameters$UCL <- qnorm(0.975, mean = parameters$Estimate, sd = parameters$SE)
 # convert estimate and confidence interval to the original scale
 parameters[, c("Estimate", "LCL", "UCL")] <- exp(parameters[, c("Estimate", "LCL", "UCL")])
 ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
