@@ -2,6 +2,7 @@ context("aggregate_impute")
 describe("aggregate_impute", {
   dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
   dataset$Count[sample(nrow(dataset), 50)] <- NA
+  dataset$Bottom <- 100000
   model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
   imputed <- impute(data = dataset, model = model)
   grouping <- c("Year", "Period")
@@ -24,6 +25,28 @@ describe("aggregate_impute", {
       ncol(imputed@Imputation),
       ncol(aggr@Imputation)
     )
+  })
+
+  it("handles rawImputed with Minimum", {
+    imputed2 <- impute(data = dataset, model = model, minimum = "Bottom")
+    aggr2 <- aggregate_impute(imputed2, grouping = grouping, fun = fun)
+    expect_is(
+      aggr2,
+      "aggregatedImputed"
+    )
+    expect_identical(
+      colnames(aggr2@Covariate),
+      grouping
+    )
+    expect_identical(
+      nrow(aggr2@Covariate),
+      nrow(aggr2@Imputation)
+    )
+    expect_identical(
+      ncol(imputed2@Imputation),
+      ncol(aggr2@Imputation)
+    )
+    expect_true(all(aggr@Imputation <= aggr2@Imputation))
   })
 
   it("handles datasets without missing observations", {
@@ -53,6 +76,31 @@ describe("aggregate_impute", {
       }
     )
   })
+
+  it("subsets the dataset", {
+    aggr <- aggregate_impute(
+      imputed,
+      grouping = grouping,
+      fun = fun,
+      filter = list(~Year <= 5)
+    )
+    expect_lte(max(aggr@Covariate$Year), 5)
+    aggr <- aggregate_impute(
+      imputed,
+      grouping = grouping,
+      fun = fun,
+      filter = list(~Year > 5)
+    )
+    expect_gt(min(aggr@Covariate$Year), 5)
+    aggr <- aggregate_impute(
+      imputed,
+      grouping = grouping,
+      fun = fun,
+      join = data.frame(Year = seq(2L, 10L, by = 2L))
+    )
+    expect_identical(unique(aggr@Covariate$Year), seq(2L, 10L, by = 2L))
+  })
+
   it("checks the sanity of the arguments", {
     expect_error(
       aggregate_impute(object = "junk"),
@@ -73,6 +121,10 @@ describe("aggregate_impute", {
     expect_error(
       aggregate_impute(imputed, grouping = "Year", fun = "junk"),
       "fun does not inherit from class function"
+    )
+    expect_error(
+      aggregate_impute(imputed, grouping = "Year", fun = sum, filter = "junk"),
+      "filter is not a list"
     )
   })
 })

@@ -60,11 +60,16 @@ a reproducible example at https://github.com/ThierryO/multimput/issues"
       )
     )
 
+    dots <- list(...)
+    if (is.null(dots$minimum)) {
+      dots$minimum <- ""
+    }
     new(
       "rawImputed",
       Data = model$.args$data,
       Response = response,
-      Imputation = imputation
+      Imputation = imputation,
+      Minimum = dots$minimum
     )
   }
 )

@@ -17,7 +17,7 @@ describe("model_impute", {
     aggr.base <- aggregate(Count ~ Year + Period, data = dataset, FUN = sum)
     model.base <- lm(Count ~ 0 + factor(Year), data = aggr.base)
     expect_equal(
-      unname(model.aggr),
+      unname(as.matrix(model.aggr[, 2:3])),
       unname(extractor(model.base))
     )
   })
@@ -37,11 +37,11 @@ describe("model_impute", {
         rhs = "0 + factor(Year)",
         extractor = extractor
       ),
-      "matrix"
+      "data.frame"
     )
     expect_identical(
       colnames(model.imp),
-      c("Estimate", "SE")
+      c("Parameter", "Estimate", "SE", "LCL", "UCL")
     )
   })
   it("checks the sanity of the arguments", {

@@ -14,6 +14,7 @@ Holds a dataset and imputed values
   \describe{
    \item{\code{Data}}{a data.frame with the data}
    \item{\code{Response}}{a character holding the name of the response variable}
+   \item{\code{Minimum}}{an optional character holding the name of the variable with the minimum}
    \item{\code{Imputation}}{a matrix wih imputed values}
   }
 }

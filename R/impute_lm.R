@@ -28,11 +28,16 @@ setMethod(
       rt(length(missing.obs) * n.imp, df = prediction$df),
       ncol = n.imp
     )
+    dots <- list(...)
+    if (is.null(dots$minimum)) {
+      dots$minimum <- ""
+    }
     new(
       "rawImputed",
       Data = data,
       Response = response,
-      Imputation = prediction$fit + rt.value * prediction$se.pred
+      Imputation = prediction$fit + rt.value * prediction$se.pred,
+      Minimum = dots$minimum
     )
   }
 )
