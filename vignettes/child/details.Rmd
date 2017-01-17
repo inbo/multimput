@@ -6,6 +6,10 @@ knitr::opts_chunk$set(
 )
 ```
 
+# The `multimput` package
+
+The `multimput` package was originally intended to provide the data and code to replicate the results of @Onkelinx2016. The functions were all rewrite to make them more user-friendly and more generic. The original code and data are currently only available for historic purposes. 
+
 # Very short intro to multiple imputation
 
 1. Create the imputation model
@@ -108,14 +112,14 @@ imp.inla.p <- inla(
   Observed ~ fYear + fPeriod + f(Site, model = "iid"), 
   data = dataset, 
   family = "poisson", 
-  control.predictor = list(compute = TRUE)
+  control.predictor = list(compute = TRUE, link = 1)
 )
 # the same model as imp.inla.p but with negative binomial distribution
 imp.inla.nb <- inla(
   Observed ~ fYear + fPeriod + f(fSite, model = "iid"), 
   data = dataset, 
   family = "nbinomial", 
-  control.predictor = list(compute = TRUE)
+  control.predictor = list(compute = TRUE, link = 1)
 )
 # a mixed model with negative binomial distribution
 # fPeriod is a fixed effect
@@ -133,7 +137,7 @@ imp.better <- inla(
     fPeriod, 
   data = dataset, 
   family = "nbinomial", 
-  control.predictor = list(compute = TRUE)
+  control.predictor = list(compute = TRUE, link = 1)
 )
 ```
 
@@ -161,32 +165,32 @@ Suppose that we are interested in the sum of the counts over all sites for each 
 ```{r aggregate}
 aggr.lm <- aggregate_impute(
   raw.lm, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 aggr.glmm <- aggregate_impute(
   raw.glmm, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 aggr.inla.p <- aggregate_impute(
   raw.inla.p, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 aggr.inla.nb <- aggregate_impute(
   raw.inla.nb, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 aggr.better <- aggregate_impute(
   raw.better, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 aggr.better.9 <- aggregate_impute(
   raw.better.9, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 ```
@@ -250,11 +254,10 @@ model.gam <- model_impute(
   model.fun = gam, 
   rhs = "s(Year) + fPeriod", 
   extractor = extractor.lm3,
-  extractor.args = list(newdata = new.set)
+  extractor.args = list(newdata = new.set),
+  mutate = list(Year = ~as.integer(levels(fYear))[fYear])
 )
 model.gam <- cbind(new.set, model.gam)
-model.gam$LCL <- qnorm(0.025, mean = model.gam$Estimate, sd = model.gam$SE)
-model.gam$UCL <- qnorm(0.975, mean = model.gam$Estimate, sd = model.gam$SE)
 ggplot(model.gam, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
   geom_ribbon(alpha = 0.1) + 
   geom_line()
@@ -314,6 +317,13 @@ model.better <- model_impute(
 )
 model.complete <- extractor.logindex(model.complete)
 colnames(model.complete) <- c("Estimate", "SE")
+model.complete <- model.complete %>%
+  as.data.frame() %>%
+  mutate(
+    LCL = qnorm(0.025, Estimate, SE),
+    UCL = qnorm(0.975, Estimate, SE),
+    Parameter = paste0("fYear", sort(unique(dataset$Year)))
+  )
 covar <- data.frame(
   Year = sort(unique(dataset$Year))
 )
@@ -325,9 +335,6 @@ parameters <- rbind(
   cbind(covar, model.better, Model = "better"),
   cbind(covar, model.complete, Model = "complete")
 )
-# calculate the confidence intervals in the log scale
-parameters$LCL <- qnorm(0.025, mean = parameters$Estimate, sd = parameters$SE)
-parameters$UCL <- qnorm(0.975, mean = parameters$Estimate, sd = parameters$SE)
 # convert estimate and confidence interval to the original scale
 parameters[, c("Estimate", "LCL", "UCL")] <- exp(parameters[, c("Estimate", "LCL", "UCL")])
 ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
@@ -383,6 +390,13 @@ m.complete <- inla(
 )
 model.complete <- extractor.inla(m.complete)
 colnames(model.complete) <- c("Estimate", "SE")
+model.complete <- model.complete %>%
+  as.data.frame() %>%
+  mutate(
+    LCL = qnorm(0.025, Estimate, SE),
+    UCL = qnorm(0.975, Estimate, SE),
+    Parameter = paste0("fYear", sort(unique(dataset$Year)))
+  )
 # combine all results and add the Year
 parameters <- rbind(
   cbind(covar, model.glmm, Model = "glmm"),
@@ -391,9 +405,6 @@ parameters <- rbind(
   cbind(covar, model.better, Model = "better"),
   cbind(covar, model.complete, Model = "complete")
 )
-# calculate the confidence intervals in the log scale
-parameters$LCL <- qnorm(0.025, mean = parameters$Estimate, sd = parameters$SE)
-parameters$UCL <- qnorm(0.975, mean = parameters$Estimate, sd = parameters$SE)
 # convert estimate and confidence interval to the original scale
 parameters[, c("Estimate", "LCL", "UCL")] <- exp(parameters[, c("Estimate", "LCL", "UCL")])
 ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
@@ -402,3 +413,5 @@ ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) +
   geom_line() + 
   facet_wrap(~Model)
 ```
+
+# References

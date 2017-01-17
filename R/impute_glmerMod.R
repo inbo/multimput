@@ -2,7 +2,7 @@
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that is.count
 #' @importFrom mvtnorm rmvnorm
-#' @importFrom digest digest
+#' @importFrom digest sha1
 #' @importFrom dplyr %>%
 #' @importClassesFrom lme4 glmerMod
 #' @importFrom stats model.matrix vcov rnorm as.formula rpois rbinom
@@ -62,7 +62,7 @@ and refit the model."
       names(random),
       function(x){
         if (class(data[, x]) != "factor") {
-          hash <- paste0("tmp", digest(data[, x], algo = "sha1"))
+          hash <- paste0("tmp", sha1(data[, x]))
           data[, hash] <- factor(data[, x])
         } else {
           hash <- x
@@ -83,11 +83,16 @@ and refit the model."
       stop(model@resp$family$family, " family not yet handled.")
     ) %>%
       matrix(ncol = n.imp)
+    dots <- list(...)
+    if (is.null(dots$minimum)) {
+      dots$minimum <- ""
+    }
     new(
       "rawImputed",
       Data = data,
       Response = response,
-      Imputation = y
+      Imputation = y,
+      Minimum = dots$minimum
     )
   }
 )

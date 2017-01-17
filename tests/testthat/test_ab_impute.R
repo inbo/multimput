@@ -5,6 +5,7 @@ describe("impute", {
   dataset$fYear <- factor(dataset$Year)
   dataset$fPeriod <- factor(dataset$Period)
   dataset$fSite <- factor(dataset$Site)
+  dataset$Bottom <- 10000
   n.imp <- 50L
   it("handles lm", {
     model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
@@ -20,6 +21,10 @@ describe("impute", {
       nrow(imputed@Imputation),
       sum(is.na(dataset$Count))
     )
+    expect_identical(
+      imputed@Minimum,
+      ""
+    )
 
     expect_is(
       imputed <- impute(model, dataset, n.imp = n.imp),
@@ -32,6 +37,20 @@ describe("impute", {
     expect_identical(
       nrow(imputed@Imputation),
       sum(is.na(dataset$Count))
+    )
+
+    expect_is(
+      imputed <- impute(model, dataset, minimum = "Bottom"),
+      "rawImputed"
+    )
+    expect_identical(
+      imputed@Minimum,
+      "Bottom"
+    )
+
+    expect_error(
+      impute(model, dataset, minimum = "Junk"),
+      "object@Data does not have name Junk"
     )
   })
 
@@ -49,7 +68,7 @@ describe("impute", {
       Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
       data = dataset,
       family = "poisson",
-      control.predictor = list(compute = TRUE)
+      control.predictor = list(compute = TRUE, link = 1)
     )
     expect_is(
       imputed <- impute(model),
@@ -63,6 +82,10 @@ describe("impute", {
       nrow(imputed@Imputation),
       sum(is.na(dataset$Count))
     )
+    expect_identical(
+      imputed@Minimum,
+      ""
+    )
 
     expect_is(
       imputed <- impute(model, dataset, n.imp = n.imp),
@@ -75,6 +98,20 @@ describe("impute", {
     expect_identical(
       nrow(imputed@Imputation),
       sum(is.na(dataset$Count))
+    )
+
+    expect_is(
+      imputed <- impute(model, dataset, minimum = "Bottom"),
+      "rawImputed"
+    )
+    expect_identical(
+      imputed@Minimum,
+      "Bottom"
+    )
+
+    expect_error(
+      impute(model, dataset, minimum = "Junk"),
+      "object@Data does not have name Junk"
     )
   })
 
@@ -90,7 +127,7 @@ describe("impute", {
       Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
       data = dataset,
       family = "nbinomial",
-      control.predictor = list(compute = TRUE)
+      control.predictor = list(compute = TRUE, link = 1)
     )
     expect_is(
       imputed <- impute(model),
@@ -103,6 +140,10 @@ describe("impute", {
     expect_identical(
       nrow(imputed@Imputation),
       sum(is.na(dataset$Count))
+    )
+    expect_identical(
+      imputed@Minimum,
+      ""
     )
 
     expect_is(
@@ -117,6 +158,20 @@ describe("impute", {
       nrow(imputed@Imputation),
       sum(is.na(dataset$Count))
     )
+
+    expect_is(
+      imputed <- impute(model, dataset, minimum = "Bottom"),
+      "rawImputed"
+    )
+    expect_identical(
+      imputed@Minimum,
+      "Bottom"
+    )
+
+    expect_error(
+      impute(model, dataset, minimum = "Junk"),
+      "object@Data does not have name Junk"
+    )
   })
 
 
@@ -126,6 +181,7 @@ describe("impute", {
   it("handles datasets without missing observations", {
     n.imp <- 19L
     dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
+    dataset$Bottom <- 10000
     expect_identical(
       sum(is.na(dataset$Count)),
       0L
@@ -142,6 +198,24 @@ describe("impute", {
     expect_identical(
       nrow(imputed@Imputation),
       sum(is.na(dataset$Count))
+    )
+    expect_identical(
+      imputed@Minimum,
+      ""
+    )
+
+    expect_is(
+      imputed <- impute(model, dataset, minimum = "Bottom"),
+      "rawImputed"
+    )
+    expect_identical(
+      imputed@Minimum,
+      "Bottom"
+    )
+
+    expect_error(
+      impute(model, dataset, minimum = "Junk"),
+      "object@Data does not have name Junk"
     )
   })
 
@@ -200,7 +274,7 @@ describe("impute", {
       Mu ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
       data = dataset,
       family = "gamma",
-      control.predictor = list(compute = TRUE)
+      control.predictor = list(compute = TRUE, link = 1)
     )
     expect_error(
       impute(model),
@@ -262,6 +336,7 @@ describe("impute", {
     site.factor = TRUE
   )
   dataset$Count[sample(nrow(dataset), 50)] <- NA
+  dataset$Bottom <- 10000
   it("handles glmerMod objects", {
     model <- lme4::glmer(
       Count ~ Year + Period + (1 | Site),
@@ -292,6 +367,24 @@ describe("impute", {
     expect_identical(
       nrow(imputed@Imputation),
       sum(is.na(dataset$Count))
+    )
+    expect_identical(
+      imputed@Minimum,
+      ""
+    )
+
+    expect_is(
+      imputed <- impute(model, dataset, minimum = "Bottom"),
+      "rawImputed"
+    )
+    expect_identical(
+      imputed@Minimum,
+      "Bottom"
+    )
+
+    expect_error(
+      impute(model, dataset, minimum = "Junk"),
+      "object@Data does not have name Junk"
     )
   })
 })

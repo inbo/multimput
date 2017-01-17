@@ -7,13 +7,14 @@
 \alias{model_impute,aggregatedImputed-method}
 \title{Model an imputed dataset}
 \usage{
-model_impute(object, model.fun, rhs, model.args, extractor, extractor.args)
+model_impute(object, model.fun, rhs, model.args, extractor, extractor.args,
+  filter, mutate)
 
 \S4method{model_impute}{ANY}(object, model.fun, rhs, model.args, extractor,
-  extractor.args)
+  extractor.args, filter, mutate)
 
 \S4method{model_impute}{aggregatedImputed}(object, model.fun, rhs, model.args,
-  extractor, extractor.args)
+  extractor, extractor.args, filter, mutate)
 }
 \arguments{
 \item{object}{the imputed dataset}
@@ -27,6 +28,10 @@ model_impute(object, model.fun, rhs, model.args, extractor, extractor.args)
 \item{extractor}{a function which return a \code{matrix} or \code{data.frame}. The first column should contain the estimate, the second the standard error of the estimate}
 
 \item{extractor.args}{an optional list of arguments to pass to the extractor function.}
+
+\item{filter}{an optional argument to filter the raw dataset before aggregation. Will be passed to the \code{.dots} argument of \code{\link[dplyr]{filter_}}}
+
+\item{mutate}{an optional argument to alter the aggregated dataset. Will be passed to the \code{.dots} argument of \code{\link[dplyr]{mutate_}}. This is mainly useful for simple convertions, e.g. factors to numbers and viceversa}
 }
 \description{
 Model an imputed dataset

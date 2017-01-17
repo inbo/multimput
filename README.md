@@ -11,11 +11,16 @@ CAUTION: GitHub flavoured markdown doesn't support the rendering of mathematics 
 Installation instructions
 =========================
 
-This package requires the `INLA` package. You need to install it with `install.packages("INLA", repos = "https://www.math.ntnu.no/inla/R/stable")`. If this fails you can use `devtools::install_github("INBO-BMK/INLA")`. Note that the latter is just a read-only mirror which is infrequently updated. Hence installing `INLA` from <https://www.math.ntnu.no/inla> is highly recommended.
+This package requires the `INLA` package. You need to install it with `install.packages("INLA", repos = "https://www.math.ntnu.no/inla/R/stable")`. If this fails you can use `devtools::install_github("inbo/INLA")`. Note that the latter is just a read-only mirror which is infrequently updated. Hence installing `INLA` from <https://www.math.ntnu.no/inla> is highly recommended.
 
-When `INLA` is installed, we can install `multimput` with `devtools::install_github("INBO-BMK/multimput", build_vignettes = TRUE)`. To view the vignette use `vignette("Impute", package = "multimput")`
+When `INLA` is installed, you can install `multimput` with `devtools::install_github("inbo/multimput", build_vignettes = TRUE)`. To view the vignette use `vignette("Impute", package = "multimput")`
 
 A docker image with all the required dependencies is available from <https://hub.docker.com/r/inbobmk/multimput/>. Use `docker pull inbobmk/multimput` to get it.
+
+The `multimput` package
+=======================
+
+The `multimput` package was originally intended to provide the data and code to replicate the results of Onkelinx, Devos, and Quataert (2016). The functions were all rewrite to make them more user-friendly and more generic. The original code and data are currently only available for historic purposes.
 
 Very short intro to multiple imputation
 =======================================
@@ -28,14 +33,15 @@ Very short intro to multiple imputation
 Short intro to multiple imputation
 ==================================
 
-The imputations are based on a model \(Y \sim X \beta^*\) which the user has to specify. For a missing value \(i\) with covariates \(x_i\), we draw a random value \(y_i\) from the distribution of \(\hat{y}_i\). In case of a linear model, we sample a normal distribution \(y_i \sim N(\hat{y}_i, \sigma_i)\). An imputation set \(l\) holds an impute value \(y_i\) for each missing value.
+The imputations are based on a model *Y* ∼ *X**β*<sup>\*</sup> which the user has to specify. For a missing value *i* with covariates *x*<sub>*i*</sub>, we draw a random value *y*<sub>*i*</sub> from the distribution of $\\hat{y}\_i$. In case of a linear model, we sample a normal distribution $y\_i \\sim N(\\hat{y}\_i, \\sigma\_i)$. An imputation set *l* holds an impute value *y*<sub>*i*</sub> for each missing value.
 
-With the missing values replaced by imputation set \(l\), the dataset is complete. So we can apply the analysis that we wanted to do in the first place. This can, but don't has to, include aggregating the dataset prior to analysis. The analysis results in a set of coefficients \({\gamma_a}_l\) and their standard error \({\sigma_a}_l\). Of course, this set will depend on the imputed values of the imputation set \(l\). Another imputation set has different imputed values and will hence lead to different coefficients.
+With the missing values replaced by imputation set *l*, the dataset is complete. So we can apply the analysis that we wanted to do in the first place. This can, but don't has to, include aggregating the dataset prior to analysis. The analysis results in a set of coefficients *γ*<sub>*a*</sub><sub>*l*</sub> and their standard error *σ*<sub>*a*</sub><sub>*l*</sub>. Of course, this set will depend on the imputed values of the imputation set *l*. Another imputation set has different imputed values and will hence lead to different coefficients.
 
-Therefore the imputation, aggregation and analysis is repeated for \(L\) different imputation sets, resulting in \(L\) sets of coefficients and their standard errors. They are aggregated by the formulas below. The coefficient will be the average of the coefficient in all imputation sets. The standard error of a coefficient is the square root of a sum of two parts. The first part is the average of the squared standard error in all imputation sets. The second part is the variance of the coefficient among the imputation sets, multiplied by a correction factor \(1 + \frac{1}{L}\).
+Therefore the imputation, aggregation and analysis is repeated for *L* different imputation sets, resulting in *L* sets of coefficients and their standard errors. They are aggregated by the formulas below. The coefficient will be the average of the coefficient in all imputation sets. The standard error of a coefficient is the square root of a sum of two parts. The first part is the average of the squared standard error in all imputation sets. The second part is the variance of the coefficient among the imputation sets, multiplied by a correction factor $1 + \\frac{1}{L}$.
 
-\[\bar{\gamma}_a = \frac{\sum_{l = 1}^L{\gamma_a}_l}{L}\] \[\bar{\sigma}_a = \sqrt{\frac{\sum_{l = 1}^J {{\sigma_a^2}_l}}{L} + (1 + \frac{1}{L}) 
-\frac{\sum_{l = 1}^L({\gamma_a}_l - \bar{\gamma}_a) ^ 2}{L - 1}}\]
+$$\\bar{\\gamma}\_a = \\frac{\\sum\_{l = 1}^L{\\gamma\_a}\_l}{L}$$
+$$\\bar{\\sigma}\_a = \\sqrt{\\frac{\\sum\_{l = 1}^J {{\\sigma\_a^2}\_l}}{L} + (1 + \\frac{1}{L}) 
+\\frac{\\sum\_{l = 1}^L({\\gamma\_a}\_l - \\bar{\\gamma}\_a) ^ 2}{L - 1}}$$
 
 The dataset
 ===========
@@ -107,7 +113,7 @@ ggplot(dataset, aes(x = Year, y = Mu, group = Site)) +
   scale_y_log10()
 ```
 
-![](README-plot_data-1.png)<!-- -->
+![](README-plot_data-1.png)
 
 Create the imputation model
 ===========================
@@ -135,14 +141,14 @@ imp.inla.p <- inla(
   Observed ~ fYear + fPeriod + f(Site, model = "iid"), 
   data = dataset, 
   family = "poisson", 
-  control.predictor = list(compute = TRUE)
+  control.predictor = list(compute = TRUE, link = 1)
 )
 # the same model as imp.inla.p but with negative binomial distribution
 imp.inla.nb <- inla(
   Observed ~ fYear + fPeriod + f(fSite, model = "iid"), 
   data = dataset, 
   family = "nbinomial", 
-  control.predictor = list(compute = TRUE)
+  control.predictor = list(compute = TRUE, link = 1)
 )
 # a mixed model with negative binomial distribution
 # fPeriod is a fixed effect
@@ -160,7 +166,7 @@ imp.better <- inla(
     fPeriod, 
   data = dataset, 
   family = "nbinomial", 
-  control.predictor = list(compute = TRUE)
+  control.predictor = list(compute = TRUE, link = 1)
 )
 ```
 
@@ -190,32 +196,32 @@ Suppose that we are interested in the sum of the counts over all sites for each 
 ``` r
 aggr.lm <- aggregate_impute(
   raw.lm, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 aggr.glmm <- aggregate_impute(
   raw.glmm, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 aggr.inla.p <- aggregate_impute(
   raw.inla.p, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 aggr.inla.nb <- aggregate_impute(
   raw.inla.nb, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 aggr.better <- aggregate_impute(
   raw.better, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 aggr.better.9 <- aggregate_impute(
   raw.better.9, 
-  grouping = c("fYear", "fPeriod", "Year"), 
+  grouping = c("fYear", "fPeriod"), 
   fun = sum
 )
 ```
@@ -240,22 +246,24 @@ model_impute(
   rhs = "0 + fYear + fPeriod", 
   extractor = extractor.lm
 )
-#>           Estimate       SE
-#> fYear1    915.6794 143.7884
-#> fYear2   1039.5812 144.8056
-#> fYear3   1319.8559 137.0545
-#> fYear4   1248.5774 136.5014
-#> fYear5   1034.5023 142.1748
-#> fYear6   1543.1000 160.2901
-#> fYear7   1641.6491 135.1280
-#> fYear8   1325.5156 141.3124
-#> fYear9   1184.6325 131.2830
-#> fYear10  1092.5166 146.4315
-#> fPeriod2  394.9609 136.6279
-#> fPeriod3  536.5071 136.9948
-#> fPeriod4  354.1306 129.3417
-#> fPeriod5 -125.4260 133.4333
-#> fPeriod6 -421.7390 131.9829
+#> # A tibble: 15 × 5
+#>    Parameter  Estimate       SE       LCL       UCL
+#>       <fctr>     <dbl>    <dbl>     <dbl>     <dbl>
+#> 1     fYear1  915.6794 143.7884  633.8593 1197.4994
+#> 2     fYear2 1039.5812 144.8056  755.7674 1323.3950
+#> 3     fYear3 1319.8559 137.0545 1051.2339 1588.4778
+#> 4     fYear4 1248.5774 136.5014  981.0396 1516.1152
+#> 5     fYear5 1034.5023 142.1748  755.8449 1313.1597
+#> 6     fYear6 1543.1000 160.2901 1228.9372 1857.2629
+#> 7     fYear7 1641.6491 135.1280 1376.8030 1906.4952
+#> 8     fYear8 1325.5156 141.3124 1048.5484 1602.4827
+#> 9     fYear9 1184.6325 131.2830  927.3226 1441.9425
+#> 10   fYear10 1092.5166 146.4315  805.5161 1379.5170
+#> 11  fPeriod2  394.9609 136.6279  127.1752  662.7466
+#> 12  fPeriod3  536.5071 136.9948  268.0021  805.0120
+#> 13  fPeriod4  354.1306 129.3417  100.6254  607.6357
+#> 14  fPeriod5 -125.4260 133.4333 -386.9504  136.0985
+#> 15  fPeriod6 -421.7390 131.9829 -680.4207 -163.0573
 ```
 
 Return only the parameters associated with `fYear`
@@ -274,17 +282,19 @@ model_impute(
   rhs = "0 + fYear + fPeriod", 
   extractor = extractor.lm2
 )
-#>          Estimate       SE
-#> fYear1   915.6794 143.7884
-#> fYear2  1039.5812 144.8056
-#> fYear3  1319.8559 137.0545
-#> fYear4  1248.5774 136.5014
-#> fYear5  1034.5023 142.1748
-#> fYear6  1543.1000 160.2901
-#> fYear7  1641.6491 135.1280
-#> fYear8  1325.5156 141.3124
-#> fYear9  1184.6325 131.2830
-#> fYear10 1092.5166 146.4315
+#> # A tibble: 10 × 5
+#>    Parameter  Estimate       SE       LCL      UCL
+#>       <fctr>     <dbl>    <dbl>     <dbl>    <dbl>
+#> 1     fYear1  915.6794 143.7884  633.8593 1197.499
+#> 2     fYear2 1039.5812 144.8056  755.7674 1323.395
+#> 3     fYear3 1319.8559 137.0545 1051.2339 1588.478
+#> 4     fYear4 1248.5774 136.5014  981.0396 1516.115
+#> 5     fYear5 1034.5023 142.1748  755.8449 1313.160
+#> 6     fYear6 1543.1000 160.2901 1228.9372 1857.263
+#> 7     fYear7 1641.6491 135.1280 1376.8030 1906.495
+#> 8     fYear8 1325.5156 141.3124 1048.5484 1602.483
+#> 9     fYear9 1184.6325 131.2830  927.3226 1441.942
+#> 10   fYear10 1092.5166 146.4315  805.5161 1379.517
 ```
 
 Predict a smoother for predefined values
@@ -310,17 +320,16 @@ model.gam <- model_impute(
   model.fun = gam, 
   rhs = "s(Year) + fPeriod", 
   extractor = extractor.lm3,
-  extractor.args = list(newdata = new.set)
+  extractor.args = list(newdata = new.set),
+  mutate = list(Year = ~as.integer(levels(fYear))[fYear])
 )
 model.gam <- cbind(new.set, model.gam)
-model.gam$LCL <- qnorm(0.025, mean = model.gam$Estimate, sd = model.gam$SE)
-model.gam$UCL <- qnorm(0.975, mean = model.gam$Estimate, sd = model.gam$SE)
 ggplot(model.gam, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
   geom_ribbon(alpha = 0.1) + 
   geom_line()
 ```
 
-![](README-model_aggregate_lm3-1.png)<!-- -->
+![](README-model_aggregate_lm3-1.png)
 
 Compare the results using different imputation models
 -----------------------------------------------------
@@ -329,7 +338,7 @@ Compare the results using different imputation models
 
 Suppose that we are interested in a yearly relative index taking into account the average seasonal pattern. With a complete dataset (without missing values) we could model it like the example below: a generalised linear model with negative binomial distribution because we have counts that are likely overdispersed. `fYear` models the yearly index and `fPeriod` the average seasonal pattern. The `0 +` part removes the intercept for the model. This simple trick gives direct estimates for the effect of `fYear`.
 
-Only the effects of `fYear` are needed for the index. Therefore the extractor functions selects only the parameters who's row name contains fYear. In case that we want the first year to be used as a reference (index year 1 = 100%), we can subtract the estimate for this year from all estimates. The result are the indices relative to the first year, but still in the log scale. Note that the estimated index for year 1 will be 0 and \(log(100\%) = 0\).
+Only the effects of `fYear` are needed for the index. Therefore the extractor functions selects only the parameters who's row name contains fYear. In case that we want the first year to be used as a reference (index year 1 = 100%), we can subtract the estimate for this year from all estimates. The result are the indices relative to the first year, but still in the log scale. Note that the estimated index for year 1 will be 0 and *l**o**g*(100%) = 0.
 
 ``` r
 library(MASS)
@@ -419,6 +428,13 @@ model.better <- model_impute(
 )
 model.complete <- extractor.logindex(model.complete)
 colnames(model.complete) <- c("Estimate", "SE")
+model.complete <- model.complete %>%
+  as.data.frame() %>%
+  mutate(
+    LCL = qnorm(0.025, Estimate, SE),
+    UCL = qnorm(0.975, Estimate, SE),
+    Parameter = paste0("fYear", sort(unique(dataset$Year)))
+  )
 covar <- data.frame(
   Year = sort(unique(dataset$Year))
 )
@@ -430,9 +446,6 @@ parameters <- rbind(
   cbind(covar, model.better, Model = "better"),
   cbind(covar, model.complete, Model = "complete")
 )
-# calculate the confidence intervals in the log scale
-parameters$LCL <- qnorm(0.025, mean = parameters$Estimate, sd = parameters$SE)
-parameters$UCL <- qnorm(0.975, mean = parameters$Estimate, sd = parameters$SE)
 # convert estimate and confidence interval to the original scale
 parameters[, c("Estimate", "LCL", "UCL")] <- exp(parameters[, c("Estimate", "LCL", "UCL")])
 ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
@@ -442,7 +455,7 @@ ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) +
   facet_wrap(~Model)
 ```
 
-![](README-model_glmnb-1.png)<!-- -->
+![](README-model_glmnb-1.png)
 
 ### Modelling aggregated data with `inla`
 
@@ -490,6 +503,13 @@ m.complete <- inla(
 )
 model.complete <- extractor.inla(m.complete)
 colnames(model.complete) <- c("Estimate", "SE")
+model.complete <- model.complete %>%
+  as.data.frame() %>%
+  mutate(
+    LCL = qnorm(0.025, Estimate, SE),
+    UCL = qnorm(0.975, Estimate, SE),
+    Parameter = paste0("fYear", sort(unique(dataset$Year)))
+  )
 # combine all results and add the Year
 parameters <- rbind(
   cbind(covar, model.glmm, Model = "glmm"),
@@ -498,9 +518,6 @@ parameters <- rbind(
   cbind(covar, model.better, Model = "better"),
   cbind(covar, model.complete, Model = "complete")
 )
-# calculate the confidence intervals in the log scale
-parameters$LCL <- qnorm(0.025, mean = parameters$Estimate, sd = parameters$SE)
-parameters$UCL <- qnorm(0.975, mean = parameters$Estimate, sd = parameters$SE)
 # convert estimate and confidence interval to the original scale
 parameters[, c("Estimate", "LCL", "UCL")] <- exp(parameters[, c("Estimate", "LCL", "UCL")])
 ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
@@ -510,4 +527,9 @@ ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) +
   facet_wrap(~Model)
 ```
 
-![](README-model_inla-1.png)<!-- -->
+![](README-model_inla-1.png)
+
+References
+==========
+
+Onkelinx, Thierry, Koen Devos, and Paul Quataert. 2016. “Working with Population Totals in the Presence of Missing Data Comparing Imputation Methods in Terms of Bias and Precision.” *Journal of Ornithology*, 1–13. doi:[10.1007/s10336-016-1404-9](https://doi.org/10.1007/s10336-016-1404-9).
