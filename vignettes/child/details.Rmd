@@ -8,7 +8,7 @@ knitr::opts_chunk$set(
 
 # The `multimput` package
 
-The `multimput` package was originally intended to provide the data and code to replicate the results of @Onkelinx2016. The functions were all rewrite to make them more user-friendly and more generic. The original code and data are currently only available for historic purposes. 
+The `multimput` package was originally intended to provide the data and code to replicate the results of @Onkelinx2016. This paper is freely available at http://dx.doi.org/10.1007/s10336-016-1404-9. The functions were all rewritten to make them more user-friendly and more generic. In order to make the package more compact, we removed the original code and data starting for version 0.2.6. However both the original code and data remain available in [the older releases](https://github.com/inbo/multimput/releases). 
 
 # Very short intro to multiple imputation
 
