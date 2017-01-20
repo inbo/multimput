@@ -39,9 +39,10 @@ setMethod(
           n = n.imp
         )
         h <- model$marginals.hyperpar
+        h <- h[grepl("size for the nbinomial", names(h))]
         size <- INLA::inla.rmarginal(
           n = n.imp,
-          marginal = h$`size for the nbinomial observations (overdispersion)` # nolint
+          marginal = h[[1]]
         )
         matrix(
           rnbinom(
