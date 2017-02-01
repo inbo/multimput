@@ -105,7 +105,8 @@ setMethod(
       function(i) {
         data[missing.obs, response] <- pmax(
           imputation[, i],
-          data[missing.obs, minimum_column]
+          data[[minimum_column]][missing.obs],
+          na.rm = TRUE
         )
         data %>%
           group_by_(.dots = grouping) %>%
