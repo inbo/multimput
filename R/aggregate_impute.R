@@ -30,7 +30,6 @@ setMethod(
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
 #' @importFrom tidyr spread_
-#' @import dplyr
 #' @importFrom dplyr %>% group_by_ summarise_at funs mutate_ bind_rows ungroup select_ filter_ n semi_join
 #' @importFrom methods new
 #' @importFrom stats setNames na.omit
