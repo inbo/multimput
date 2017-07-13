@@ -108,7 +108,7 @@ describe("aggregate_impute", {
     )
     expect_error(
       aggregate_impute(imputed, grouping = "junk", fun = sum),
-      "unknown.*junk"
+      "((junk){1}.*(unknown){1}|(unknown){1}.*(junk){1})"
     )
     expect_error(
       aggregate_impute(imputed, grouping = imputed),
