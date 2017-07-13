@@ -56,4 +56,3 @@ A \code{data.frame} with five variables. \code{Year}, \code{Month} and \code{Sit
 \description{
 Generate data for a regural monitoring design. The counts follow a negative binomial distribution with given size paramters and the true mean mu depending on a year, period and site effect. All effects are independent fro each other and have, on the log-scale, a normal distribution with zero mean and given standard deviation.
 }
-

@@ -34,4 +34,3 @@ model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
 imputed <- impute(data = dataset, model = model)
 aggregate_impute(imputed, grouping = c("Year", "Period"), fun = sum)
 }
-

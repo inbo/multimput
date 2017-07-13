@@ -317,6 +317,7 @@ model.better <- model_impute(
 )
 model.complete <- extractor.logindex(model.complete)
 colnames(model.complete) <- c("Estimate", "SE")
+library(dplyr)
 model.complete <- model.complete %>%
   as.data.frame() %>%
   mutate(

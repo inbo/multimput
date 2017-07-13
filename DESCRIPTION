@@ -1,24 +1,24 @@
 Package: multimput
 Type: Package
 Title: Using Multiple Imputation to Address Missing Data
-Version: 0.2.6
-Date: 2017-01-20
+Version: 0.2.7
+Date: 2017-07-13
 Authors@R: c(person("Thierry", "Onkelinx", role = c("aut", "cre"), email = "thierry.onkelinx@inbo.be"),
   person("Koen", "Devos", role = "aut"),
   person("Paul", "Quataert", role = "aut"))
 Description: Accompaning package for the paper: "Working with population totals
     in the presence of with missing data".
 License: GPL-3 | file LICENSE
-URL: http://dx.doi.org/10.5281/zenodo.48423
+URL: https://doi.org/10.5281/zenodo.598331
+BugReports: https://github.com/inbo/multimput/issues
 Depends:
-    dplyr,
     R (>= 3.0.0)
 Imports:
+    dplyr,
     methods,
     tibble,
     tidyr,
     assertthat,
-    MASS,
     lme4,
     mvtnorm,
     digest
@@ -29,11 +29,12 @@ Suggests:
     ggplot2,
     mgcv,
     knitr,
-    plyr,
+    MASS,
     rmarkdown
+Remotes: inbo/INLA
 Roxygen: list(wrap = FALSE)
 LazyData: TRUE
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 Collate:
     'rawImputed_class.R'
     'aggregate_impute.R'
