@@ -28,7 +28,6 @@ Suggests:
     ggplot2,
     mgcv,
     knitr,
-    plyr,
     MASS,
     rmarkdown
 Remotes: inbo/INLA
