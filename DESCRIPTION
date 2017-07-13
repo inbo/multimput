@@ -33,7 +33,7 @@ Suggests:
     rmarkdown
 Roxygen: list(wrap = FALSE)
 LazyData: TRUE
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 Collate:
     'rawImputed_class.R'
     'aggregate_impute.R'

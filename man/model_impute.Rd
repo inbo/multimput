@@ -52,4 +52,3 @@ model_impute(
   extractor = extractor
 )
 }
-

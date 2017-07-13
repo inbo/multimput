@@ -24,4 +24,3 @@ missingObserved(dataset, count.variable = "Count",
 \description{
 The observed values will be either equal to the counts or missing. The probability of missing is the inverse of the counts + 1.
 }
-
