@@ -11,9 +11,9 @@ Description: Accompaning package for the paper: "Working with population totals
 License: GPL-3 | file LICENSE
 URL: http://dx.doi.org/10.5281/zenodo.48423
 Depends:
-    dplyr,
     R (>= 3.0.0)
 Imports:
+    dplyr,
     methods,
     tibble,
     tidyr,

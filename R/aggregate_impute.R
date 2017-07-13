@@ -30,7 +30,7 @@ setMethod(
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
 #' @importFrom tidyr spread_
-#' @importFrom dplyr %>% group_by_ summarise_at funs mutate_ bind_rows ungroup select_ filter_ n semi_join
+#' @importFrom dplyr %>% group_by_ summarise_at funs vars mutate_ bind_rows ungroup select_ filter_ n semi_join starts_with
 #' @importFrom methods new
 #' @importFrom stats setNames na.omit
 #' @importFrom digest sha1
