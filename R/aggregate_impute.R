@@ -31,7 +31,7 @@ setMethod(
 #' @importFrom assertthat assert_that
 #' @importFrom tidyr spread_
 #' @import dplyr
-#' @importFrom dplyr %>% group_by_ summarise_each_ funs mutate_ bind_rows ungroup select_ filter_ n semi_join
+#' @importFrom dplyr %>% group_by_ summarise_at funs mutate_ bind_rows ungroup select_ filter_ n semi_join
 #' @importFrom methods new
 #' @importFrom stats setNames na.omit
 #' @importFrom digest sha1
@@ -110,7 +110,7 @@ setMethod(
         )
         data %>%
           group_by_(.dots = grouping) %>%
-          summarise_each_(funs = funs(fun), vars = response) %>%
+          summarise_at(.funs = funs(fun), .vars = vars(response)) %>%
           mutate_(Imputation = ~sprintf("Imputation%04i", i))
       }
     ) %>%
