@@ -35,10 +35,10 @@ Remotes: inbo/INLA
 Roxygen: list(wrap = FALSE)
 LazyData: TRUE
 RoxygenNote: 6.0.1
-Collate:
+Collate: 
     'rawImputed_class.R'
-    'aggregate_impute.R'
     'aggregatedImputed_class.R'
+    'aggregate_impute.R'
     'datasets.R'
     'generateData.R'
     'import_S3_classes.R'

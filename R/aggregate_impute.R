@@ -127,3 +127,73 @@ setMethod(
     )
   }
 )
+
+#' @rdname aggregate_impute
+#' @importFrom methods setMethod
+#' @importFrom assertthat assert_that
+#' @importFrom dplyr %>% group_by_ summarise_at funs vars mutate_ filter_ n semi_join starts_with inner_join
+#' @importFrom methods new
+#' @importFrom stats setNames
+#' @importFrom digest sha1
+#' @include aggregatedImputed_class.R
+setMethod(
+  f = "aggregate_impute",
+  signature = signature(object = "aggregatedImputed"),
+  definition = function(object, grouping, fun, filter, join){
+    assert_that(is.character(grouping))
+    assert_that(inherits(fun, "function"))
+
+    id_column <- paste0("ID", sha1(Sys.time()))
+    data <- object@Covariate %>%
+      mutate_(.dots = "seq_along(%s)" %>%
+          sprintf(grouping[1]) %>%
+          setNames(id_column)
+      )
+    imputation <- object@Imputation %>%
+      as.data.frame() %>%
+      mutate_(.dots = "seq_along(Imputation0001)" %>%
+          setNames(id_column)
+      )
+
+    if (!missing(filter)) {
+      assert_that(is.list(filter))
+      data <- data %>%
+        filter_(.dots = filter)
+    }
+
+    if (!missing(join)) {
+      if (inherits(join, "data.frame")) {
+        join <- list(join)
+      }
+      assert_that(is.list(join))
+      if (!all(sapply(join, inherits, "data.frame"))) {
+        stop("not all objects in join are data.frames")
+      }
+      for (i in seq_along(join)) {
+        if (!all(colnames(join[[i]]) %in% colnames(data))) {
+          stop("all columns in join with be available in the dataset")
+        }
+        data <- data %>%
+          semi_join(join[[i]], by = colnames(join[[i]]))
+      }
+    }
+
+    total <- data %>%
+      inner_join(imputation, by = id_column) %>%
+      group_by_(.dots = grouping) %>%
+      summarise_at(
+        .funs = funs(fun),
+        .vars = vars(colnames(object@Imputation))
+      )
+
+    new(
+      "aggregatedImputed",
+      Covariate = total %>%
+        select_(~-starts_with("Imputation")) %>%
+        as.data.frame(),
+      Imputation = total %>%
+        select_(~starts_with("Imputation")) %>%
+        as.matrix()
+    )
+  }
+)

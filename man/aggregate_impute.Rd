@@ -5,6 +5,7 @@
 \alias{aggregate_impute}
 \alias{aggregate_impute,ANY-method}
 \alias{aggregate_impute,rawImputed-method}
+\alias{aggregate_impute,aggregatedImputed-method}
 \title{Aggregate an imputed dataset}
 \usage{
 aggregate_impute(object, grouping, fun, filter, join)
@@ -12,6 +13,9 @@ aggregate_impute(object, grouping, fun, filter, join)
 \S4method{aggregate_impute}{ANY}(object, grouping, fun, filter, join)
 
 \S4method{aggregate_impute}{rawImputed}(object, grouping, fun, filter, join)
+
+\S4method{aggregate_impute}{aggregatedImputed}(object, grouping, fun, filter,
+  join)
 }
 \arguments{
 \item{object}{a rawImputed object}
