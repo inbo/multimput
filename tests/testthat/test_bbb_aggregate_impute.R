@@ -127,4 +127,25 @@ describe("aggregate_impute", {
       "filter is not a list"
     )
   })
+
+  it("aggregates an aggregatedImputed", {
+    aggr <- aggregate_impute(
+      imputed,
+      grouping = grouping,
+      fun = fun
+    )
+    expect_is(
+      aggr2 <- aggregate_impute(aggr, grouping = "Year", fun = max),
+      "aggregatedImputed"
+    )
+    expect_is(
+      aggr2 <- aggregate_impute(
+        aggr,
+        grouping = "Year",
+        fun = mean,
+        filter = list("Period <= 3")
+      ),
+      "aggregatedImputed"
+    )
+  })
 })
