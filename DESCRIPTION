@@ -1,8 +1,8 @@
 Package: multimput
 Type: Package
 Title: Using Multiple Imputation to Address Missing Data
-Version: 0.2.7
-Date: 2017-07-13
+Version: 0.2.7.9000
+Date: 2017-11-18
 Authors@R: c(person("Thierry", "Onkelinx", role = c("aut", "cre"), email = "thierry.onkelinx@inbo.be"),
   person("Koen", "Devos", role = "aut"),
   person("Paul", "Quataert", role = "aut"))
@@ -35,10 +35,10 @@ Remotes: inbo/INLA
 Roxygen: list(wrap = FALSE)
 LazyData: TRUE
 RoxygenNote: 6.0.1
-Collate:
+Collate: 
     'rawImputed_class.R'
-    'aggregate_impute.R'
     'aggregatedImputed_class.R'
+    'aggregate_impute.R'
     'datasets.R'
     'generateData.R'
     'import_S3_classes.R'

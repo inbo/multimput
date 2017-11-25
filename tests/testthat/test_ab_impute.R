@@ -1,12 +1,12 @@
 describe("impute", {
   context("impute")
-  dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
-  dataset$Count[sample(nrow(dataset), 50)] <- NA
+  dataset <- generateData(n.year = 10, n.site = 10, n.run = 1)
+  dataset$Count[sample(nrow(dataset), 10)] <- NA
   dataset$fYear <- factor(dataset$Year)
   dataset$fPeriod <- factor(dataset$Period)
   dataset$fSite <- factor(dataset$Site)
   dataset$Bottom <- 10000
-  n.imp <- 50L
+  n.imp <- 10L
   it("handles lm", {
     model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
     expect_is(

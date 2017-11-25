@@ -1,7 +1,7 @@
 context("aggregate_impute")
 describe("aggregate_impute", {
-  dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
-  dataset$Count[sample(nrow(dataset), 50)] <- NA
+  dataset <- generateData(n.year = 10, n.site = 10, n.run = 1)
+  dataset$Count[sample(nrow(dataset), 10)] <- NA
   dataset$Bottom <- 100000
   model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
   imputed <- impute(data = dataset, model = model)
@@ -104,7 +104,7 @@ describe("aggregate_impute", {
   it("checks the sanity of the arguments", {
     expect_error(
       aggregate_impute(object = "junk"),
-      "aggregate_impute\\(\\) requires a 'rawImputed' object. See \\?impute"
+"aggregate_impute\\(\\) requires a 'rawImputed' or 'aggregatedImputed' object"
     )
     expect_error(
       aggregate_impute(imputed, grouping = "junk", fun = sum),
@@ -127,4 +127,41 @@ describe("aggregate_impute", {
       "filter is not a list"
     )
   })
+
+  it("aggregates an aggregatedImputed", {
+    aggr <- aggregate_impute(
+      imputed,
+      grouping = grouping,
+      fun = fun
+    )
+    expect_is(
+      aggr2 <- aggregate_impute(aggr, grouping = "Year", fun = max),
+      "aggregatedImputed"
+    )
+    expect_is(
+      aggr2 <- aggregate_impute(
+        aggr,
+        grouping = "Year",
+        fun = mean,
+        filter = list("Period <= 3")
+      ),
+      "aggregatedImputed"
+    )
+  })
+})
+
+test_that("aggregate_impute() works on aggregatedImputed objects", {
+  dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
+  dataset$Count[sample(nrow(dataset), 50)] <- NA
+  dataset$Bottom <- 100000
+  model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
+  imputed <- impute(data = dataset, model = model)
+  grouping <- c("Year", "Period")
+  fun <- sum
+  aggr <- aggregate_impute(imputed, grouping = grouping, fun = fun)
+  grouping2 <- "Year"
+  expect_is(
+    aggr2 <- aggregate_impute(aggr, grouping = grouping2, fun = sum),
+    "aggregatedImputed"
+  )
 })
