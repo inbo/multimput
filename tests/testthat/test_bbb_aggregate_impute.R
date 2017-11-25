@@ -150,3 +150,18 @@ describe("aggregate_impute", {
   })
 })
 
+test_that("aggregate_impute() works on aggregatedImputed objects", {
+  dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
+  dataset$Count[sample(nrow(dataset), 50)] <- NA
+  dataset$Bottom <- 100000
+  model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
+  imputed <- impute(data = dataset, model = model)
+  grouping <- c("Year", "Period")
+  fun <- sum
+  aggr <- aggregate_impute(imputed, grouping = grouping, fun = fun)
+  grouping2 <- "Year"
+  expect_is(
+    aggr2 <- aggregate_impute(aggr, grouping = grouping2, fun = sum),
+    "aggregatedImputed"
+  )
+})
