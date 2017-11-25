@@ -22,7 +22,10 @@ setMethod(
   f = "aggregate_impute",
   signature = signature(object = "ANY"),
   definition = function(object, grouping, fun, filter, join){
-    stop("aggregate_impute() requires a 'rawImputed' object. See ?impute")
+    stop(
+"aggregate_impute() requires a 'rawImputed' or 'aggregatedImputed' object.
+See ?impute or ?aggregate_impute"
+    )
   }
 )
 

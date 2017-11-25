@@ -104,7 +104,7 @@ describe("aggregate_impute", {
   it("checks the sanity of the arguments", {
     expect_error(
       aggregate_impute(object = "junk"),
-      "aggregate_impute\\(\\) requires a 'rawImputed' object. See \\?impute"
+"aggregate_impute\\(\\) requires a 'rawImputed' or 'aggregatedImputed' object"
     )
     expect_error(
       aggregate_impute(imputed, grouping = "junk", fun = sum),
@@ -149,3 +149,4 @@ describe("aggregate_impute", {
     )
   })
 })
+
