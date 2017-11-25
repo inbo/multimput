@@ -1,7 +1,7 @@
 context("aggregate_impute")
 describe("aggregate_impute", {
-  dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
-  dataset$Count[sample(nrow(dataset), 50)] <- NA
+  dataset <- generateData(n.year = 10, n.site = 10, n.run = 1)
+  dataset$Count[sample(nrow(dataset), 10)] <- NA
   dataset$Bottom <- 100000
   model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
   imputed <- impute(data = dataset, model = model)
