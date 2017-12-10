@@ -1,3 +1,4 @@
+^appveyor\.yml$
 ^wercker\.yml$
 ^.*\.Rproj$
 ^\.Rproj\.user$
@@ -12,3 +13,5 @@
 ^_builds$
 ^_steps$
 ^NEWS\.md$
+^CODE_OF_CONDUCT\.md$
+$CONTRIBUTING\.md$
