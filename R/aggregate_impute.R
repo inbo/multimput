@@ -99,6 +99,8 @@ setMethod(
     imputation <- imputation[
       data[[id_column]] %>%
         na.omit(),
+      ,
+      drop = FALSE
     ]
 
     missing.obs <- which(is.na(data[, response]))
