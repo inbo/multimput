@@ -112,20 +112,31 @@ setMethod(
     object@Imputation <- object@Imputation[object@Covariate[[id_column]], ]
 
     form <- as.formula(paste("Imputed", rhs, sep = "~"))
-    lapply(
+    m <- lapply(
       seq_len(ncol(object@Imputation)),
       function(i){
         data <- cbind(
           Imputed = object@Imputation[, i],
           object@Covariate
         )
-        model.args <- c(list(data = data), model.args)
-        model <- do.call(model.fun, c(form, model.args))
-        do.call(extractor, c(list(model), extractor.args)) %>%
-          as.data.frame() %>%
-          rownames_to_column("Variable")
+        model <- try(
+          do.call(model.fun, c(form, list(data = data), model.args)),
+          silent = TRUE
+        )
+        if (inherits(model, "try-error")) {
+          NULL
+        } else {
+          do.call(extractor, c(list(model), extractor.args)) %>%
+            as.data.frame() %>%
+            rownames_to_column("Variable")
+        }
       }
-    ) %>%
+    )
+    failed <- sapply(m, is.null)
+    if (all(failed)) {
+      stop("model failed on all imputations")
+    }
+    m %>%
       bind_rows() %>%
       select_(Parameter = 1, Estimate = 2, SE = 3) %>%
       mutate_(
