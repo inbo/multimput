@@ -50,7 +50,8 @@ setMethod(
           function(x) {
             rpois(
               n = length(missing.obs),
-              lambda = x$latent[missing.obs, 1])
+              lambda = exp(x$latent[missing.obs, 1])
+            )
           }
         )
       },
@@ -66,7 +67,7 @@ setMethod(
             rnbinom(
               n = length(missing.obs),
               size = h[grepl("size for the nbinomial", names(h))],
-              mu = x$latent[missing.obs, 1])
+              mu = exp(x$latent[missing.obs, 1]))
           }
         )
       },
