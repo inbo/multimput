@@ -219,6 +219,21 @@ describe("impute", {
       impute(model, dataset, minimum = "Junk"),
       "object@Data does not have name Junk"
     )
+
+    if (!require(INLA)) {
+      skip("INLA package not available")
+    }
+    model <- inla(
+      Count ~ Year + factor(Period) + factor(Site),
+      data = dataset,
+      family = "nbinomial",
+      control.compute = list(config = TRUE)
+    )
+    expect_is(
+      imputed <- impute(model, dataset, minimum = "Bottom"),
+      "rawImputed"
+    )
+
   })
 
 
@@ -266,17 +281,17 @@ describe("impute", {
     model <- INLA::inla(
       Mu ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
       data = dataset,
-      family = "gamma"
+      family = "nbinomial"
     )
     expect_error(
       impute(model),
-"model must be fit with the 'compute = TRUE' argument of control.predictor"
+"model must be fit with the 'config = TRUE' argument of control.compute"
     )
     model <- INLA::inla(
       Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
       data = dataset,
       family = "gaussian",
-      control.predictor = list(compute = TRUE, link = 1)
+      control.compute = list(config = TRUE)
     )
     expect_error(
       impute(model),
