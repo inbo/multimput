@@ -1,4 +1,4 @@
-box: inbobmk/rstable:3.3.2
+box: inbobmk/rstable
 build:
   steps:
     - inbobmk/r-check
@@ -6,10 +6,6 @@ build:
     - inbobmk/r-lint
 builddedicated:
   box: inbobmk/r-multimput
-  steps:
-    - inbobmk/r-check
-buildold:
-  box: inbobmk/rstable:3.3.0
   steps:
     - inbobmk/r-check
 
