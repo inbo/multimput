@@ -1,7 +1,7 @@
 ---
 title: "Model data with missing observations using multiple imputation"
 author: "Thierry Onkelinx"
-date: "`r Sys.Date()`"
+date: "2018-01-12"
 bibliography: multimput.bib
 output: rmarkdown::html_vignette
 vignette: >
