@@ -8,9 +8,10 @@ setMethod(
   definition = function(model, ..., n.imp){
     assert_that(is.count(n.imp))
 
-    if (!model$.args$control.predictor$compute) {
+
+    if (!model$.args$control.compute$config) {
       stop(
-"model must be fit with the 'compute = TRUE' argument of control.predictor"
+"model must be fit with the 'config = TRUE' argument of control.compute"
       )
     }
 
@@ -40,7 +41,7 @@ setMethod(
     imputation <- switch(
       model$.args$family,
       poisson = {
-        samples <- inla.posterior.sample(
+        samples <- INLA::inla.posterior.sample(
           n = n.imp,
           model
         )
@@ -54,7 +55,7 @@ setMethod(
         )
       },
       nbinomial = {
-        samples <- inla.posterior.sample(
+        samples <- INLA::inla.posterior.sample(
           n = n.imp,
           model
         )
