@@ -68,6 +68,7 @@ describe("impute", {
       Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
       data = dataset,
       family = "poisson",
+      control.compute = list(config = TRUE),
       control.predictor = list(compute = TRUE, link = 1)
     )
     expect_is(
@@ -127,6 +128,7 @@ describe("impute", {
       Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
       data = dataset,
       family = "nbinomial",
+      control.compute = list(config = TRUE),
       control.predictor = list(compute = TRUE, link = 1)
     )
     expect_is(
@@ -271,14 +273,14 @@ describe("impute", {
 "model must be fit with the 'compute = TRUE' argument of control.predictor"
     )
     model <- INLA::inla(
-      Mu ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
+      Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
       data = dataset,
-      family = "gamma",
+      family = "gaussian",
       control.predictor = list(compute = TRUE, link = 1)
     )
     expect_error(
       impute(model),
-      "Imputations from the 'gamma' family not yet defined"
+      "Imputations from the 'gaussian' family not yet defined"
     )
 
     model <- lme4::glmer(

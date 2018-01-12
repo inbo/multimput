@@ -14,44 +14,59 @@ setMethod(
       )
     }
 
+    dots <- list(...)
+    if (is.null(dots$minimum)) {
+      dots$minimum <- ""
+    }
+
     response <- as.character(model$.args$formula)[2]
     missing.obs <- which(is.na(model$.args$data[, response]))
+    if (length(missing.obs) == 0) {
+      return(
+        new(
+          "rawImputed",
+          Data = model$.args$data,
+          Response = response,
+          Imputation = matrix(integer(0), ncol = n.imp),
+          Minimum = dots$minimum
+        )
+      )
+    }
+
+    magnitude <- ceiling(log10(nrow(model$.args$data)))
+    missing.obs <- sprintf(paste0("Predictor:%0", magnitude, "i"), missing.obs)
 
     assert_that(requireNamespace("INLA", quietly = TRUE))
     imputation <- switch(
       model$.args$family,
       poisson = {
-        linpred <- sapply(
-          model$marginals.linear.predictor[missing.obs],
-          INLA::inla.rmarginal,
-          n = n.imp
+        samples <- inla.posterior.sample(
+          n = n.imp,
+          model
         )
-        matrix(
-          rpois(length(linpred), lambda = exp(linpred)),
-          ncol = n.imp,
-          byrow = TRUE
+        sapply(
+          samples,
+          function(x) {
+            rpois(
+              n = length(missing.obs),
+              lambda = x$latent[missing.obs, 1])
+          }
         )
       },
       nbinomial = {
-        linpred <- sapply(
-          model$marginals.linear.predictor[missing.obs],
-          INLA::inla.rmarginal,
-          n = n.imp
-        )
-        h <- model$marginals.hyperpar
-        h <- h[grepl("size for the nbinomial", names(h))]
-        size <- INLA::inla.rmarginal(
+        samples <- inla.posterior.sample(
           n = n.imp,
-          marginal = h[[1]]
+          model
         )
-        matrix(
-          rnbinom(
-            n = length(linpred),
-            size = rep(size, ncol(linpred)),
-            mu = exp(linpred)
-          ),
-          ncol = n.imp,
-          byrow = TRUE
+        sapply(
+          samples,
+          function(x) {
+            h <- x$hyperpar
+            rnbinom(
+              n = length(missing.obs),
+              size = h[grepl("size for the nbinomial", names(h))],
+              mu = x$latent[missing.obs, 1])
+          }
         )
       },
       stop(
@@ -61,10 +76,6 @@ a reproducible example at https://github.com/ThierryO/multimput/issues"
       )
     )
 
-    dots <- list(...)
-    if (is.null(dots$minimum)) {
-      dots$minimum <- ""
-    }
     new(
       "rawImputed",
       Data = model$.args$data,
