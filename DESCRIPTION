@@ -1,8 +1,8 @@
 Package: multimput
 Type: Package
 Title: Using Multiple Imputation to Address Missing Data
-Version: 0.2.8
-Date: 2017-12-10
+Version: 0.2.8.1
+Date: 2018-01-15
 Authors@R: c(
   person(
     "Thierry", "Onkelinx", role = c("aut", "cre"), 
