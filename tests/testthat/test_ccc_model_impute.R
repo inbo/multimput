@@ -119,7 +119,7 @@ describe("model_impute", {
         rhs = "junk",
         extractor = extractor
       ),
-      "object 'junk' not found"
+      "model failed on all imputations"
     )
   })
 })

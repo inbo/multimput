@@ -1,7 +1,7 @@
 ---
 title: "Model data with missing observations using multiple imputation"
 author: "Thierry Onkelinx"
-date: "`r Sys.Date()`"
+date: "2018-01-12"
 bibliography: multimput.bib
 output: rmarkdown::html_vignette
 vignette: >
@@ -128,6 +128,7 @@ imp.inla.p <- inla(
   Observed ~ fYear + fPeriod + f(Site, model = "iid"), 
   data = dataset, 
   family = "poisson", 
+  control.compute = list(config = TRUE),
   control.predictor = list(compute = TRUE, link = 1)
 )
 # the same model as imp.inla.p but with negative binomial distribution
@@ -135,6 +136,7 @@ imp.inla.nb <- inla(
   Observed ~ fYear + fPeriod + f(fSite, model = "iid"), 
   data = dataset, 
   family = "nbinomial", 
+  control.compute = list(config = TRUE),
   control.predictor = list(compute = TRUE, link = 1)
 )
 # a mixed model with negative binomial distribution
@@ -153,6 +155,7 @@ imp.better <- inla(
     fPeriod, 
   data = dataset, 
   family = "nbinomial", 
+  control.compute = list(config = TRUE),
   control.predictor = list(compute = TRUE, link = 1)
 )
 ```

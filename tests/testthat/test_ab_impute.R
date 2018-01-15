@@ -68,6 +68,7 @@ describe("impute", {
       Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
       data = dataset,
       family = "poisson",
+      control.compute = list(config = TRUE),
       control.predictor = list(compute = TRUE, link = 1)
     )
     expect_is(
@@ -127,6 +128,7 @@ describe("impute", {
       Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
       data = dataset,
       family = "nbinomial",
+      control.compute = list(config = TRUE),
       control.predictor = list(compute = TRUE, link = 1)
     )
     expect_is(
@@ -217,6 +219,21 @@ describe("impute", {
       impute(model, dataset, minimum = "Junk"),
       "object@Data does not have name Junk"
     )
+
+    if (!require(INLA)) {
+      skip("INLA package not available")
+    }
+    model <- inla(
+      Count ~ Year + factor(Period) + factor(Site),
+      data = dataset,
+      family = "nbinomial",
+      control.compute = list(config = TRUE)
+    )
+    expect_is(
+      imputed <- impute(model, dataset, minimum = "Bottom"),
+      "rawImputed"
+    )
+
   })
 
 
@@ -264,21 +281,21 @@ describe("impute", {
     model <- INLA::inla(
       Mu ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
       data = dataset,
-      family = "gamma"
+      family = "nbinomial"
     )
     expect_error(
       impute(model),
-"model must be fit with the 'compute = TRUE' argument of control.predictor"
+"model must be fit with the 'config = TRUE' argument of control.compute"
     )
     model <- INLA::inla(
-      Mu ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
+      Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
       data = dataset,
-      family = "gamma",
-      control.predictor = list(compute = TRUE, link = 1)
+      family = "gaussian",
+      control.compute = list(config = TRUE)
     )
     expect_error(
       impute(model),
-      "Imputations from the 'gamma' family not yet defined"
+      "Imputations from the 'gaussian' family not yet defined"
     )
 
     model <- lme4::glmer(
