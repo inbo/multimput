@@ -1,6 +1,6 @@
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![License](http://img.shields.io/badge/license-GPL--3-blue.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html)
-[![Release](https://img.shields.io/github/release/qubyte/rubidium.svg)](https://github.com/inbo/inbotheme/releases)
+[![Release](https://img.shields.io/github/release/qubyte/rubidium.svg)](https://github.com/inbo/multimput/releases)
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.48423.svg)](http://dx.doi.org/10.5281/zenodo.48423)
 [![wercker status](https://app.wercker.com/status/5f154cd480de20b68cde62705e817436/s/master "wercker status")](https://app.wercker.com/project/bykey/5f154cd480de20b68cde62705e817436) 
 [![Build status](https://ci.appveyor.com/api/projects/status/auiumf7qteqttgxa/branch/master?svg=true)](https://ci.appveyor.com/project/ThierryO/multimput/branch/master)
