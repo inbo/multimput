@@ -141,7 +141,8 @@ setMethod(
       select_(Parameter = 1, Estimate = 2, SE = 3) %>%
       mutate_(
         Parameter = ~factor(Parameter, levels = unique(Parameter))
-      ) %>%
+      ) -> m
+    m %>%
       group_by_(~Parameter) %>%
       summarise_(
         SE = ~sqrt(mean(SE ^ 2) + var(Estimate) * (n() + 1) / n()),
@@ -154,6 +155,8 @@ setMethod(
         ~SE,
         LCL = ~qnorm(0.025, Estimate, SE),
         UCL = ~qnorm(0.975, Estimate, SE)
-      )
+      ) -> result
+    attr(result, "detail") <- m
+    return(result)
   }
 )
