@@ -33,7 +33,8 @@ See ?impute or ?aggregate_impute"
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
 #' @importFrom tidyr spread_
-#' @importFrom dplyr %>% group_by_ summarise_at funs vars mutate_ bind_rows ungroup select_ filter_ n semi_join starts_with
+#' @importFrom dplyr %>% group_by summarise_at funs vars mutate_ bind_rows ungroup select_ filter_ n semi_join starts_with
+#' @importFrom rlang syms !!!
 #' @importFrom methods new
 #' @importFrom stats setNames na.omit
 #' @importFrom digest sha1
@@ -50,6 +51,7 @@ setMethod(
   definition = function(object, grouping, fun, filter, join){
     assert_that(is.character(grouping))
     assert_that(inherits(fun, "function"))
+    grouping <- syms(grouping)
 
     id_column <- paste0("ID", sha1(Sys.time()))
     minimum_column <- paste0("Minimum", sha1(Sys.time()))
@@ -113,7 +115,7 @@ setMethod(
           na.rm = TRUE
         )
         data %>%
-          group_by_(.dots = grouping) %>%
+          group_by(!!!grouping) %>%
           summarise_at(.funs = funs(fun), .vars = vars(response)) %>%
           mutate_(Imputation = ~sprintf("Imputation%04i", i))
       }
@@ -136,7 +138,7 @@ setMethod(
 #' @rdname aggregate_impute
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
-#' @importFrom dplyr %>% group_by_ summarise_at funs vars mutate_ filter_ n semi_join starts_with inner_join
+#' @importFrom dplyr %>% group_by summarise_at funs vars mutate_ filter_ n semi_join starts_with inner_join
 #' @importFrom methods new
 #' @importFrom stats setNames
 #' @importFrom digest sha1
@@ -154,6 +156,7 @@ setMethod(
           sprintf(grouping[1]) %>%
           setNames(id_column)
       )
+    grouping <- syms(grouping)
     imputation <- object@Imputation %>%
       as.data.frame() %>%
       mutate_(.dots = "seq_along(Imputation0001)" %>%
@@ -185,7 +188,7 @@ setMethod(
 
     total <- data %>%
       inner_join(imputation, by = id_column) %>%
-      group_by_(.dots = grouping) %>%
+      group_by(!!!grouping) %>%
       summarise_at(
         .funs = funs(fun),
         .vars = vars(colnames(object@Imputation))

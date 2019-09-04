@@ -50,7 +50,8 @@ setMethod(
 #' @rdname model_impute
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
-#' @importFrom dplyr %>% group_by_ bind_rows filter_ summarise_ n mutate_ transmute_
+#' @importFrom dplyr %>% group_by bind_rows filter_ summarise_ n mutate_ transmute_
+#' @importFrom rlang .data
 #' @importFrom tibble rownames_to_column
 #' @importFrom stats var
 #' @examples
@@ -143,7 +144,7 @@ setMethod(
         Parameter = ~factor(Parameter, levels = unique(Parameter))
       ) -> m
     m %>%
-      group_by_(~Parameter) %>%
+      group_by(.data$Parameter) %>%
       summarise_(
         SE = ~sqrt(mean(SE ^ 2) + var(Estimate) * (n() + 1) / n()),
         Estimate = ~mean(Estimate)

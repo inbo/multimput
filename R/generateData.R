@@ -23,7 +23,8 @@
 #' @export
 #' @return A \code{data.frame} with five variables. \code{Year}, \code{Month} and \code{Site} are factors identifying the location and time of monitoring. \code{Mu} is the true mean of the negative binomial distribution in the original scale. \code{Count} are the simulated counts.
 #' @importFrom stats rnorm rnbinom
-#' @importFrom dplyr %>% group_by_ do_
+#' @importFrom dplyr %>% group_by do_
+#' @importFrom rlang .data
 generateData <- function(
   intercept = 2,
   n.year = 24,
@@ -133,7 +134,7 @@ generateData <- function(
       as.data.frame()
   }
   dataset <- dataset %>%
-    group_by_(~Run) %>%
+    group_by(.data$Run) %>%
     do_(List = ~relevant(., details = details))
   return(dataset$List)
 }
