@@ -53,7 +53,7 @@ describe("generateData", {
     )
     expect_named(
       dataset[[1]],
-      c("Year", "Period", "Site", "Mu", "Run", "Count")
+      c("Year", "Period", "Site", "Mu", "Count", "Run")
     )
     expect_is(
       dataset <- generateData(
@@ -70,7 +70,7 @@ describe("generateData", {
       dataset[[1]],
       c(
         "Year", "Period", "Site", "Mu", "YearEffect",
-        "PeriodEffect", "SiteEffect", "Run", "Count"
+        "PeriodEffect", "SiteEffect", "Count", "Run"
       )
     )
   })

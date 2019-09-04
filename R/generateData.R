@@ -23,7 +23,7 @@
 #' @export
 #' @return A \code{data.frame} with five variables. \code{Year}, \code{Month} and \code{Site} are factors identifying the location and time of monitoring. \code{Mu} is the true mean of the negative binomial distribution in the original scale. \code{Count} are the simulated counts.
 #' @importFrom stats rnorm rnbinom
-#' @importFrom dplyr %>% group_by do_
+#' @importFrom dplyr %>% group_by group_map mutate
 #' @importFrom rlang .data
 generateData <- function(
   intercept = 2,
@@ -122,19 +122,19 @@ generateData <- function(
     return(dataset)
   }
 
-  relevant <- function(x, details){
+  relevant <- function(x, details, run){
     if (details) {
       dots <- c("Year", "Period", "Site", "Mu", "YearEffect", "PeriodEffect",
-        "SiteEffect", "Run", "Count")
+        "SiteEffect", "Count")
     } else {
-      dots <- c("Year", "Period", "Site", "Mu", "Run", "Count")
+      dots <- c("Year", "Period", "Site", "Mu", "Count")
     }
     x %>%
       select_(.dots = dots) %>%
+      mutate(Run = run$Run) %>%
       as.data.frame()
   }
-  dataset <- dataset %>%
+  dataset %>%
     group_by(.data$Run) %>%
-    do_(List = ~relevant(., details = details))
-  return(dataset$List)
+    group_map(~relevant(.x, details = details, run = .y))
 }
