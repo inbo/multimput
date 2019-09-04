@@ -50,7 +50,7 @@ describe("impute", {
 
     expect_error(
       impute(model, dataset, minimum = "Junk"),
-      "object@Data does not have name Junk"
+      "object@Data does not have .*name.*Junk"
     )
   })
 
@@ -112,7 +112,7 @@ describe("impute", {
 
     expect_error(
       impute(model, dataset, minimum = "Junk"),
-      "object@Data does not have name Junk"
+      "object@Data does not have .*name.*Junk"
     )
   })
 
@@ -172,7 +172,7 @@ describe("impute", {
 
     expect_error(
       impute(model, dataset, minimum = "Junk"),
-      "object@Data does not have name Junk"
+      "object@Data does not have.*name.*Junk"
     )
   })
 
@@ -217,7 +217,7 @@ describe("impute", {
 
     expect_error(
       impute(model, dataset, minimum = "Junk"),
-      "object@Data does not have name Junk"
+      "object@Data does not have.*name.*Junk"
     )
 
     if (!require(INLA)) {
@@ -272,7 +272,7 @@ describe("impute", {
     wrong.dataset$Count <- NULL
     expect_error(
       impute(model = model, data = wrong.dataset),
-      "data does not have name Count"
+      "data does not have.*name.*Count"
     )
 
     if (!require(INLA)) {
@@ -341,7 +341,7 @@ describe("impute", {
     wrong.dataset$Count <- NULL
     expect_error(
       impute(model = model, data = wrong.dataset),
-      "data does not have name Count"
+      "data does not have.*name.*Count"
     )
   })
 
@@ -403,7 +403,7 @@ describe("impute", {
 
     expect_error(
       impute(model, dataset, minimum = "Junk"),
-      "object@Data does not have name Junk"
+      "object@Data does not have.*name.*Junk"
     )
   })
 })
