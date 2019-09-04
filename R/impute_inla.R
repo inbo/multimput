@@ -1,6 +1,7 @@
 #' @rdname impute
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that is.count
+#' @importFrom stats rgamma
 #' @include impute_generic.R
 setMethod(
   f = "impute",
@@ -67,10 +68,36 @@ setMethod(
           }
         )
       },
+      gamma = {
+        sapply(
+          samples,
+          function(x) {
+            h <- x$hyperpar
+            prec <- h[grepl("Gamma observations", names(h))]
+            mu <- exp(x$latent[missing.obs, 1])
+            rate  <- prec * mu
+            shape <- mu * rate
+            rgamma(n = length(missing.obs), shape = shape, rate = rate)
+          }
+        )
+      },
+      gaussian = {
+        sapply(
+          samples,
+          function(x) {
+            h <- x$hyperpar
+            rnorm(
+              n = length(missing.obs),
+              mean = x$latent[missing.obs, 1],
+              sd = h[grepl("Gaussian observations", names(h))]
+            )
+          }
+        )
+      },
       stop(
         "Imputations from the '", model$.args$family, "' family not yet defined.
 We will consider adding support for other families. Please create an issue with
-a reproducible example at https://github.com/ThierryO/multimput/issues"
+a reproducible example at https://github.com/inbo/multimput/issues"
       )
     )
 

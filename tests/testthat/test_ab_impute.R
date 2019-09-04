@@ -290,12 +290,14 @@ describe("impute", {
     model <- INLA::inla(
       Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
       data = dataset,
-      family = "gaussian",
-      control.compute = list(config = TRUE)
+      family = "binomial",
+      Ntrials = max(dataset$Count, na.rm = TRUE),
+      control.compute = list(config = TRUE),
+      control.predictor = list(link = 1)
     )
     expect_error(
       impute(model),
-      "Imputations from the 'gaussian' family not yet defined"
+      "Imputations from the 'binomial' family not yet defined"
     )
 
     model <- lme4::glmer(
