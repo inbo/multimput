@@ -41,8 +41,9 @@ Suggests:
     rmarkdown
 Remotes: inbo/INLA
 Roxygen: list(wrap = FALSE)
+RoxygenNote: 6.1.1
+Encoding: UTF-8
 LazyData: TRUE
-RoxygenNote: 6.0.1
 Collate: 
     'rawImputed_class.R'
     'aggregatedImputed_class.R'
