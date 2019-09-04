@@ -13,8 +13,8 @@ model_impute(object, model.fun, rhs, model.args, extractor, extractor.args,
 \S4method{model_impute}{ANY}(object, model.fun, rhs, model.args, extractor,
   extractor.args, filter, mutate)
 
-\S4method{model_impute}{aggregatedImputed}(object, model.fun, rhs, model.args,
-  extractor, extractor.args, filter, mutate)
+\S4method{model_impute}{aggregatedImputed}(object, model.fun, rhs,
+  model.args, extractor, extractor.args, filter, mutate)
 }
 \arguments{
 \item{object}{the imputed dataset}

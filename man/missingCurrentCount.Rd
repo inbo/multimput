@@ -4,8 +4,8 @@
 \alias{missingCurrentCount}
 \title{Generate missing data depending on the counts}
 \usage{
-missingCurrentCount(dataset, proportion = 0.25, count.variable = "Count",
-  observed.variable = "Observed")
+missingCurrentCount(dataset, proportion = 0.25,
+  count.variable = "Count", observed.variable = "Observed")
 }
 \arguments{
 \item{dataset}{A dataset to a the observation with missing data}
