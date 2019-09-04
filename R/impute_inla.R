@@ -38,13 +38,13 @@ setMethod(
     missing.obs <- sprintf(paste0("Predictor:%0", magnitude, "i"), missing.obs)
 
     assert_that(requireNamespace("INLA", quietly = TRUE))
+    samples <- INLA::inla.posterior.sample(
+      n = n.imp,
+      model
+    )
     imputation <- switch(
       model$.args$family,
       poisson = {
-        samples <- INLA::inla.posterior.sample(
-          n = n.imp,
-          model
-        )
         sapply(
           samples,
           function(x) {
@@ -56,10 +56,6 @@ setMethod(
         )
       },
       nbinomial = {
-        samples <- INLA::inla.posterior.sample(
-          n = n.imp,
-          model
-        )
         sapply(
           samples,
           function(x) {
