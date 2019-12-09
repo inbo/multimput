@@ -8,13 +8,11 @@ setMethod(
   signature = signature(model = "inla"),
   definition = function(model, ..., n.imp){
     assert_that(is.count(n.imp))
-
-
-    if (!model$.args$control.compute$config) {
-      stop(
+    assert_that(
+      model$.args$control.compute$config,
+      msg =
 "model must be fit with the 'config = TRUE' argument of control.compute"
-      )
-    }
+    )
 
     dots <- list(...)
     if (is.null(dots$minimum)) {
@@ -35,8 +33,7 @@ setMethod(
       )
     }
 
-    magnitude <- ceiling(log10(nrow(model$.args$data)))
-    missing.obs <- sprintf(paste0("Predictor:%0", magnitude, "i"), missing.obs)
+    missing.obs <- sprintf(paste0("Predictor:%i"), missing.obs)
 
     assert_that(requireNamespace("INLA", quietly = TRUE))
     samples <- INLA::inla.posterior.sample(
