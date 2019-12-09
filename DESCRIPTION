@@ -29,11 +29,11 @@ Imports:
     assertthat,
     lme4,
     mvtnorm,
+    rlang,
     digest
 Suggests:
     testthat,
     INLA,
-    snowfall,
     ggplot2,
     mgcv,
     knitr,
