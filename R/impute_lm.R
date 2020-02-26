@@ -12,7 +12,7 @@
 setMethod(
   f = "impute",
   signature = signature(model = "lm"),
-  definition = function(model, data, ..., n.imp){
+  definition = function(model, data, ..., n.imp) {
     assert_that(inherits(data, "data.frame"))
     assert_that(is.count(n.imp))
 

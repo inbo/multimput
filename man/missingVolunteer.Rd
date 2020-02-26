@@ -2,27 +2,29 @@
 % Please edit documentation in R/missingVolunteer.R
 \name{missingVolunteer}
 \alias{missingVolunteer}
-\title{Generate missing data mimicschoices made by volunteers.}
+\title{Generate missing data mimicing choices made by volunteers.}
 \usage{
 missingVolunteer(dataset, proportion = 0.25, count.variable = "Count",
   observed.variable = "Observed", year.variable = "Year",
   site.variable = "Site", max.count = 100)
 }
 \arguments{
-\item{dataset}{A dataset to a the observation with missing data}
+\item{dataset}{A dataset to a the observation with missing data.}
 
-\item{proportion}{The proportion of observations that will be missing}
+\item{proportion}{The proportion of observations that will be missing.}
 
-\item{count.variable}{The name of the variable holding the counts}
+\item{count.variable}{The name of the variable holding the counts.}
 
-\item{observed.variable}{The name of the variable holding the observed values = either count or missing}
+\item{observed.variable}{The name of the variable holding the observed values
+= either count or missing.}
 
-\item{year.variable}{The name of the variable holding the year}
+\item{year.variable}{The name of the variable holding the year.}
 
-\item{site.variable}{The name of the variable holding the site}
+\item{site.variable}{The name of the variable holding the site.}
 
-\item{max.count}{The maximum count}
+\item{max.count}{The maximum count.}
 }
 \description{
-The observed values will be either equal to the counts or missing. The probability of missing is the inverse of the counts + 1.
+The observed values will be either equal to the counts or missing.
+The probability of missing is the inverse of the counts + 1.
 }

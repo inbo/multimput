@@ -17,21 +17,28 @@ model_impute(object, model.fun, rhs, model.args, extractor, extractor.args,
   model.args, extractor, extractor.args, filter, mutate)
 }
 \arguments{
-\item{object}{the imputed dataset}
+\item{object}{The imputed dataset.}
 
-\item{model.fun}{the function to apply on each imputation set}
+\item{model.fun}{The function to apply on each imputation set.}
 
-\item{rhs}{the right hand side of the model}
+\item{rhs}{The right hand side of the model.}
 
-\item{model.args}{an optional list of arguments to pass to the model function.}
+\item{model.args}{An optional list of arguments to pass to the model
+function.}
 
-\item{extractor}{a function which return a \code{matrix} or \code{data.frame}. The first column should contain the estimate, the second the standard error of the estimate}
+\item{extractor}{A function which return a \code{matrix} or \code{data.frame}.
+The first column should contain the estimate,
+the second the standard error of the estimate.}
 
-\item{extractor.args}{an optional list of arguments to pass to the extractor function.}
+\item{extractor.args}{An optional list of arguments to pass to the \code{extractor} function.}
 
-\item{filter}{an optional argument to filter the raw dataset before aggregation. Will be passed to the \code{.dots} argument of \code{\link[dplyr]{filter_}}}
+\item{filter}{An optional argument to filter the raw dataset before aggregation.
+Will be passed to the \code{.dots} argument of \code{\link[dplyr]{filter_}}.}
 
-\item{mutate}{an optional argument to alter the aggregated dataset. Will be passed to the \code{.dots} argument of \code{\link[dplyr]{mutate_}}. This is mainly useful for simple convertions, e.g. factors to numbers and viceversa}
+\item{mutate}{An optional argument to alter the aggregated dataset.
+Will be passed to the \code{.dots} argument of \code{\link[dplyr]{mutate_}}.
+This is mainly useful for simple convertions, e.g. factors to numbers and
+viceversa.}
 }
 \description{
 Model an imputed dataset
@@ -42,7 +49,7 @@ dataset$Count[sample(nrow(dataset), 50)] <- NA
 model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
 imputed <- impute(data = dataset, model = model)
 aggr <- aggregate_impute(imputed, grouping = c("Year", "Period"), fun = sum)
-extractor <- function(model){
+extractor <- function(model) {
   summary(model)$coefficients[, c("Estimate", "Std. Error")]
 }
 model_impute(

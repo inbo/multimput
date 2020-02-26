@@ -19,15 +19,18 @@ aggregate_impute(object, grouping, fun, filter, join)
   filter, join)
 }
 \arguments{
-\item{object}{a rawImputed object}
+\item{object}{A rawImputed object.}
 
-\item{grouping}{a vector of variables names to group the aggregation on}
+\item{grouping}{A vector of variables names to group the aggregation on.}
 
-\item{fun}{the function to aggregate}
+\item{fun}{The function to aggregate.}
 
-\item{filter}{an optional argument to filter the raw dataset before aggregation. Will be passed to the \code{.dots} argument of \code{\link[dplyr]{filter_}}}
+\item{filter}{An optional argument to filter the raw dataset before aggregation.
+Will be passed to the \code{.dots} argument of \code{\link[dplyr]{filter_}}.}
 
-\item{join}{an optional argument to filter the raw dataset based on a data.frame. A \code{\link[dplyr]{semi_join}} will be applied with \code{join} or each element of \code{join} in case join is a list}
+\item{join}{An optional argument to filter the raw dataset based on a data.frame.
+A \code{\link[dplyr]{semi_join}} will be applied with \code{join} or each element
+of \code{join} in case join is a list.}
 }
 \description{
 Aggregate an imputed dataset

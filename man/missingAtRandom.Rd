@@ -8,14 +8,16 @@ missingAtRandom(dataset, proportion = 0.25, count.variable = "Count",
   observed.variable = "Observed")
 }
 \arguments{
-\item{dataset}{A dataset to a the observation with missing data}
+\item{dataset}{A dataset to a the observation with missing data.}
 
-\item{proportion}{The proportion of observations that will be missing}
+\item{proportion}{The proportion of observations that will be missing.}
 
-\item{count.variable}{The name of the variable holding the counts}
+\item{count.variable}{The name of the variable holding the counts.}
 
-\item{observed.variable}{The name of the variable holding the observed values = either count or missing}
+\item{observed.variable}{The name of the variable holding the observed values
+= either count or missing.}
 }
 \description{
-The observed values will be either equal to the counts or missing. The probability of missing is the inverse of the counts + 1.
+The observed values will be either equal to the counts or missing.
+The probability of missing is the inverse of the counts + 1.
 }

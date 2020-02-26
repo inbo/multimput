@@ -5,7 +5,7 @@ describe("model_impute", {
     model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
     imputed <- impute(data = dataset, model = model)
     aggr <- aggregate_impute(imputed, grouping = c("Year", "Period"), fun = sum)
-    extractor <- function(model){
+    extractor <- function(model) {
       summary(model)$coefficients[, c("Estimate", "Std. Error")]
     }
     model.aggr <- model_impute(
@@ -26,7 +26,7 @@ describe("model_impute", {
   model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
   imputed <- impute(data = dataset, model = model)
   aggr <- aggregate_impute(imputed, grouping = c("Year", "Period"), fun = sum)
-  extractor <- function(model){
+  extractor <- function(model) {
     summary(model)$coefficients[, c("Estimate", "Std. Error")]
   }
   it("handles rawImputed", {
@@ -71,7 +71,7 @@ describe("model_impute", {
       ),
       "extractor does not inherit from class function"
     )
-    extractor <- function(model){
+    extractor <- function(model) {
       summary(model)$coefficients[, c("Estimate", "Std. Error")]
     }
     expect_error(

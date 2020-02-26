@@ -13,11 +13,11 @@ Data for fig 1 and 2 in Onkelinx et al
 }
 \details{
 \itemize{
-  \item \code{Site} Site ID
-  \item \code{Winter} Winter ID
-  \item \code{Period} ID of the month
-  \item \code{Species} Number of observed species
-  \item \code{Birds} Total number of birds
+\item \code{Site} Site ID.
+\item \code{Winter} Winter ID.
+\item \code{Period} ID of the month.
+\item \code{Species} Number of observed species.
+\item \code{Birds} Total number of birds.
 }
 }
 \keyword{datasets}

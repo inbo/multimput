@@ -12,47 +12,67 @@ generateData(intercept = 2, n.year = 24, n.period = 6, n.site = 20,
   as.list = FALSE, details = FALSE)
 }
 \arguments{
-\item{intercept}{the global mean on the log-scale}
+\item{intercept}{The global mean on the log-scale.}
 
-\item{n.year}{the number of years}
+\item{n.year}{The number of years.}
 
-\item{n.period}{the number of periods}
+\item{n.period}{The number of periods.}
 
-\item{n.site}{the number of sites}
+\item{n.site}{The number of sites.}
 
-\item{year.factor}{convert year to a factor. Defaults to FALSE}
+\item{year.factor}{Convert year to a factor.
+Defaults to \code{FALSE}.}
 
-\item{period.factor}{convert period to a factor. Defaults to FALSE}
+\item{period.factor}{Convert period to a factor.
+Defaults to \code{FALSE}.}
 
-\item{site.factor}{convert site to a factor. Defaults to FALSE}
+\item{site.factor}{Convert site to a factor.
+Defaults to \code{FALSE}.}
 
-\item{trend}{the longterm linear trend on the log-scale}
+\item{trend}{The longterm linear trend on the log-scale.}
 
-\item{sd.rw.year}{the standard deviation of the year effects on the log-scale}
+\item{sd.rw.year}{The standard deviation of the year effects on the
+log-scale.}
 
-\item{amplitude.period}{the amplitude of the periodic effect on the log-scale}
+\item{amplitude.period}{The amplitude of the periodic effect on the
+log-scale.}
 
-\item{mean.phase.period}{the mean of the phase of the periodic effect among years. Defaults to 0.}
+\item{mean.phase.period}{The mean of the phase of the periodic effect among
+years.
+Defaults to \code{0}.}
 
-\item{sd.phase.period}{the standard deviation of the phase of the periodic effect among years}
+\item{sd.phase.period}{The standard deviation of the phase of the periodic
+effect among years.}
 
-\item{sd.site}{the standard deviation of the site effects on the log-scale}
+\item{sd.site}{The standard deviation of the site effects on the log-scale.}
 
-\item{sd.rw.site}{the standard deviation of the random walk along year per site on the log-scale}
+\item{sd.rw.site}{The standard deviation of the random walk along year per
+site on the log-scale.}
 
-\item{sd.noise}{the standard deviation of the noise effects on the log-scale}
+\item{sd.noise}{The standard deviation of the noise effects on the log-scale.}
 
-\item{size}{the size parameter of the negative binomial distribution}
+\item{size}{The size parameter of the negative binomial distribution.}
 
-\item{n.run}{the number of runs with the same mu}
+\item{n.run}{The number of runs with the same mu.}
 
-\item{as.list}{return the dataset as a list rather than a data.frame. Defaults to FALSE}
+\item{as.list}{Return the dataset as a list rather than a data.frame.
+Defaults to \code{FALSE}.}
 
-\item{details}{add variables containing the year, period and site effects. Defaults tot FALSE}
+\item{details}{Add variables containing the year, period and site effects.
+Defaults tot \code{FALSE}.}
 }
 \value{
-A \code{data.frame} with five variables. \code{Year}, \code{Month} and \code{Site} are factors identifying the location and time of monitoring. \code{Mu} is the true mean of the negative binomial distribution in the original scale. \code{Count} are the simulated counts.
+A \code{data.frame} with five variables.
+\code{Year}, \code{Month} and \code{Site} are factors identifying the location and time of
+monitoring.
+\code{Mu} is the true mean of the negative binomial distribution in the original
+scale.
+\code{Count} are the simulated counts.
 }
 \description{
-Generate data for a regural monitoring design. The counts follow a negative binomial distribution with given size paramters and the true mean mu depending on a year, period and site effect. All effects are independent fro each other and have, on the log-scale, a normal distribution with zero mean and given standard deviation.
+Generate data for a regural monitoring design.
+The counts follow a negative binomial distribution with given size paramters
+and the true mean mu depending on a year, period and site effect.
+All effects are independent from each other and have, on the log-scale, a
+normal distribution with zero mean and given standard deviation.
 }

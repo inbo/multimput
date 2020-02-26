@@ -68,7 +68,7 @@ describe("aggregate_impute", {
     apply(
       aggr@Imputation[, -1],
       2,
-      function(x){
+      function(x) {
         expect_identical(
           x,
           aggr@Imputation[, 1]
@@ -108,7 +108,7 @@ describe("aggregate_impute", {
     )
     expect_error(
       aggregate_impute(imputed, grouping = "junk", fun = sum),
-      "((junk){1}.*(unknown){1}|(unknown){1}.*(junk){1})"
+      "((junk){1}.*(unknown){1}|(unknown){1}.*(junk){1})" #nolint
     )
     expect_error(
       aggregate_impute(imputed, grouping = imputed),

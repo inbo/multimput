@@ -1,14 +1,16 @@
-#' Generate missing data mimicschoices made by volunteers.
+#' Generate missing data mimicing choices made by volunteers.
 #'
-#' The observed values will be either equal to the counts or missing. The probability of missing is the inverse of the counts + 1.
+#' The observed values will be either equal to the counts or missing.
+#' The probability of missing is the inverse of the counts + 1.
 #'
-#' @param dataset A dataset to a the observation with missing data
-#' @param proportion The proportion of observations that will be missing
-#' @param count.variable The name of the variable holding the counts
-#' @param observed.variable The name of the variable holding the observed values = either count or missing
-#' @param year.variable The name of the variable holding the year
-#' @param site.variable The name of the variable holding the site
-#' @param max.count The maximum count
+#' @param dataset A dataset to a the observation with missing data.
+#' @param proportion The proportion of observations that will be missing.
+#' @param count.variable The name of the variable holding the counts.
+#' @param observed.variable The name of the variable holding the observed values
+#' = either count or missing.
+#' @param year.variable The name of the variable holding the year.
+#' @param site.variable The name of the variable holding the site.
+#' @param max.count The maximum count.
 #' @importFrom stats runif aggregate
 #' @export
 missingVolunteer <- function(
@@ -19,11 +21,11 @@ missingVolunteer <- function(
   year.variable = "Year",
   site.variable = "Site",
   max.count = 100
-){
+) {
   sites <- factor(dataset[, site.variable])
   years <- sort(unique(dataset[, year.variable]))
   probability.start <- runif(length(levels(sites)))
-  probability.continu <- sapply(seq(2, length(years), by = 1), function(i){
+  probability.continu <- sapply(seq(2, length(years), by = 1), function(i) {
     last.year <- which(dataset[, year.variable] == years[i - 1])
     observed.max <- aggregate(
       as.formula(paste(count.variable, site.variable, sep = "~")),
@@ -46,7 +48,7 @@ missingVolunteer <- function(
   }
   n <- sample(
     nrow(dataset),
-    size = ceiling( (1 - proportion) * nrow(dataset)),
+    size = ceiling((1 - proportion) * nrow(dataset)),
     replace = FALSE,
     prob = selected[cbind(sites, years)]
   )

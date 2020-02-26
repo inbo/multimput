@@ -10,7 +10,7 @@
 setMethod(
   f = "impute",
   signature = signature(model = "glmerMod"),
-  definition = function(model, data, ..., n.imp){
+  definition = function(model, data, ..., n.imp) {
     assert_that(requireNamespace("lme4", quietly = TRUE))
     assert_that(is.count(n.imp))
     assert_that(inherits(data, "data.frame"))
@@ -45,7 +45,7 @@ and refit the model."
       tcrossprod(x = mm)
     random <- lapply(
       lme4::ranef(model, condVar = TRUE),
-      function(x){
+      function(x) {
         if (ncol(x) > 1) {
           stop("Random slopes are not yet handled.")
         } else {
@@ -60,7 +60,7 @@ and refit the model."
     )
     eta <- lapply(
       names(random),
-      function(x){
+      function(x) {
         if (class(data[, x]) != "factor") {
           hash <- paste0("tmp", sha1(data[, x]))
           data[, hash] <- factor(data[, x])

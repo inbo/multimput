@@ -6,7 +6,7 @@
 setMethod(
   f = "impute",
   signature = signature(model = "inla"),
-  definition = function(model, ..., n.imp){
+  definition = function(model, ..., n.imp) {
     assert_that(is.count(n.imp))
     assert_that(
       model$.args$control.compute$config,

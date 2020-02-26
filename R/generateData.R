@@ -1,27 +1,47 @@
 #' Generate simulated data
 #'
-#' Generate data for a regural monitoring design. The counts follow a negative binomial distribution with given size paramters and the true mean mu depending on a year, period and site effect. All effects are independent fro each other and have, on the log-scale, a normal distribution with zero mean and given standard deviation.
-#' @param intercept the global mean on the log-scale
-#' @param n.year the number of years
-#' @param n.period the number of periods
-#' @param n.site the number of sites
-#' @param year.factor convert year to a factor. Defaults to FALSE
-#' @param period.factor convert period to a factor. Defaults to FALSE
-#' @param site.factor convert site to a factor. Defaults to FALSE
-#' @param trend the longterm linear trend on the log-scale
-#' @param sd.rw.year the standard deviation of the year effects on the log-scale
-#' @param amplitude.period the amplitude of the periodic effect on the log-scale
-#' @param mean.phase.period the mean of the phase of the periodic effect among years. Defaults to 0.
-#' @param sd.phase.period the standard deviation of the phase of the periodic effect among years
-#' @param sd.site the standard deviation of the site effects on the log-scale
-#' @param sd.rw.site the standard deviation of the random walk along year per site on the log-scale
-#' @param sd.noise the standard deviation of the noise effects on the log-scale
-#' @param size the size parameter of the negative binomial distribution
-#' @param n.run the number of runs with the same mu
-#' @param as.list return the dataset as a list rather than a data.frame. Defaults to FALSE
-#' @param details add variables containing the year, period and site effects. Defaults tot FALSE
+#' Generate data for a regural monitoring design.
+#' The counts follow a negative binomial distribution with given size paramters
+#' and the true mean mu depending on a year, period and site effect.
+#' All effects are independent from each other and have, on the log-scale, a
+#' normal distribution with zero mean and given standard deviation.
+#' @param intercept The global mean on the log-scale.
+#' @param n.year The number of years.
+#' @param n.period The number of periods.
+#' @param n.site The number of sites.
+#' @param year.factor Convert year to a factor.
+#' Defaults to `FALSE`.
+#' @param period.factor Convert period to a factor.
+#' Defaults to `FALSE`.
+#' @param site.factor Convert site to a factor.
+#' Defaults to `FALSE`.
+#' @param trend The longterm linear trend on the log-scale.
+#' @param sd.rw.year The standard deviation of the year effects on the
+#' log-scale.
+#' @param amplitude.period The amplitude of the periodic effect on the
+#' log-scale.
+#' @param mean.phase.period The mean of the phase of the periodic effect among
+#' years.
+#' Defaults to `0`.
+#' @param sd.phase.period The standard deviation of the phase of the periodic
+#' effect among years.
+#' @param sd.site The standard deviation of the site effects on the log-scale.
+#' @param sd.rw.site The standard deviation of the random walk along year per
+#' site on the log-scale.
+#' @param sd.noise The standard deviation of the noise effects on the log-scale.
+#' @param size The size parameter of the negative binomial distribution.
+#' @param n.run The number of runs with the same mu.
+#' @param as.list Return the dataset as a list rather than a data.frame.
+#' Defaults to `FALSE`.
+#' @param details Add variables containing the year, period and site effects.
+#' Defaults tot `FALSE`.
 #' @export
-#' @return A \code{data.frame} with five variables. \code{Year}, \code{Month} and \code{Site} are factors identifying the location and time of monitoring. \code{Mu} is the true mean of the negative binomial distribution in the original scale. \code{Count} are the simulated counts.
+#' @return A `data.frame` with five variables.
+#' `Year`, `Month` and `Site` are factors identifying the location and time of
+#' monitoring.
+#' `Mu` is the true mean of the negative binomial distribution in the original
+#' scale.
+#' `Count` are the simulated counts.
 #' @importFrom stats rnorm rnbinom
 #' @importFrom dplyr %>% group_by group_map mutate
 #' @importFrom rlang .data
@@ -45,7 +65,7 @@ generateData <- function(
   n.run = 10,
   as.list = FALSE,
   details = FALSE
-){
+) {
   #generate the design
   dataset <- expand.grid(
     Year = seq_len(n.year),
@@ -122,7 +142,7 @@ generateData <- function(
     return(dataset)
   }
 
-  relevant <- function(x, details, run){
+  relevant <- function(x, details, run) {
     if (details) {
       dots <- c("Year", "Period", "Site", "Mu", "YearEffect", "PeriodEffect",
         "SiteEffect", "Count")

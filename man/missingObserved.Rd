@@ -9,18 +9,20 @@ missingObserved(dataset, count.variable = "Count",
   year.variable = "Year", period.variable = "Period")
 }
 \arguments{
-\item{dataset}{A dataset to a the observation with missing data}
+\item{dataset}{A dataset to a the observation with missing data.}
 
-\item{count.variable}{The name of the variable holding the counts}
+\item{count.variable}{The name of the variable holding the counts.}
 
-\item{observed.variable}{The name of the variable holding the observed values = either count or missing}
+\item{observed.variable}{The name of the variable holding the observed values
+= either count or missing.}
 
-\item{site.variable}{The name of the variable holding the sites}
+\item{site.variable}{The name of the variable holding the sites.}
 
-\item{year.variable}{The name of the variable holding the years}
+\item{year.variable}{The name of the variable holding the years.}
 
-\item{period.variable}{The name of the variable holding the period}
+\item{period.variable}{The name of the variable holding the period.}
 }
 \description{
-The observed values will be either equal to the counts or missing. The probability of missing is the inverse of the counts + 1.
+The observed values will be either equal to the counts or missing.
+The probability of missing is the inverse of the counts + 1.
 }

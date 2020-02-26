@@ -2,10 +2,11 @@
 #' Holds a dataset and imputed values
 #' @section Slots:
 #'   \describe{
-#'    \item{\code{Data}}{a data.frame with the data}
-#'    \item{\code{Response}}{a character holding the name of the response variable}
-#'    \item{\code{Minimum}}{an optional character holding the name of the variable with the minimum}
-#'    \item{\code{Imputation}}{a matrix wih imputed values}
+#'    \item{`Data`}{A data.frame with the data.}
+#'    \item{`Response`}{A character holding the name of the response variable.}
+#'    \item{`Minimum`}{An optional character holding the name of the variable
+#'    with the minimum.}
+#'    \item{`Imputation`}{A matrix wih imputed values.}
 #'   }
 #' @name rawImputed-class
 #' @rdname rawImputed-class

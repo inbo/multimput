@@ -1,9 +1,14 @@
 #' Aggregate an imputed dataset
-#' @param object a rawImputed object
-#' @param grouping a vector of variables names to group the aggregation on
-#' @param fun the function to aggregate
-#' @param filter an optional argument to filter the raw dataset before aggregation. Will be passed to the \code{.dots} argument of \code{\link[dplyr]{filter_}}
-#' @param join an optional argument to filter the raw dataset based on a data.frame. A \code{\link[dplyr]{semi_join}} will be applied with \code{join} or each element of \code{join} in case join is a list
+#' @param object A rawImputed object.
+#' @param grouping A vector of variables names to group the aggregation on.
+#' @param fun The function to aggregate.
+#' @param filter
+#' An optional argument to filter the raw dataset before aggregation.
+#' Will be passed to the `.dots` argument of \code{\link[dplyr]{filter_}}.
+#' @param join
+#' An optional argument to filter the raw dataset based on a data.frame.
+#' A \code{\link[dplyr]{semi_join}} will be applied with `join` or each element
+#' of `join` in case join is a list.
 #' @name aggregate_impute
 #' @rdname aggregate_impute
 #' @exportMethod aggregate_impute
@@ -11,7 +16,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "aggregate_impute",
-  def = function(object, grouping, fun, filter, join){
+  def = function(object, grouping, fun, filter, join) {
     standard.generic("aggregate_impute") # nocov
   }
 )
@@ -21,7 +26,7 @@ setGeneric(
 setMethod(
   f = "aggregate_impute",
   signature = signature(object = "ANY"),
-  definition = function(object, grouping, fun, filter, join){
+  definition = function(object, grouping, fun, filter, join) {
     stop(
 "aggregate_impute() requires a 'rawImputed' or 'aggregatedImputed' object.
 See ?impute or ?aggregate_impute"
@@ -33,7 +38,8 @@ See ?impute or ?aggregate_impute"
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
 #' @importFrom tidyr spread_
-#' @importFrom dplyr %>% group_by summarise_at funs vars mutate_ bind_rows ungroup select_ filter_ n semi_join starts_with
+#' @importFrom dplyr %>% bind_rows filter_ funs group_by mutate_ n select_
+#' semi_join starts_with summarise_at vars ungroup
 #' @importFrom rlang syms !!!
 #' @importFrom methods new
 #' @importFrom stats setNames na.omit
@@ -48,7 +54,7 @@ See ?impute or ?aggregate_impute"
 setMethod(
   f = "aggregate_impute",
   signature = signature(object = "rawImputed"),
-  definition = function(object, grouping, fun, filter, join){
+  definition = function(object, grouping, fun, filter, join) {
     assert_that(is.character(grouping))
     assert_that(inherits(fun, "function"))
     grouping <- syms(grouping)
@@ -138,7 +144,8 @@ setMethod(
 #' @rdname aggregate_impute
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
-#' @importFrom dplyr %>% group_by summarise_at funs vars mutate_ filter_ n semi_join starts_with inner_join
+#' @importFrom dplyr %>% filter_ funs group_by inner_join mutate_ n semi_join
+#' starts_with summarise_at vars
 #' @importFrom methods new
 #' @importFrom stats setNames
 #' @importFrom digest sha1
@@ -146,7 +153,7 @@ setMethod(
 setMethod(
   f = "aggregate_impute",
   signature = signature(object = "aggregatedImputed"),
-  definition = function(object, grouping, fun, filter, join){
+  definition = function(object, grouping, fun, filter, join) {
     assert_that(is.character(grouping))
     assert_that(inherits(fun, "function"))
 
