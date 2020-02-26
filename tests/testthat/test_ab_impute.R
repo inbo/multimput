@@ -1,3 +1,4 @@
+context("generate imputed values")
 describe("impute", {
   context("impute")
   dataset <- generateData(n.year = 10, n.site = 10, n.run = 1)

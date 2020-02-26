@@ -26,7 +26,7 @@ aggregate_impute(object, grouping, fun, filter, join)
 \item{fun}{The function to aggregate.}
 
 \item{filter}{An optional argument to filter the raw dataset before aggregation.
-Will be passed to the \code{.dots} argument of \code{\link[dplyr]{filter_}}.}
+Will be passed to \code{\link[dplyr]{filter}}.}
 
 \item{join}{An optional argument to filter the raw dataset based on a data.frame.
 A \code{\link[dplyr]{semi_join}} will be applied with \code{join} or each element

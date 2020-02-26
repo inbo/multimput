@@ -57,7 +57,7 @@ setMethod(
 #' @rdname model_impute
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
-#' @importFrom dplyr %>% bind_rows filter_ group_by mutate_ n summarise_
+#' @importFrom dplyr %>% bind_rows filter group_by mutate_ n summarise_
 #' transmute_
 #' @importFrom rlang .data
 #' @importFrom tibble rownames_to_column
@@ -110,8 +110,12 @@ setMethod(
     object@Covariate <- object@Covariate %>%
       mutate_(.dots = setNames("seq_len(n())", id_column))
     if (!missing(filter)) {
+      dots <- map(
+        filter,
+        ~expr(!!parse_expr(as.character(.x)[2]))
+      )
       object@Covariate <- object@Covariate %>%
-        filter_(.dots = filter)
+        filter(!!!dots)
     }
     if (!missing(mutate)) {
       object@Covariate <- object@Covariate %>%

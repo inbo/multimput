@@ -1,3 +1,4 @@
+context("generate data")
 describe("generateData", {
   context("generateData")
   n.year <- 2L

@@ -4,7 +4,7 @@
 #' @param fun The function to aggregate.
 #' @param filter
 #' An optional argument to filter the raw dataset before aggregation.
-#' Will be passed to the `.dots` argument of \code{\link[dplyr]{filter_}}.
+#' Will be passed to \code{\link[dplyr]{filter}}.
 #' @param join
 #' An optional argument to filter the raw dataset based on a data.frame.
 #' A \code{\link[dplyr]{semi_join}} will be applied with `join` or each element
@@ -38,9 +38,10 @@ See ?impute or ?aggregate_impute"
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
 #' @importFrom tidyr spread_
-#' @importFrom dplyr %>% bind_rows filter_ funs group_by mutate_ n select_
+#' @importFrom dplyr %>% bind_rows filter funs group_by mutate_ n select_
 #' semi_join starts_with summarise_at vars ungroup
-#' @importFrom rlang syms !!!
+#' @importFrom rlang expr parse_expr syms !! !!!
+#' @importFrom purrr map
 #' @importFrom methods new
 #' @importFrom stats setNames na.omit
 #' @importFrom digest sha1
@@ -83,8 +84,12 @@ setMethod(
 
     if (!missing(filter)) {
       assert_that(is.list(filter))
+      dots <- map(
+        filter,
+        ~expr(!!parse_expr(as.character(.x)[2]))
+      )
       data <- data %>%
-        filter_(.dots = filter)
+        filter(!!!dots)
     }
 
     if (!missing(join)) {
@@ -144,7 +149,7 @@ setMethod(
 #' @rdname aggregate_impute
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
-#' @importFrom dplyr %>% filter_ funs group_by inner_join mutate_ n semi_join
+#' @importFrom dplyr %>% filter funs group_by inner_join mutate_ n semi_join
 #' starts_with summarise_at vars
 #' @importFrom methods new
 #' @importFrom stats setNames
@@ -172,8 +177,12 @@ setMethod(
 
     if (!missing(filter)) {
       assert_that(is.list(filter))
+      dots <- map(
+        filter,
+        ~expr(!!parse_expr(as.character(.x)[2]))
+      )
       data <- data %>%
-        filter_(.dots = filter)
+        filter(!!!dots)
     }
 
     if (!missing(join)) {
