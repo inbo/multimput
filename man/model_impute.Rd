@@ -36,7 +36,7 @@ the second the standard error of the estimate.}
 Will be passed to \code{\link[dplyr]{filter}}.}
 
 \item{mutate}{An optional argument to alter the aggregated dataset.
-Will be passed to the \code{.dots} argument of \code{\link[dplyr]{mutate_}}.
+Will be passed to the \code{.dots} argument of \code{\link[dplyr]{mutate}}.
 This is mainly useful for simple convertions, e.g. factors to numbers and
 viceversa.}
 }

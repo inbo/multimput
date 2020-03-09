@@ -38,7 +38,7 @@ See ?impute or ?aggregate_impute"
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
 #' @importFrom tidyr spread_
-#' @importFrom dplyr %>% bind_rows filter funs group_by mutate_ n select
+#' @importFrom dplyr %>% bind_rows filter funs group_by mutate n select
 #' semi_join starts_with summarise_at vars ungroup
 #' @importFrom rlang expr parse_expr syms !! !!!
 #' @importFrom purrr map
@@ -63,22 +63,19 @@ setMethod(
     id_column <- paste0("ID", sha1(Sys.time()))
     minimum_column <- paste0("Minimum", sha1(Sys.time()))
     response <- object@Response
-    data <- object@Data %>%
-      mutate_(.dots = "ifelse(is.na(%1$s), cumsum(is.na(%1$s)), NA)" %>%
-        sprintf(response) %>%
-        setNames(id_column)
+    dots <- expr(
+      !!parse_expr(
+        sprintf("ifelse(is.na(%1$s), cumsum(is.na(%1$s)), NA)", response)
       )
+    )
+    data <- object@Data %>%
+      mutate(!!id_column := !!dots)
     if (object@Minimum == "") {
       data <- data %>%
-        mutate_(.dots = list(-Inf) %>%
-          setNames(minimum_column)
-        )
+        mutate(!!minimum_column := -Inf)
     } else {
       data <- data %>%
-        mutate_(.dots = "%s" %>%
-          sprintf(object@Minimum) %>%
-          setNames(minimum_column)
-        )
+        mutate(!!minimum_column := !!parse_expr(object@Minimum))
     }
     imputation <- object@Imputation
 
@@ -128,7 +125,7 @@ setMethod(
         data %>%
           group_by(!!!grouping) %>%
           summarise_at(.funs = funs(fun), .vars = vars(response)) %>%
-          mutate_(Imputation = ~sprintf("Imputation%04i", i))
+          mutate(Imputation = !!sprintf("Imputation%04i", i))
       }
     ) %>%
       do.call(what = bind_rows) %>%
@@ -149,9 +146,10 @@ setMethod(
 #' @rdname aggregate_impute
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
-#' @importFrom dplyr %>% filter funs group_by inner_join mutate_ n select
-#' semi_join starts_with summarise_at vars
+#' @importFrom dplyr %>% filter funs group_by inner_join mutate n row_number
+#' select semi_join starts_with summarise_at vars
 #' @importFrom methods new
+#' @importFrom rlang !! :=
 #' @importFrom stats setNames
 #' @importFrom digest sha1
 #' @include aggregatedImputed_class.R
@@ -164,16 +162,11 @@ setMethod(
 
     id_column <- paste0("ID", sha1(Sys.time()))
     data <- object@Covariate %>%
-      mutate_(.dots = "seq_along(%s)" %>%
-          sprintf(grouping[1]) %>%
-          setNames(id_column)
-      )
+      mutate(!!id_column := row_number())
     grouping <- syms(grouping)
     imputation <- object@Imputation %>%
       as.data.frame() %>%
-      mutate_(.dots = "seq_along(Imputation0001)" %>%
-          setNames(id_column)
-      )
+      mutate(!!id_column := row_number())
 
     if (!missing(filter)) {
       assert_that(is.list(filter))

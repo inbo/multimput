@@ -11,7 +11,7 @@
 #' An optional list of arguments to pass to the `extractor` function.
 #' @inheritParams aggregate_impute
 #' @param mutate An optional argument to alter the aggregated dataset.
-#' Will be passed to the `.dots` argument of \code{\link[dplyr]{mutate_}}.
+#' Will be passed to the `.dots` argument of \code{\link[dplyr]{mutate}}.
 #' This is mainly useful for simple convertions, e.g. factors to numbers and
 #' viceversa.
 #' @name model_impute
@@ -57,9 +57,9 @@ setMethod(
 #' @rdname model_impute
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
-#' @importFrom dplyr %>% bind_rows filter group_by mutate_ n select summarise_
-#' transmute_
-#' @importFrom rlang .data !!!
+#' @importFrom dplyr %>% bind_rows filter group_by mutate n row_number select
+#' summarise_ transmute_
+#' @importFrom rlang .data !!! :=
 #' @importFrom tibble rownames_to_column
 #' @importFrom stats var
 #' @examples
@@ -108,7 +108,7 @@ setMethod(
 
     id_column <- paste0("ID", sha1(Sys.time()))
     object@Covariate <- object@Covariate %>%
-      mutate_(.dots = setNames("seq_len(n())", id_column))
+      dplyr::mutate(!!id_column := row_number())
     if (!missing(filter)) {
       dots <- map(
         filter,
@@ -118,8 +118,12 @@ setMethod(
         filter(!!!dots)
     }
     if (!missing(mutate)) {
+      dots <- map(
+        mutate,
+        ~expr(!!parse_expr(as.character(.x)[2]))
+      )
       object@Covariate <- object@Covariate %>%
-        mutate_(.dots = mutate)
+        dplyr::mutate(!!!dots)
     }
 
     object@Imputation <- object@Imputation[object@Covariate[[id_column]], ]
@@ -152,8 +156,8 @@ setMethod(
     m %>%
       bind_rows() %>%
       select(Parameter = 1, Estimate = 2, SE = 3) %>%
-      mutate_(
-        Parameter = ~factor(Parameter, levels = unique(Parameter))
+      dplyr::mutate(
+        Parameter = factor(.data$Parameter, levels = unique(.data$Parameter))
       ) -> m
     m %>%
       group_by(.data$Parameter) %>%
