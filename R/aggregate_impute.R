@@ -38,7 +38,7 @@ See ?impute or ?aggregate_impute"
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
 #' @importFrom tidyr spread_
-#' @importFrom dplyr %>% bind_rows filter funs group_by mutate_ n select_
+#' @importFrom dplyr %>% bind_rows filter funs group_by mutate_ n select
 #' semi_join starts_with summarise_at vars ungroup
 #' @importFrom rlang expr parse_expr syms !! !!!
 #' @importFrom purrr map
@@ -137,10 +137,10 @@ setMethod(
     new(
       "aggregatedImputed",
       Covariate = total %>%
-        select_(~-starts_with("Imputation")) %>%
+        select(-starts_with("Imputation")) %>%
         as.data.frame(),
       Imputation = total %>%
-        select_(~starts_with("Imputation")) %>%
+        select(starts_with("Imputation")) %>%
         as.matrix()
     )
   }
@@ -149,8 +149,8 @@ setMethod(
 #' @rdname aggregate_impute
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
-#' @importFrom dplyr %>% filter funs group_by inner_join mutate_ n semi_join
-#' starts_with summarise_at vars
+#' @importFrom dplyr %>% filter funs group_by inner_join mutate_ n select
+#' semi_join starts_with summarise_at vars
 #' @importFrom methods new
 #' @importFrom stats setNames
 #' @importFrom digest sha1
@@ -213,10 +213,10 @@ setMethod(
     new(
       "aggregatedImputed",
       Covariate = total %>%
-        select_(~-starts_with("Imputation")) %>%
+        select(-starts_with("Imputation")) %>%
         as.data.frame(),
       Imputation = total %>%
-        select_(~starts_with("Imputation")) %>%
+        select(starts_with("Imputation")) %>%
         as.matrix()
     )
   }

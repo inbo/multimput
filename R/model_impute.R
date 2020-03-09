@@ -57,9 +57,9 @@ setMethod(
 #' @rdname model_impute
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
-#' @importFrom dplyr %>% bind_rows filter group_by mutate_ n summarise_
+#' @importFrom dplyr %>% bind_rows filter group_by mutate_ n select summarise_
 #' transmute_
-#' @importFrom rlang .data
+#' @importFrom rlang .data !!!
 #' @importFrom tibble rownames_to_column
 #' @importFrom stats var
 #' @examples
@@ -151,7 +151,7 @@ setMethod(
     }
     m %>%
       bind_rows() %>%
-      select_(Parameter = 1, Estimate = 2, SE = 3) %>%
+      select(Parameter = 1, Estimate = 2, SE = 3) %>%
       mutate_(
         Parameter = ~factor(Parameter, levels = unique(Parameter))
       ) -> m

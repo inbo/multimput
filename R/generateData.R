@@ -43,8 +43,8 @@
 #' scale.
 #' `Count` are the simulated counts.
 #' @importFrom stats rnorm rnbinom
-#' @importFrom dplyr %>% group_by group_map mutate
-#' @importFrom rlang .data
+#' @importFrom dplyr %>% group_by group_map mutate select
+#' @importFrom rlang .data !!!
 generateData <- function(
   intercept = 2,
   n.year = 24,
@@ -150,7 +150,7 @@ generateData <- function(
       dots <- c("Year", "Period", "Site", "Mu", "Count")
     }
     x %>%
-      select_(.dots = dots) %>%
+      select(!!!dots) %>%
       mutate(Run = run$Run) %>%
       as.data.frame()
   }
