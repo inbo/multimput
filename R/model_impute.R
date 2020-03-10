@@ -58,7 +58,7 @@ setMethod(
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
 #' @importFrom dplyr %>% bind_rows filter group_by mutate n row_number select
-#' summarise_ transmute_
+#' summarise transmute_
 #' @importFrom rlang .data !!! :=
 #' @importFrom tibble rownames_to_column
 #' @importFrom stats var
@@ -161,9 +161,9 @@ setMethod(
       ) -> m
     m %>%
       group_by(.data$Parameter) %>%
-      summarise_(
-        SE = ~sqrt(mean(SE ^ 2) + var(Estimate) * (n() + 1) / n()),
-        Estimate = ~mean(Estimate)
+      summarise(
+        SE = sqrt(mean(.data$SE ^ 2) + var(.data$Estimate) * (n() + 1) / n()),
+        Estimate = mean(.data$Estimate)
       ) %>%
       ungroup() %>%
       transmute_(
