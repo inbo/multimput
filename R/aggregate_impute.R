@@ -38,7 +38,7 @@ See ?impute or ?aggregate_impute"
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
 #' @importFrom tidyr spread_
-#' @importFrom dplyr %>% bind_rows filter funs group_by mutate n select
+#' @importFrom dplyr %>% bind_rows filter group_by mutate n select
 #' semi_join starts_with summarise_at vars ungroup
 #' @importFrom rlang expr parse_expr syms !! !!!
 #' @importFrom purrr map
@@ -124,7 +124,7 @@ setMethod(
         )
         data %>%
           group_by(!!!grouping) %>%
-          summarise_at(.funs = funs(fun), .vars = vars(response)) %>%
+          summarise_at(.funs = list(fun), .vars = vars(response)) %>%
           mutate(Imputation = !!sprintf("Imputation%04i", i))
       }
     ) %>%
@@ -146,7 +146,7 @@ setMethod(
 #' @rdname aggregate_impute
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
-#' @importFrom dplyr %>% filter funs group_by inner_join mutate n row_number
+#' @importFrom dplyr %>% filter group_by inner_join mutate n row_number
 #' select semi_join starts_with summarise_at vars
 #' @importFrom methods new
 #' @importFrom rlang !! :=
@@ -199,7 +199,7 @@ setMethod(
       inner_join(imputation, by = id_column) %>%
       group_by(!!!grouping) %>%
       summarise_at(
-        .funs = funs(fun),
+        .funs = list(fun),
         .vars = vars(colnames(object@Imputation))
       )
 
