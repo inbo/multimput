@@ -1,5 +1,5 @@
 #' @rdname impute
-#' @importFrom methods setMethod
+#' @importFrom methods new setMethod
 #' @importFrom assertthat assert_that is.count has_name
 #' @importFrom stats terms predict rt
 #' @param data The dataset holding both the observed and the missing values

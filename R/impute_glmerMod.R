@@ -1,6 +1,6 @@
 #' @rdname impute
-#' @importFrom methods setMethod
-#' @importFrom assertthat assert_that is.count
+#' @importFrom methods new setMethod
+#' @importFrom assertthat assert_that has_name is.count
 #' @importFrom mvtnorm rmvnorm
 #' @importFrom digest sha1
 #' @importFrom dplyr %>%

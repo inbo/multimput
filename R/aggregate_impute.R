@@ -40,10 +40,10 @@ See ?impute or ?aggregate_impute"
 #' @importFrom tidyr spread_
 #' @importFrom dplyr %>% bind_rows filter group_by mutate n select
 #' semi_join starts_with summarise_at vars ungroup
-#' @importFrom rlang expr parse_expr syms !! !!!
+#' @importFrom rlang expr parse_expr syms !! !!! :=
 #' @importFrom purrr map
 #' @importFrom methods new
-#' @importFrom stats setNames na.omit
+#' @importFrom stats na.omit
 #' @importFrom digest sha1
 #' @examples
 #' dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
@@ -149,8 +149,7 @@ setMethod(
 #' @importFrom dplyr %>% filter group_by inner_join mutate n row_number
 #' select semi_join starts_with summarise_at vars
 #' @importFrom methods new
-#' @importFrom rlang !! :=
-#' @importFrom stats setNames
+#' @importFrom rlang !! !!! :=
 #' @importFrom digest sha1
 #' @include aggregatedImputed_class.R
 setMethod(

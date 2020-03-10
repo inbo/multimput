@@ -57,11 +57,13 @@ setMethod(
 #' @rdname model_impute
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
+#' @importFrom digest sha1
 #' @importFrom dplyr %>% bind_rows filter group_by mutate n row_number select
-#' summarise transmute
-#' @importFrom rlang .data !!! :=
+#' summarise transmute ungroup
+#' @importFrom purrr map
+#' @importFrom rlang expr parse_expr .data !! !!! :=
 #' @importFrom tibble rownames_to_column
-#' @importFrom stats var
+#' @importFrom stats as.formula qnorm var
 #' @examples
 #' dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
 #' dataset$Count[sample(nrow(dataset), 50)] <- NA

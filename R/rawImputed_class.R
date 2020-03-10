@@ -25,7 +25,7 @@ setClass(
 )
 
 #' @importFrom methods setValidity
-#' @importFrom assertthat assert_that is.string
+#' @importFrom assertthat assert_that has_name is.string
 setValidity(
   "rawImputed",
   function(object) {

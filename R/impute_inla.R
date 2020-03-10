@@ -1,7 +1,7 @@
 #' @rdname impute
-#' @importFrom methods setMethod
+#' @importFrom methods new setMethod
 #' @importFrom assertthat assert_that is.count
-#' @importFrom stats rgamma
+#' @importFrom stats rgamma rnorm rpois
 #' @include impute_generic.R
 setMethod(
   f = "impute",

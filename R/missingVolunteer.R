@@ -11,7 +11,7 @@
 #' @param year.variable The name of the variable holding the year.
 #' @param site.variable The name of the variable holding the site.
 #' @param max.count The maximum count.
-#' @importFrom stats runif aggregate
+#' @importFrom stats aggregate as.formula runif
 #' @export
 missingVolunteer <- function(
   dataset,
