@@ -58,7 +58,7 @@ setMethod(
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
 #' @importFrom dplyr %>% bind_rows filter group_by mutate n row_number select
-#' summarise transmute_
+#' summarise transmute
 #' @importFrom rlang .data !!! :=
 #' @importFrom tibble rownames_to_column
 #' @importFrom stats var
@@ -166,12 +166,12 @@ setMethod(
         Estimate = mean(.data$Estimate)
       ) %>%
       ungroup() %>%
-      transmute_(
-        ~Parameter,
-        ~Estimate,
-        ~SE,
-        LCL = ~qnorm(0.025, Estimate, SE),
-        UCL = ~qnorm(0.975, Estimate, SE)
+      transmute(
+        .data$Parameter,
+        .data$Estimate,
+        .data$SE,
+        LCL = qnorm(0.025, .data$Estimate, .data$SE),
+        UCL = qnorm(0.975, .data$Estimate, .data$SE)
       ) -> result
     attr(result, "detail") <- m
     return(result)
