@@ -37,7 +37,7 @@ See ?impute or ?aggregate_impute"
 #' @rdname aggregate_impute
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
-#' @importFrom tidyr spread_
+#' @importFrom tidyr pivot_wider
 #' @importFrom dplyr %>% bind_rows filter group_by mutate n select
 #' semi_join starts_with summarise_at vars ungroup
 #' @importFrom rlang expr parse_expr syms !! !!! :=
@@ -129,7 +129,7 @@ setMethod(
       }
     ) %>%
       do.call(what = bind_rows) %>%
-      spread_(key_col = "Imputation", value_col = response) %>%
+      pivot_wider(names_from = "Imputation", values_from = response) %>%
       ungroup()
     new(
       "aggregatedImputed",
