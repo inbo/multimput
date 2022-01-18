@@ -82,6 +82,10 @@ missingCurrentCount <- function( # nolint: object_name_linter.
 
 #' @inheritParams missing_at_random
 #' @inheritParams missingAtRandom
+#' @inheritParams missing_observed
+#' @param site.variable The name of the variable holding the sites.
+#' @param year.variable The name of the variable holding the years.
+#' @param period.variable The name of the variable holding the period.
 #' @export
 #' @rdname deprecated
 missingObserved <- function( # nolint: object_name_linter.
@@ -93,5 +97,25 @@ missingObserved <- function( # nolint: object_name_linter.
     dataset = dataset, count_variable = count.variable, # nolint: object_name_linter, line_length_linter.
     observed_variable = observed.variable, site_variable = site.variable, # nolint: object_name_linter, line_length_linter.
     year_variable = year.variable, period_variable = period.variable # nolint: object_name_linter, line_length_linter.
+  )
+}
+
+#' @inheritParams missing_at_random
+#' @inheritParams missingAtRandom
+#' @inheritParams missing_observed
+#' @inheritParams missingObserved
+#' @param max.count The maximum count.
+#' @export
+#' @rdname deprecated
+missingVolunteer <- function( # nolint: object_name_linter.
+    dataset, proportion = 0.25, count.variable = "Count", # nolint: object_name_linter, line_length_linter.
+    observed.variable = "Observed", year.variable = "Year", # nolint: object_name_linter, line_length_linter.
+    site.variable = "Site", max.count = 100 # nolint: object_name_linter.
+) {
+  .Deprecated("missing_observed", package = "multimput")
+  missing_volunteer(
+    dataset = dataset, count_variable = count.variable, # nolint: object_name_linter, line_length_linter.
+    observed_variable = observed.variable, site_variable = site.variable, # nolint: object_name_linter, line_length_linter.
+    year_variable = year.variable, max_count = max.count # nolint: object_name_linter, line_length_linter.
   )
 }

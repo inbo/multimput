@@ -3,10 +3,7 @@
 #' The observed values will be either equal to the counts or missing.
 #' The probability of missing is the inverse of the counts + 1.
 #'
-#' @param dataset A dataset to a the observation with missing data.
-#' @param count_variable The name of the variable holding the counts.
-#' @param observed_variable The name of the variable holding the observed values
-#' = either count or missing.
+#' @inheritParams missing_at_random
 #' @param site_variable The name of the variable holding the sites.
 #' @param year_variable The name of the variable holding the years.
 #' @param period_variable The name of the variable holding the period.

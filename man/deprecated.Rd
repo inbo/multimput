@@ -5,6 +5,7 @@
 \alias{missingAtRandom}
 \alias{missingCurrentCount}
 \alias{missingObserved}
+\alias{missingVolunteer}
 \title{Deprecated functions}
 \usage{
 generateData(
@@ -50,6 +51,16 @@ missingObserved(
   site.variable = "Site",
   year.variable = "Year",
   period.variable = "Period"
+)
+
+missingVolunteer(
+  dataset,
+  proportion = 0.25,
+  count.variable = "Count",
+  observed.variable = "Observed",
+  year.variable = "Year",
+  site.variable = "Site",
+  max.count = 100
 )
 }
 \arguments{
@@ -110,6 +121,14 @@ Defaults tot \code{FALSE}.}
 
 \item{observed.variable}{The name of the variable holding the observed values
 = either count or missing.}
+
+\item{site.variable}{The name of the variable holding the sites.}
+
+\item{year.variable}{The name of the variable holding the years.}
+
+\item{period.variable}{The name of the variable holding the period.}
+
+\item{max.count}{The maximum count.}
 }
 \description{
 These functions will be removed from \code{multimput} in the future.
