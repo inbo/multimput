@@ -64,3 +64,18 @@ missingAtRandom <- function( # nolint: object_name_linter.
     observed_variable = observed.variable # nolint: object_name_linter.
   )
 }
+
+#' @inheritParams missing_at_random
+#' @inheritParams missingAtRandom
+#' @export
+#' @rdname deprecated
+missingCurrentCount <- function( # nolint: object_name_linter.
+    dataset, proportion = 0.25, count.variable = "Count", # nolint: object_name_linter, line_length_linter.
+    observed.variable = "Observed" # nolint: object_name_linter.
+) {
+  .Deprecated("missing_current_count", package = "multimput")
+  missing_current_count(
+    dataset = dataset, proportion = proportion, count_variable = count.variable, # nolint: object_name_linter, line_length_linter.
+    observed_variable = observed.variable # nolint: object_name_linter.
+  )
+}

@@ -3,6 +3,7 @@
 \name{generateData}
 \alias{generateData}
 \alias{missingAtRandom}
+\alias{missingCurrentCount}
 \title{Deprecated functions}
 \usage{
 generateData(
@@ -28,6 +29,13 @@ generateData(
 )
 
 missingAtRandom(
+  dataset,
+  proportion = 0.25,
+  count.variable = "Count",
+  observed.variable = "Observed"
+)
+
+missingCurrentCount(
   dataset,
   proportion = 0.25,
   count.variable = "Count",
