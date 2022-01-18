@@ -45,21 +45,22 @@ Remotes:
     inbo/INLA
 Encoding: UTF-8
 LazyData: TRUE
-Roxygen: list(wrap = FALSE, markdown = TRUE)
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Collate: 
     'rawImputed_class.R'
     'aggregatedImputed_class.R'
     'aggregate_impute.R'
     'datasets.R'
-    'generateData.R'
+    'deprecated.R'
+    'generate_data.R'
     'import_S3_classes.R'
     'impute_generic.R'
     'impute_glmerMod.R'
     'impute_inla.R'
     'impute_lm.R'
-    'missingAtRandom.R'
     'missingCurrentCount.R'
     'missingObserved.R'
     'missingVolunteer.R'
+    'missing_at_random.R'
     'model_impute.R'

@@ -28,7 +28,7 @@
 #' @param as.list Return the dataset as a list rather than a data.frame.
 #' Defaults to `FALSE`.
 #' @export
-#' @rdname generate_data
+#' @rdname deprecated
 generateData <- function( # nolint: object_name_linter.
     intercept = 2, n.year = 24, n.period = 6, n.site = 20, year.factor = FALSE, # nolint: object_name_linter, line_length_linter.
     period.factor = FALSE, site.factor = FALSE, trend = 0.01, sd.rw.year = 0.1, # nolint: object_name_linter, line_length_linter.
@@ -45,5 +45,22 @@ generateData <- function( # nolint: object_name_linter.
     sd_phase_period = sd.phase.period, sd_site = sd.site, # nolint: object_name_linter, line_length_linter.
     sd_rw_site = sd.rw.site, sd_noise = sd.noise, size = size, n_run = n.run, # nolint: object_name_linter, line_length_linter.
     as_list = as.list, details = details # nolint: object_name_linter.
+  )
+}
+
+#' @inheritParams missing_at_random
+#' @param count.variable The name of the variable holding the counts.
+#' @param observed.variable The name of the variable holding the observed values
+#' = either count or missing.
+#' @export
+#' @rdname deprecated
+missingAtRandom <- function( # nolint: object_name_linter.
+    dataset, proportion = 0.25, count.variable = "Count", # nolint: object_name_linter, line_length_linter.
+    observed.variable = "Observed" # nolint: object_name_linter.
+) {
+  .Deprecated("missing_at_random", package = "multimput")
+  missing_at_random(
+    dataset = dataset, proportion = proportion, count_variable = count.variable, # nolint: object_name_linter, line_length_linter.
+    observed_variable = observed.variable # nolint: object_name_linter.
   )
 }
