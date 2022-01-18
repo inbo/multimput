@@ -10,22 +10,24 @@
 \alias{impute,lm-method}
 \title{Impute a dataset}
 \usage{
-impute(model, ..., n.imp = 19)
+impute(model, ..., n_imp = 19)
 
-\S4method{impute}{ANY}(model, ..., n.imp = 19)
+\S4method{impute}{ANY}(model, ..., n_imp = 19)
 
-\S4method{impute}{glmerMod}(model, data, ..., n.imp)
+\S4method{impute}{glmerMod}(model, data, ..., n_imp)
 
-\S4method{impute}{inla}(model, ..., n.imp = 19)
+\S4method{impute}{inla}(model, ..., n_imp = 19)
 
-\S4method{impute}{lm}(model, data, ..., n.imp)
+\S4method{impute}{lm}(model, data, ..., n_imp)
 }
 \arguments{
 \item{model}{model to impute the dataset}
 
-\item{...}{other arguments. See details}
+\item{...}{other arguments.
+See details}
 
-\item{n.imp}{the number of imputations. Defaults to 19}
+\item{n_imp}{the number of imputations.
+Defaults to \code{19}.}
 
 \item{data}{The dataset holding both the observed and the missing values}
 }

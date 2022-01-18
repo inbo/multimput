@@ -6,38 +6,41 @@
 setMethod(
   f = "impute",
   signature = signature(model = "inla"),
-  definition = function(model, ..., n.imp) {
-    assert_that(is.count(n.imp))
+  definition = function(model, ..., n_imp) {
+    dots <- list(...)
+    assert_that(
+      !has_name(dots, "n.imp"), msg = "please use `n_imp` instead of `n.imp`"
+    )
+    assert_that(is.count(n_imp))
     assert_that(
       model$.args$control.compute$config,
       msg =
 "model must be fit with the 'config = TRUE' argument of control.compute"
     )
 
-    dots <- list(...)
     if (is.null(dots$minimum)) {
       dots$minimum <- ""
     }
 
     response <- as.character(model$.args$formula)[2]
-    missing.obs <- which(is.na(model$.args$data[, response]))
-    if (length(missing.obs) == 0) {
+    missing_obs <- which(is.na(model$.args$data[, response]))
+    if (length(missing_obs) == 0) {
       return(
         new(
           "rawImputed",
           Data = model$.args$data,
           Response = response,
-          Imputation = matrix(integer(0), ncol = n.imp),
+          Imputation = matrix(integer(0), ncol = n_imp),
           Minimum = dots$minimum
         )
       )
     }
 
-    missing.obs <- sprintf(paste0("Predictor:%i"), missing.obs)
+    missing_obs <- sprintf(paste0("Predictor:%i"), missing_obs)
 
     assert_that(requireNamespace("INLA", quietly = TRUE))
     samples <- INLA::inla.posterior.sample(
-      n = n.imp,
+      n = n_imp,
       model
     )
     imputation <- switch(
@@ -47,8 +50,8 @@ setMethod(
           samples,
           function(x) {
             rpois(
-              n = length(missing.obs),
-              lambda = exp(x$latent[missing.obs, 1])
+              n = length(missing_obs),
+              lambda = exp(x$latent[missing_obs, 1])
             )
           }
         )
@@ -59,9 +62,9 @@ setMethod(
           function(x) {
             h <- x$hyperpar
             rnbinom(
-              n = length(missing.obs),
+              n = length(missing_obs),
               size = h[grepl("size for the nbinomial", names(h))],
-              mu = exp(x$latent[missing.obs, 1]))
+              mu = exp(x$latent[missing_obs, 1]))
           }
         )
       },
@@ -71,10 +74,10 @@ setMethod(
           function(x) {
             h <- x$hyperpar
             prec <- h[grepl("Gamma observations", names(h))]
-            mu <- exp(x$latent[missing.obs, 1])
+            mu <- exp(x$latent[missing_obs, 1])
             rate  <- prec * mu
             shape <- mu * rate
-            rgamma(n = length(missing.obs), shape = shape, rate = rate)
+            rgamma(n = length(missing_obs), shape = shape, rate = rate)
           }
         )
       },
@@ -84,8 +87,8 @@ setMethod(
           function(x) {
             h <- x$hyperpar
             rnorm(
-              n = length(missing.obs),
-              mean = x$latent[missing.obs, 1],
+              n = length(missing_obs),
+              mean = x$latent[missing_obs, 1],
               sd = h[grepl("Gaussian observations", names(h))]
             )
           }

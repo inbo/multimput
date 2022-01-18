@@ -12,23 +12,26 @@
 setMethod(
   f = "impute",
   signature = signature(model = "lm"),
-  definition = function(model, data, ..., n.imp) {
+  definition = function(model, data, ..., n_imp) {
+    dots <- list(...)
+    assert_that(
+      !has_name(dots, "n.imp"), msg = "please use `n_imp` instead of `n.imp`"
+    )
     assert_that(inherits(data, "data.frame"))
-    assert_that(is.count(n.imp))
+    assert_that(is.count(n_imp))
 
     response <- as.character(terms(model))[2]
     assert_that(has_name(data, response))
 
-    missing.obs <- which(is.na(data[, response]))
-    prediction <- predict(model, newdata = data[missing.obs, ], se.fit = TRUE)
+    missing_obs <- which(is.na(data[, response]))
+    prediction <- predict(model, newdata = data[missing_obs, ], se.fit = TRUE)
     prediction$se.pred <- sqrt(
       prediction$residual.scale ^ 2 + prediction$se.fit ^ 2
     )
-    rt.value <- matrix(
-      rt(length(missing.obs) * n.imp, df = prediction$df),
-      ncol = n.imp
+    rt_value <- matrix(
+      rt(length(missing_obs) * n_imp, df = prediction$df),
+      ncol = n_imp
     )
-    dots <- list(...)
     if (is.null(dots$minimum)) {
       dots$minimum <- ""
     }
@@ -36,7 +39,7 @@ setMethod(
       "rawImputed",
       Data = data,
       Response = response,
-      Imputation = prediction$fit + rt.value * prediction$se.pred,
+      Imputation = prediction$fit + rt_value * prediction$se.pred,
       Minimum = dots$minimum
     )
   }

@@ -10,9 +10,13 @@
 setMethod(
   f = "impute",
   signature = signature(model = "glmerMod"),
-  definition = function(model, data, ..., n.imp) {
+  definition = function(model, data, ..., n_imp) {
+    dots <- list(...)
+    assert_that(
+      !has_name(dots, "n.imp"), msg = "please use `n_imp` instead of `n.imp`"
+    )
     assert_that(requireNamespace("lme4", quietly = TRUE))
-    assert_that(is.count(n.imp))
+    assert_that(is.count(n_imp))
     assert_that(inherits(data, "data.frame"))
     if (any(grepl("factor\\(", model@call))) {
       stop(
@@ -28,16 +32,16 @@ and refit the model."
       )
     ]
     assert_that(has_name(data, response))
-    missing.obs <- which(is.na(data[, response]))
+    missing_obs <- which(is.na(data[, response]))
     call <- model@call %>%
       as.character()
     mm <- call[grepl("~", call)] %>%
       gsub(pattern = "^.*~", replacement = "~") %>%
       gsub(pattern = "\\+ \\(.*\\|.*\\)", replacement = "") %>%
       as.formula() %>%
-      model.matrix(data = data[missing.obs, ])
+      model.matrix(data = data[missing_obs, ])
     fixed <- rmvnorm(
-      n.imp,
+      n_imp,
       mean = lme4::fixef(model),
       sigma = vcov(model) %>%
         as.matrix()
@@ -50,11 +54,11 @@ and refit the model."
           stop("Random slopes are not yet handled.")
         } else {
           rnorm(
-            n.imp * nrow(x),
+            n_imp * nrow(x),
             mean = x[, 1],
             sd = sqrt(attr(x, "postVar")[1, ,]) #nolint
           ) %>%
-            matrix(ncol = n.imp)
+            matrix(ncol = n_imp)
         }
       }
     )
@@ -69,7 +73,7 @@ and refit the model."
         }
         paste("~0 + ", hash) %>% #nolint
             as.formula() %>%
-            model.matrix(data = data[missing.obs, ]) %>%
+            model.matrix(data = data[missing_obs, ]) %>%
             tcrossprod(t(random[[x]]))
       }
     ) %>%
@@ -82,8 +86,7 @@ and refit the model."
       "binomial" = rbinom(length(mu), prob = mu, size = 1),
       stop(model@resp$family$family, " family not yet handled.")
     ) %>%
-      matrix(ncol = n.imp)
-    dots <- list(...)
+      matrix(ncol = n_imp)
     if (is.null(dots$minimum)) {
       dots$minimum <- ""
     }
