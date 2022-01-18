@@ -79,3 +79,19 @@ missingCurrentCount <- function( # nolint: object_name_linter.
     observed_variable = observed.variable # nolint: object_name_linter.
   )
 }
+
+#' @inheritParams missing_at_random
+#' @inheritParams missingAtRandom
+#' @export
+#' @rdname deprecated
+missingObserved <- function( # nolint: object_name_linter.
+    dataset, count.variable = "Count", observed.variable = "Observed", # nolint: object_name_linter, line_length_linter.
+    site.variable = "Site", year.variable = "Year", period.variable = "Period" # nolint: object_name_linter, line_length_linter.
+) {
+  .Deprecated("missing_observed", package = "multimput")
+  missing_observed(
+    dataset = dataset, count_variable = count.variable, # nolint: object_name_linter, line_length_linter.
+    observed_variable = observed.variable, site_variable = site.variable, # nolint: object_name_linter, line_length_linter.
+    year_variable = year.variable, period_variable = period.variable # nolint: object_name_linter, line_length_linter.
+  )
+}
