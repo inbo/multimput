@@ -15,16 +15,17 @@ vignette: >
 ---
 
 ```{r settings, echo = FALSE}
-knitr::opts_chunk$set(
-  message = FALSE,
-  fig.width = 7.1,
-  fig.height = 5
-)
+library(knitr)
+opts_chunk$set(message = FALSE, fig.width = 7.1, fig.height = 5)
 ```
 
 # The `multimput` package
 
-The `multimput` package was originally intended to provide the data and code to replicate the results of @Onkelinx2016. This paper is freely available at http://dx.doi.org/10.1007/s10336-016-1404-9. The functions were all rewritten to make them more user-friendly and more generic. In order to make the package more compact, we removed the original code and data starting for version 0.2.6. However both the original code and data remain available in [the older releases](https://github.com/inbo/multimput/releases). 
+The `multimput` package was originally intended to provide the data and code to replicate the results of @Onkelinx2016.
+This paper is freely available at http://dx.doi.org/10.1007/s10336-016-1404-9.
+The functions were all rewritten to make them more user-friendly and more generic.
+In order to make the package more compact, we removed the original code and data starting for version 0.2.6.
+However both the original code and data remain available in [the older releases](https://github.com/inbo/multimput/releases). 
 
 # Very short intro to multiple imputation
 
@@ -35,11 +36,24 @@ The `multimput` package was originally intended to provide the data and code to 
 
 # Short intro to multiple imputation
 
-The imputations are based on a model $Y \sim X \beta^*$ which the user has to specify. For a missing value $i$ with covariates $x_i$, we draw a random value $y_i$ from the distribution of $\hat{y}_i$. In case of a linear model, we sample a normal distribution $y_i \sim N(\hat{y}_i, \sigma_i)$. An imputation set $l$ holds an impute value $y_i$ for each missing value.
+The imputations are based on a model $Y \sim X \beta^*$ which the user has to specify.
+For a missing value $i$ with covariates $x_i$, we draw a random value $y_i$ from the distribution of $\hat{y}_i$.
+In case of a linear model, we sample a normal distribution $y_i \sim N(\hat{y}_i, \sigma_i)$.
+An imputation set $l$ holds an impute value $y_i$ for each missing value.
 
-With the missing values replaced by imputation set $l$, the dataset is complete. So we can apply the analysis that we wanted to do in the first place. This can, but don't has to, include aggregating the dataset prior to analysis. The analysis results in a set of coefficients ${\gamma_a}_l$ and their standard error ${\sigma_a}_l$. Of course, this set will depend on the imputed values of the imputation set $l$. Another imputation set has different imputed values and will hence lead to different coefficients.
+With the missing values replaced by imputation set $l$, the dataset is complete.
+So we can apply the analysis that we wanted to do in the first place.
+This can, but don't has to, include aggregating the dataset prior to analysis.
+The analysis results in a set of coefficients ${\gamma_a}_l$ and their standard error ${\sigma_a}_l$.
+Of course, this set will depend on the imputed values of the imputation set $l$.
+Another imputation set has different imputed values and will hence lead to different coefficients.
 
-Therefore the imputation, aggregation and analysis is repeated for $L$ different imputation sets, resulting in $L$ sets of coefficients and their standard errors. They are aggregated by the formulas below. The coefficient will be the average of the coefficient in all imputation sets. The standard error of a coefficient is the square root of a sum of two parts. The first part is the average of the squared standard error in all imputation sets. The second part is the variance of the coefficient among the imputation sets, multiplied by a correction factor $1 + \frac{1}{L}$. 
+Therefore the imputation, aggregation and analysis is repeated for $L$ different imputation sets, resulting in $L$ sets of coefficients and their standard errors.
+They are aggregated by the formulas below.
+The coefficient will be the average of the coefficient in all imputation sets.
+The standard error of a coefficient is the square root of a sum of two parts.
+The first part is the average of the squared standard error in all imputation sets.
+The second part is the variance of the coefficient among the imputation sets, multiplied by a correction factor $1 + \frac{1}{L}$. 
 
 $$\bar{\gamma}_a = \frac{\sum_{l = 1}^L{\gamma_a}_l}{L}$$
 $$\bar{\sigma}_a = \sqrt{\frac{\sum_{l = 1}^J {{\sigma_a^2}_l}}{L} + (1 + \frac{1}{L}) 
@@ -47,19 +61,22 @@ $$\bar{\sigma}_a = \sqrt{\frac{\sum_{l = 1}^J {{\sigma_a^2}_l}}{L} + (1 + \frac{
 
 # The dataset
 
-First, let's generate a dataset and set some observations missing. `generateData()` creates a balanced dataset with repeated visits of a number of sites. Each site is visited several years and multiple times per year. Have a look at the help-file of `generateData()` for more details on the model. 
+First, let's generate a dataset and set some observations missing.
+`generateData()` creates a balanced dataset with repeated visits of a number of sites.
+Each site is visited several years and multiple times per year.
+Have a look at the help-file of `generateData()` for more details on the model.
+
 
 ```{r generate_data}
 library(multimput)
 set.seed(123)
-prop.missing <- 0.5
-dataset <- generateData(
-  n.year = 10, n.period = 6, n.site = 50, 
-  n.run = 1
+prop_missing <- 0.5
+dataset <- generate_data(
+  n_year = 10, n_period = 6, n_site = 50, n_run = 1
 )
 dataset$Observed <- dataset$Count
-which.missing <- sample(nrow(dataset), size = nrow(dataset) * prop.missing)
-dataset$Observed[which.missing] <- NA
+which_missing <- sample(nrow(dataset), size = nrow(dataset) * prop_missing)
+dataset$Observed[which_missing] <- NA
 dataset$fYear <- factor(dataset$Year)
 dataset$fPeriod <- factor(dataset$Period)
 dataset$fSite <- factor(dataset$Site)
@@ -105,7 +122,8 @@ ggplot(dataset, aes(x = Year, y = Mu, group = Site)) +
 
 # Create the imputation model
 
-We will create several models, mainly to illustrate the capabilities of the `multimput` package. Hence several of the models are not good for a real life application.
+We will create several models, mainly to illustrate the capabilities of the `multimput` package.
+Hence several of the models are not good for a real life application.
 
 ```{r imputation_model}
 # a simple linear model
@@ -162,11 +180,15 @@ imp.better <- inla(
 
 # Apply the imputation model
 
-Most models have a `predict` method. In such a case `impute()` requires both a `model` and a `data` argument. Note that this implies that one can apply an imputation on any dataset as long as the dataset contains the necessary variables.
+Most models have a `predict` method.
+In such a case `impute()` requires both a `model` and a `data` argument.
+Note that this implies that one can apply an imputation on any dataset as long as the dataset contains the necessary variables.
 
-`inla` do the prediction simultaneously with the model fitting. Hence the model contains all required information and the `data` is not used.
+`inla` do the prediction simultaneously with the model fitting.
+Hence the model contains all required information and the `data` is not used.
 
-`n.imp` is the number of imputations. The default is `n.imp = 19`.
+`n_imp` is the number of imputations.
+The default is `n_imp = 19`.
 
 ```{r impute}
 raw.lm <- impute(imp.lm, data = dataset)
@@ -174,12 +196,15 @@ raw.glmm <- impute(imp.glmm, data = dataset)
 raw.inla.p <- impute(imp.inla.p)
 raw.inla.nb <- impute(imp.inla.nb)
 raw.better <- impute(imp.better)
-raw.better.9 <- impute(imp.better, n.imp = 9)
+raw.better.9 <- impute(imp.better, n_imp = 9)
 ```
 
 # Aggregate the imputed dataset
 
-Suppose that we are interested in the sum of the counts over all sites for each combination of year and period. Then we must aggregate the imputations on year and period. The resulting object will only contain the imputed response and the grouping variables. The easiest way to have a variable like year both a continuous and factor is to add both `Year` and `fYear` to the `grouping`.
+Suppose that we are interested in the sum of the counts over all sites for each combination of year and period.
+Then we must aggregate the imputations on year and period.
+The resulting object will only contain the imputed response and the grouping variables.
+The easiest way to have a variable like year both a continuous and factor is to add both `Year` and `fYear` to the `grouping`.
 
 ```{r aggregate}
 aggr.lm <- aggregate_impute(
@@ -218,9 +243,15 @@ aggr.better.9 <- aggregate_impute(
 
 ## Simple example
 
-`model_impute()` will apply the `model.fun` to each imputation set. The covariates are defined in the `rhs` argument. So `model.fun = lm` in combination with `rhs = "0 + fYear + fPeriod"` is equivalent to `lm(ImputedResponse ~ 0 + fYear + fPeriod, data = ImputedData)`.
+`model_impute()` will apply the `model.fun` to each imputation set.
+The covariates are defined in the `rhs` argument.
+So `model.fun = lm` in combination with `rhs = "0 + fYear + fPeriod"` is equivalent to `lm(ImputedResponse ~ 0 + fYear + fPeriod, data = ImputedData)`.
 
-The tricky part of this function the  `extractor` argument. This is a user defined function which must have an argument called `model`. The function should return a `data.frame` or `matrix` with two columuns. The first column hold the estimate of a parameter of the `model`, the second column their standard error. Each row represents a parameter.
+The tricky part of this function the  `extractor` argument.
+This is a user defined function which must have an argument called `model`.
+The function should return a `data.frame` or `matrix` with two columuns.
+The first column hold the estimate of a parameter of the `model`, the second column their standard error.
+Each row represents a parameter.
 
 ```{r model_aggregate_lm}
 extractor.lm <- function(model){
@@ -236,7 +267,10 @@ model_impute(
 
 ## Return only the parameters associated with `fYear`
 
-The `extractor` function requires more work from the user. This cost is compensated by the high degree of flexibility. The user doesn't depend on the predefined extractor functions. This is illustrated by the following examples.
+The `extractor` function requires more work from the user.
+This cost is compensated by the high degree of flexibility.
+The user doesn't depend on the predefined extractor functions.
+This is illustrated by the following examples.
 
 ```{r model_aggregate_lm2}
 extractor.lm2 <- function(model){
@@ -253,7 +287,9 @@ model_impute(
 
 ## Predict a smoother for predefined values
 
-Note that we pass extra arguments to the `extractor` function through the `extractor.args` argument. This has to be a list. We recommend to use a named list to avoid confusion.
+Note that we pass extra arguments to the `extractor` function through the `extractor.args` argument.
+This has to be a list.
+We recommend to use a named list to avoid confusion.
 
 ```{r model_aggregate_lm3}
 library(mgcv)
@@ -286,9 +322,17 @@ ggplot(model.gam, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) +
 
 ### Modelling aggregated data with `glm.nb`
 
-Suppose that we are interested in a yearly relative index taking into account the average seasonal pattern. With a complete dataset (without missing values) we could model it like the example below: a generalised linear model with negative binomial distribution because we have counts that are likely overdispersed. `fYear` models the yearly index and `fPeriod` the average seasonal pattern. The `0 +` part removes the intercept for the model. This simple trick gives direct estimates for the effect of `fYear`.
+Suppose that we are interested in a yearly relative index taking into account the average seasonal pattern.
+With a complete dataset (without missing values) we could model it like the example below: a generalised linear model with negative binomial distribution because we have counts that are likely overdispersed.
+`fYear` models the yearly index and `fPeriod` the average seasonal pattern.
+The `0 +` part removes the intercept for the model.
+This simple trick gives direct estimates for the effect of `fYear`.
 
-Only the effects of `fYear` are needed for the index. Therefore the extractor functions selects only the parameters who's row name contains fYear. In case that we want the first year to be used as a reference (index year 1 = 100%), we can subtract the estimate for this year from all estimates. The result are the indices relative to the first year, but still in the log scale. Note that the estimated index for year 1 will be 0 and $log(100\%) = 0$.
+Only the effects of `fYear` are needed for the index.
+Therefore the extractor functions selects only the parameters who's row name contains fYear.
+In case that we want the first year to be used as a reference (index year 1 = 100%), we can subtract the estimate for this year from all estimates.
+The result are the indices relative to the first year, but still in the log scale.
+Note that the estimated index for year 1 will be 0 and $log(100\%) = 0$.
 
 ```{r glmnb_complete}
 library(MASS)
@@ -366,7 +410,9 @@ ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) +
 
 ### Modelling aggregated data with `inla`
 
-The example below does something similar. Two things are different: 1) instead of `glm.nb` we use `inla` to model the imputed totals. 2) we model the seasonal pattern as a random intercept instead of a fixed effect.
+The example below does something similar.
+Two things are different: 1) instead of `glm.nb` we use `inla` to model the imputed totals.
+2) we model the seasonal pattern as a random intercept instead of a fixed effect.
 
 ```{r model_inla}
 extractor.inla <- function(model){

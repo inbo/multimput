@@ -70,11 +70,11 @@ site on the log-scale.}
 
 \item{n_run}{The number of runs with the same mu.}
 
+\item{as_list}{Return the dataset as a list rather than a data.frame.
+Defaults to \code{FALSE}.}
+
 \item{details}{Add variables containing the year, period and site effects.
 Defaults tot \code{FALSE}.}
-
-\item{as.list}{Return the dataset as a list rather than a data.frame.
-Defaults to \code{FALSE}.}
 }
 \value{
 A \code{data.frame} with five variables.

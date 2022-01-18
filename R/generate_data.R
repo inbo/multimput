@@ -31,7 +31,7 @@
 #' @param sd_noise The standard deviation of the noise effects on the log-scale.
 #' @param size The size parameter of the negative binomial distribution.
 #' @param n_run The number of runs with the same mu.
-#' @param as.list Return the dataset as a list rather than a data.frame.
+#' @param as_list Return the dataset as a list rather than a data.frame.
 #' Defaults to `FALSE`.
 #' @param details Add variables containing the year, period and site effects.
 #' Defaults tot `FALSE`.
@@ -124,7 +124,7 @@ generate_data <- function(
   #generate the counts
   dataset$Count <- rnbinom(nrow(dataset), size = size, mu = dataset$Mu)
 
-  if (!as.list) {
+  if (!as_list) {
     return(dataset)
   }
 
