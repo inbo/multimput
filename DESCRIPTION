@@ -46,7 +46,7 @@ Remotes:
 Encoding: UTF-8
 LazyData: TRUE
 Roxygen: list(wrap = FALSE, markdown = TRUE)
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.2
 Collate: 
     'rawImputed_class.R'
     'aggregatedImputed_class.R'

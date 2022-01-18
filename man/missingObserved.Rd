@@ -4,9 +4,14 @@
 \alias{missingObserved}
 \title{Generate missing data based on the observed patterns in the real dataset.}
 \usage{
-missingObserved(dataset, count.variable = "Count",
-  observed.variable = "Observed", site.variable = "Site",
-  year.variable = "Year", period.variable = "Period")
+missingObserved(
+  dataset,
+  count.variable = "Count",
+  observed.variable = "Observed",
+  site.variable = "Site",
+  year.variable = "Year",
+  period.variable = "Period"
+)
 }
 \arguments{
 \item{dataset}{A dataset to a the observation with missing data.}

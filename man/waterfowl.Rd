@@ -4,7 +4,9 @@
 \name{waterfowl}
 \alias{waterfowl}
 \title{The observation pattern in the Flemish waterfowl dataset}
-\format{A data frame with 77157 rows and 5 variables}
+\format{
+A data frame with 77157 rows and 5 variables
+}
 \usage{
 data(waterfowl)
 }

@@ -4,8 +4,12 @@
 \alias{missingAtRandom}
 \title{Generate missing data at random}
 \usage{
-missingAtRandom(dataset, proportion = 0.25, count.variable = "Count",
-  observed.variable = "Observed")
+missingAtRandom(
+  dataset,
+  proportion = 0.25,
+  count.variable = "Count",
+  observed.variable = "Observed"
+)
 }
 \arguments{
 \item{dataset}{A dataset to a the observation with missing data.}

@@ -4,12 +4,27 @@
 \alias{generateData}
 \title{Generate simulated data}
 \usage{
-generateData(intercept = 2, n.year = 24, n.period = 6, n.site = 20,
-  year.factor = FALSE, period.factor = FALSE, site.factor = FALSE,
-  trend = 0.01, sd.rw.year = 0.1, amplitude.period = 1,
-  mean.phase.period = 0, sd.phase.period = 0.2, sd.site = 1,
-  sd.rw.site = 0.02, sd.noise = 0.01, size = 2, n.run = 10,
-  as.list = FALSE, details = FALSE)
+generateData(
+  intercept = 2,
+  n.year = 24,
+  n.period = 6,
+  n.site = 20,
+  year.factor = FALSE,
+  period.factor = FALSE,
+  site.factor = FALSE,
+  trend = 0.01,
+  sd.rw.year = 0.1,
+  amplitude.period = 1,
+  mean.phase.period = 0,
+  sd.phase.period = 0.2,
+  sd.site = 1,
+  sd.rw.site = 0.02,
+  sd.noise = 0.01,
+  size = 2,
+  n.run = 10,
+  as.list = FALSE,
+  details = FALSE
+)
 }
 \arguments{
 \item{intercept}{The global mean on the log-scale.}

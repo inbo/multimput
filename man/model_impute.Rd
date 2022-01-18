@@ -7,14 +7,38 @@
 \alias{model_impute,aggregatedImputed-method}
 \title{Model an imputed dataset}
 \usage{
-model_impute(object, model.fun, rhs, model.args, extractor, extractor.args,
-  filter, mutate)
+model_impute(
+  object,
+  model.fun,
+  rhs,
+  model.args,
+  extractor,
+  extractor.args,
+  filter,
+  mutate
+)
 
-\S4method{model_impute}{ANY}(object, model.fun, rhs, model.args, extractor,
-  extractor.args, filter, mutate)
+\S4method{model_impute}{ANY}(
+  object,
+  model.fun,
+  rhs,
+  model.args,
+  extractor,
+  extractor.args,
+  filter,
+  mutate
+)
 
-\S4method{model_impute}{aggregatedImputed}(object, model.fun, rhs,
-  model.args, extractor, extractor.args, filter, mutate)
+\S4method{model_impute}{aggregatedImputed}(
+  object,
+  model.fun,
+  rhs,
+  model.args,
+  extractor,
+  extractor.args,
+  filter,
+  mutate
+)
 }
 \arguments{
 \item{object}{The imputed dataset.}

@@ -12,11 +12,9 @@ aggregate_impute(object, grouping, fun, filter, join)
 
 \S4method{aggregate_impute}{ANY}(object, grouping, fun, filter, join)
 
-\S4method{aggregate_impute}{rawImputed}(object, grouping, fun, filter,
-  join)
+\S4method{aggregate_impute}{rawImputed}(object, grouping, fun, filter, join)
 
-\S4method{aggregate_impute}{aggregatedImputed}(object, grouping, fun,
-  filter, join)
+\S4method{aggregate_impute}{aggregatedImputed}(object, grouping, fun, filter, join)
 }
 \arguments{
 \item{object}{A rawImputed object.}

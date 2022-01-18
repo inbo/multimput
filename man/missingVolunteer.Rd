@@ -4,9 +4,15 @@
 \alias{missingVolunteer}
 \title{Generate missing data mimicing choices made by volunteers.}
 \usage{
-missingVolunteer(dataset, proportion = 0.25, count.variable = "Count",
-  observed.variable = "Observed", year.variable = "Year",
-  site.variable = "Site", max.count = 100)
+missingVolunteer(
+  dataset,
+  proportion = 0.25,
+  count.variable = "Count",
+  observed.variable = "Observed",
+  year.variable = "Year",
+  site.variable = "Site",
+  max.count = 100
+)
 }
 \arguments{
 \item{dataset}{A dataset to a the observation with missing data.}
