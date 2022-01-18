@@ -113,13 +113,13 @@ setMethod(
       drop = FALSE
     ]
 
-    missing.obs <- which(is.na(data[, response]))
+    missing_obs <- which(is.na(data[, response]))
     total <- lapply(
       seq_len(ncol(imputation)),
       function(i) {
-        data[missing.obs, response] <- pmax(
+        data[missing_obs, response] <- pmax(
           imputation[, i],
-          data[[minimum_column]][missing.obs],
+          data[[minimum_column]][missing_obs],
           na.rm = TRUE
         )
         data %>%
