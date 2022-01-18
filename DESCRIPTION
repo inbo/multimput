@@ -1,50 +1,52 @@
-Package: multimput
 Type: Package
+Package: multimput
 Title: Using Multiple Imputation to Address Missing Data
 Version: 0.2.9
 Date: 2019-12-10
 Authors@R: c(
-  person(
-    "Thierry", "Onkelinx", role = c("aut", "cre"), 
-    email = "thierry.onkelinx@inbo.be", 
-    comment = c(ORCID = "0000-0001-8804-4216")),
-  person("Koen", "Devos", role = "aut"),
-  person("Paul", "Quataert", role = "aut", 
-    comment = c(ORCID = "0000-0002-6894-9402")),
-  person(
-    family = "Research Institute for Nature and Forest",
-    role = c("cph", "fnd"), email = "info@inbo.be"))
-Description: Accompaning package for the paper: "Working with population totals
-    in the presence of with missing data".
+    person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-8804-4216")),
+    person("Koen", "Devos", role = "aut",
+           comment = c(ORCID = "0000-0001-7265-6349")),
+    person("Paul", "Quataert", role = "aut",
+           comment = c(ORCID = "0000-0002-6894-9402")),
+    person(, "Research Institute for Nature and Forest", , "info@inbo.be", role = c("cph", "fnd"))
+  )
+Description: Accompaning package for the paper: "Working with population
+    totals in the presence of with missing data".
 License: GPL-3 | file LICENSE
-URL: https://doi.org/10.5281/zenodo.598331, https://github.com/inbo/multimput
+URL: https://doi.org/10.5281/zenodo.598331,
+    https://github.com/inbo/multimput
 BugReports: https://github.com/inbo/multimput/issues
 Depends:
     R (>= 3.0.0)
 Imports:
-    dplyr,
-    methods,
-    tibble,
-    tidyr,
     assertthat,
+    digest,
+    dplyr,
     lme4,
+    methods,
     mvtnorm,
     purrr,
     rlang,
-    digest
+    tibble,
+    tidyr
 Suggests:
-    testthat,
     INLA,
-    ggplot2,
-    mgcv,
-    knitr,
     MASS,
-    rmarkdown
-Remotes: inbo/INLA
-Roxygen: list(wrap = FALSE, markdown = TRUE)
-RoxygenNote: 6.1.1
+    ggplot2,
+    knitr,
+    mgcv,
+    rmarkdown,
+    testthat
+VignetteBuilder: 
+    knitr
+Remotes: 
+    inbo/INLA
 Encoding: UTF-8
 LazyData: TRUE
+Roxygen: list(wrap = FALSE, markdown = TRUE)
+RoxygenNote: 6.1.1
 Collate: 
     'rawImputed_class.R'
     'aggregatedImputed_class.R'
@@ -61,4 +63,3 @@ Collate:
     'missingObserved.R'
     'missingVolunteer.R'
     'model_impute.R'
-VignetteBuilder: knitr
