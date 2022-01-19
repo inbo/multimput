@@ -1,6 +1,6 @@
 context("model_impute")
 describe("model_impute", {
-  dataset <- generateData(n.year = 10, n.site = 10, n.run = 1)
+  dataset <- generate_data(n_year = 10, n_site = 10, n_run = 1)
   it("has no effect when there are no missing values", {
     model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
     imputed <- impute(data = dataset, model = model)
@@ -49,7 +49,7 @@ describe("model_impute", {
       model_impute(object = "junk"),
       "doesn't handle a 'character' object"
     )
-    dataset <- generateData(n.year = 10, n.site = 10, n.run = 1)
+    dataset <- generate_data(n_year = 10, n_site = 10, n_run = 1)
     dataset$Count[sample(nrow(dataset), 10)] <- NA
     model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
     imputed <- impute(data = dataset, model = model)
@@ -89,10 +89,10 @@ describe("model_impute", {
         aggr,
         model_fun = lm,
         rhs = "0 + factor(Year)",
-        extractor.args = "junk",
+        extractor_args = "junk",
         extractor = extractor
       ),
-      "extractor.args does not inherit from class list"
+      "extractor_args does not inherit from class list"
     )
     expect_error(
       model_impute(

@@ -183,7 +183,7 @@ describe("impute", {
 
   it("handles datasets without missing observations", {
     n_imp <- 19L
-    dataset <- generateData(n_year = 10, n_site = 50, n_run = 1)
+    dataset <- generate_data(n_year = 10, n_site = 50, n_run = 1)
     dataset$Bottom <- 10000
     expect_identical(
       sum(is.na(dataset$Count)),
@@ -351,9 +351,9 @@ describe("impute", {
     n_year = 10,
     n_site = 50,
     n_run = 1,
-    year.factor = TRUE,
-    period.factor = TRUE,
-    site.factor = TRUE
+    year_factor = TRUE,
+    period_factor = TRUE,
+    site_factor = TRUE
   )
   dataset$Count[sample(nrow(dataset), 50)] <- NA
   dataset$Bottom <- 10000

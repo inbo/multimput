@@ -51,7 +51,7 @@ describe("aggregate_impute", {
 
   it("handles datasets without missing observations", {
     n_imp <- 19L
-    dataset <- generateData(n_year = 10, n_site = 50, n_run = 1)
+    dataset <- generate_data(n_year = 10, n_site = 50, n_run = 1)
     expect_identical(
       sum(is.na(dataset$Count)),
       0L
@@ -108,7 +108,7 @@ describe("aggregate_impute", {
     )
     expect_error(
       aggregate_impute(imputed, grouping = "junk", fun = sum),
-      "((junk){1}.*(unknown){1}|(unknown){1}.*(junk){1})" #nolint
+      "Column `junk` is not found"
     )
     expect_error(
       aggregate_impute(imputed, grouping = imputed),
@@ -151,7 +151,7 @@ describe("aggregate_impute", {
 })
 
 test_that("aggregate_impute() works on aggregatedImputed objects", {
-  dataset <- generateData(n_year = 10, n_site = 50, n_run = 1)
+  dataset <- generate_data(n_year = 10, n_site = 50, n_run = 1)
   dataset$Count[sample(nrow(dataset), 50)] <- NA
   dataset$Bottom <- 100000
   model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)

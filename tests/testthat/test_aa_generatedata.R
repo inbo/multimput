@@ -48,7 +48,7 @@ describe("generate_data", {
         n_site = n_site,
         n_period = n_period,
         n_run = n_run,
-        as.list = TRUE
+        as_list = TRUE
       ),
       "list"
     )
@@ -63,7 +63,7 @@ describe("generate_data", {
         n_period = n_period,
         n_run = n_run,
         details = TRUE,
-        as.list = TRUE
+        as_list = TRUE
       ),
       "list"
     )
