@@ -11,10 +11,7 @@ setMethod(
   f = "impute",
   signature = signature(model = "glmerMod"),
   definition = function(model, data, ..., n_imp) {
-    dots <- list(...)
-    assert_that(
-      !has_name(dots, "n.imp"), msg = "please use `n_imp` instead of `n.imp`"
-    )
+    check_old_names(..., old_names = c(n_imp = "n.imp"))
     assert_that(requireNamespace("lme4", quietly = TRUE))
     assert_that(is.count(n_imp))
     assert_that(inherits(data, "data.frame"))
@@ -87,6 +84,7 @@ and refit the model."
       stop(model@resp$family$family, " family not yet handled.")
     ) %>%
       matrix(ncol = n_imp)
+    dots <- list(...)
     if (is.null(dots$minimum)) {
       dots$minimum <- ""
     }

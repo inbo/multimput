@@ -7,10 +7,7 @@ setMethod(
   f = "impute",
   signature = signature(model = "inla"),
   definition = function(model, ..., n_imp) {
-    dots <- list(...)
-    assert_that(
-      !has_name(dots, "n.imp"), msg = "please use `n_imp` instead of `n.imp`"
-    )
+    check_old_names(..., old_names = c(n_imp = "n.imp"))
     assert_that(is.count(n_imp))
     assert_that(
       model$.args$control.compute$config,
@@ -18,6 +15,7 @@ setMethod(
 "model must be fit with the 'config = TRUE' argument of control.compute"
     )
 
+    dots <- list(...)
     if (is.null(dots$minimum)) {
       dots$minimum <- ""
     }

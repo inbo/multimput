@@ -1,19 +1,20 @@
 #' Model an imputed dataset
 #' @param object The imputed dataset.
-#' @param model.fun The function to apply on each imputation set.
+#' @param model_fun The function to apply on each imputation set.
 #' @param rhs The right hand side of the model.
-#' @param model.args An optional list of arguments to pass to the model
+#' @param model_args An optional list of arguments to pass to the model
 #' function.
 #' @param extractor A function which return a `matrix` or `data.frame`.
 #' The first column should contain the estimate,
 #' the second the standard error of the estimate.
-#' @param extractor.args
+#' @param extractor_args
 #' An optional list of arguments to pass to the `extractor` function.
 #' @inheritParams aggregate_impute
 #' @param mutate An optional argument to alter the aggregated dataset.
 #' Will be passed to the `.dots` argument of \code{\link[dplyr]{mutate}}.
-#' This is mainly useful for simple convertions, e.g. factors to numbers and
-#' viceversa.
+#' This is mainly useful for simple conversions, e.g. factors to numbers and
+#' vice versa.
+#' @param ... currently ignored.
 #' @name model_impute
 #' @rdname model_impute
 #' @exportMethod model_impute
@@ -22,14 +23,8 @@
 setGeneric(
   name = "model_impute",
   def = function(
-    object,
-    model.fun,
-    rhs,
-    model.args,
-    extractor,
-    extractor.args,
-    filter,
-    mutate
+    object, model_fun, rhs, model_args, extractor, extractor_args, filter,
+    mutate, ...
 ) {
     standard.generic("model_impute") # nocov
   }
@@ -41,14 +36,8 @@ setMethod(
   f = "model_impute",
   signature = signature(object = "ANY"),
   definition = function(
-    object,
-    model.fun,
-    rhs,
-    model.args,
-    extractor,
-    extractor.args,
-    filter,
-    mutate
+    object, model_fun, rhs, model_args, extractor, extractor_args, filter,
+    mutate, ...
   ) {
     stop("model_impute() doesn't handle a '", class(object), "' object")
   }
@@ -75,7 +64,7 @@ setMethod(
 #' }
 #' model_impute(
 #'   object = aggr,
-#'   model.fun = lm,
+#'   model_fun = lm,
 #'   rhs = "0 + factor(Year)",
 #'   extractor = extractor
 #' )
@@ -84,28 +73,29 @@ setMethod(
   f = "model_impute",
   signature = signature(object = "aggregatedImputed"),
   definition = function(
-    object,
-    model.fun,
-    rhs,
-    model.args,
-    extractor,
-    extractor.args,
-    filter,
-    mutate
+    object, model_fun, rhs, model_args, extractor, extractor_args, filter,
+    mutate, ...
   ) {
-    assert_that(inherits(model.fun, "function"))
+    check_old_names(
+      ...,
+      old_names = c(
+        model_fun = "model.fun", model_args = "model.args",
+        extractor_args = "extractor.args"
+      )
+    )
+    assert_that(inherits(model_fun, "function"))
     assert_that(inherits(extractor, "function"))
     assert_that(is.character(rhs))
 
-    if (missing(model.args)) {
-      model.args <- list()
+    if (missing(model_args)) {
+      model_args <- list()
     } else {
-      assert_that(inherits(model.args, "list"))
+      assert_that(inherits(model_args, "list"))
     }
-    if (missing(extractor.args)) {
-      extractor.args <- list()
+    if (missing(extractor_args)) {
+      extractor_args <- list()
     } else {
-      assert_that(inherits(extractor.args, "list"))
+      assert_that(inherits(extractor_args, "list"))
     }
 
     id_column <- paste0("ID", sha1(Sys.time()))
@@ -139,13 +129,13 @@ setMethod(
           object@Covariate
         )
         model <- try(
-          do.call(model.fun, c(form, list(data = data), model.args)),
+          do.call(model_fun, c(form, list(data = data), model_args)),
           silent = TRUE
         )
         if (inherits(model, "try-error")) {
           NULL
         } else {
-          do.call(extractor, c(list(model), extractor.args)) %>%
+          do.call(extractor, c(list(model), extractor_args)) %>%
             as.data.frame() %>%
             rownames_to_column("Variable")
         }

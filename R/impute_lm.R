@@ -13,10 +13,7 @@ setMethod(
   f = "impute",
   signature = signature(model = "lm"),
   definition = function(model, data, ..., n_imp) {
-    dots <- list(...)
-    assert_that(
-      !has_name(dots, "n.imp"), msg = "please use `n_imp` instead of `n.imp`"
-    )
+    check_old_names(..., old_names = c(n_imp = "n.imp"))
     assert_that(inherits(data, "data.frame"))
     assert_that(is.count(n_imp))
 
@@ -32,6 +29,7 @@ setMethod(
       rt(length(missing_obs) * n_imp, df = prediction$df),
       ncol = n_imp
     )
+    dots <- list(...)
     if (is.null(dots$minimum)) {
       dots$minimum <- ""
     }

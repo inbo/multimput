@@ -17,13 +17,13 @@ missing_volunteer <- function(
   years <- sort(unique(dataset[, year_variable]))
   probability_start <- runif(length(levels(sites)))
   probability_continu <- sapply(seq(2, length(years), by = 1), function(i) {
-    last.year <- which(dataset[, year_variable] == years[i - 1])
-    observed.max <- aggregate(
+    last_year <- which(dataset[, year_variable] == years[i - 1])
+    observed_max <- aggregate(
       as.formula(paste(count_variable, site_variable, sep = "~")),
-      data = dataset[last.year, c(site_variable, count_variable)],
+      data = dataset[last_year, c(site_variable, count_variable)],
       FUN = max
     )
-    sqrt(pmin(observed.max[, count_variable], max_count) + 1) /
+    sqrt(pmin(observed_max[, count_variable], max_count) + 1) /
       sqrt(max_count + 1)
   })
   selected <- matrix(

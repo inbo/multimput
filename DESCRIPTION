@@ -51,6 +51,7 @@ Collate:
     'rawImputed_class.R'
     'aggregatedImputed_class.R'
     'aggregate_impute.R'
+    'check_old_names.R'
     'datasets.R'
     'deprecated.R'
     'generate_data.R'

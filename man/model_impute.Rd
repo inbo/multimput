@@ -9,60 +9,65 @@
 \usage{
 model_impute(
   object,
-  model.fun,
+  model_fun,
   rhs,
-  model.args,
+  model_args,
   extractor,
-  extractor.args,
+  extractor_args,
   filter,
-  mutate
+  mutate,
+  ...
 )
 
 \S4method{model_impute}{ANY}(
   object,
-  model.fun,
+  model_fun,
   rhs,
-  model.args,
+  model_args,
   extractor,
-  extractor.args,
+  extractor_args,
   filter,
-  mutate
+  mutate,
+  ...
 )
 
 \S4method{model_impute}{aggregatedImputed}(
   object,
-  model.fun,
+  model_fun,
   rhs,
-  model.args,
+  model_args,
   extractor,
-  extractor.args,
+  extractor_args,
   filter,
-  mutate
+  mutate,
+  ...
 )
 }
 \arguments{
 \item{object}{The imputed dataset.}
 
-\item{model.fun}{The function to apply on each imputation set.}
+\item{model_fun}{The function to apply on each imputation set.}
 
 \item{rhs}{The right hand side of the model.}
 
-\item{model.args}{An optional list of arguments to pass to the model
+\item{model_args}{An optional list of arguments to pass to the model
 function.}
 
 \item{extractor}{A function which return a \code{matrix} or \code{data.frame}.
 The first column should contain the estimate,
 the second the standard error of the estimate.}
 
-\item{extractor.args}{An optional list of arguments to pass to the \code{extractor} function.}
+\item{extractor_args}{An optional list of arguments to pass to the \code{extractor} function.}
 
 \item{filter}{An optional argument to filter the raw dataset before aggregation.
 Will be passed to \code{\link[dplyr]{filter}}.}
 
 \item{mutate}{An optional argument to alter the aggregated dataset.
 Will be passed to the \code{.dots} argument of \code{\link[dplyr]{mutate}}.
-This is mainly useful for simple convertions, e.g. factors to numbers and
-viceversa.}
+This is mainly useful for simple conversions, e.g. factors to numbers and
+vice versa.}
+
+\item{...}{currently ignored.}
 }
 \description{
 Model an imputed dataset
@@ -78,7 +83,7 @@ extractor <- function(model) {
 }
 model_impute(
   object = aggr,
-  model.fun = lm,
+  model_fun = lm,
   rhs = "0 + factor(Year)",
   extractor = extractor
 )
