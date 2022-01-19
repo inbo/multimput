@@ -54,7 +54,7 @@ setMethod(
 #' @importFrom tibble rownames_to_column
 #' @importFrom stats as.formula qnorm var
 #' @examples
-#' dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
+#' dataset <- generate_data(n_year = 10, n_site = 50, n_run = 1)
 #' dataset$Count[sample(nrow(dataset), 50)] <- NA
 #' model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
 #' imputed <- impute(data = dataset, model = model)

@@ -34,7 +34,7 @@ of \code{join} in case join is a list.}
 Aggregate an imputed dataset
 }
 \examples{
-dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
+dataset <- generate_data(n_year = 10, n_site = 50, n_run = 1)
 dataset$Count[sample(nrow(dataset), 50)] <- NA
 model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
 imputed <- impute(data = dataset, model = model)
