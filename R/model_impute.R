@@ -68,7 +68,7 @@ setMethod(
 #'   rhs = "0 + factor(Year)",
 #'   extractor = extractor
 #' )
-#' @include aggregatedImputed_class.R
+#' @include aggregated_imputed_class.R
 setMethod(
   f = "model_impute",
   signature = signature(object = "aggregatedImputed"),

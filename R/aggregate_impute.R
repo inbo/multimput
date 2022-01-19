@@ -51,7 +51,7 @@ See ?impute or ?aggregate_impute"
 #' model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
 #' imputed <- impute(data = dataset, model = model)
 #' aggregate_impute(imputed, grouping = c("Year", "Period"), fun = sum)
-#' @include rawImputed_class.R
+#' @include raw_imputed_class.R
 setMethod(
   f = "aggregate_impute",
   signature = signature(object = "rawImputed"),
@@ -151,7 +151,7 @@ setMethod(
 #' @importFrom methods new
 #' @importFrom rlang !! !!! :=
 #' @importFrom digest sha1
-#' @include aggregatedImputed_class.R
+#' @include aggregated_imputed_class.R
 setMethod(
   f = "aggregate_impute",
   signature = signature(object = "aggregatedImputed"),

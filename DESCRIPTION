@@ -14,7 +14,7 @@ Authors@R: c(
   )
 Description: Accompaning package for the paper: "Working with population
     totals in the presence of with missing data".
-License: GPL-3 | file LICENSE
+License: GPL-3
 URL: https://doi.org/10.5281/zenodo.598331,
     https://github.com/inbo/multimput
 BugReports: https://github.com/inbo/multimput/issues
@@ -48,16 +48,16 @@ LazyData: TRUE
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Collate: 
-    'rawImputed_class.R'
-    'aggregatedImputed_class.R'
+    'raw_imputed_class.R'
+    'aggregated_imputed_class.R'
     'aggregate_impute.R'
     'check_old_names.R'
     'datasets.R'
     'deprecated.R'
     'generate_data.R'
-    'import_S3_classes.R'
+    'import_s3_classes.R'
     'impute_generic.R'
-    'impute_glmerMod.R'
+    'impute_glmermod.R'
     'impute_inla.R'
     'impute_lm.R'
     'missing_at_random.R'
