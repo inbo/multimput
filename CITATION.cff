@@ -15,8 +15,7 @@ contact:
   family-names: Onkelinx
   given-names: Thierry
 - email: info@inbo.be
-  family-names: Research Institute for Nature and Forest
-  given-names: ~
+  name: Research Institute for Nature and Forest
 title: 'multimput: Using Multiple Imputation to Address Missing Data'
 version: 0.2.9
 abstract: 'Accompaning package for the paper: "Working with population totals in the

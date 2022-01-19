@@ -10,7 +10,7 @@ Authors@R: c(
            comment = c(ORCID = "0000-0001-7265-6349")),
     person("Paul", "Quataert", role = "aut",
            comment = c(ORCID = "0000-0002-6894-9402")),
-    person(, "Research Institute for Nature and Forest", , "info@inbo.be", role = c("cph", "fnd"))
+    person("Research Institute for Nature and Forest", , , "info@inbo.be", role = c("cph", "fnd"))
   )
 Description: Accompaning package for the paper: "Working with population
     totals in the presence of with missing data".
