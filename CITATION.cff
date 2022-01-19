@@ -17,7 +17,7 @@ contact:
 - email: info@inbo.be
   name: Research Institute for Nature and Forest
 title: 'multimput: Using Multiple Imputation to Address Missing Data'
-version: 0.2.9
+version: 0.2.10
 abstract: 'Accompaning package for the paper: "Working with population totals in the
   presence of with missing data".'
 license: GPL-3.0

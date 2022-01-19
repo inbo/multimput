@@ -1,3 +1,7 @@
-# multimput 0.2.7.9000 (2017-11-18)
+# multimput 0.2.10
 
-- `aggregate_impute()` now also works on `aggregatedImputed` objects (#34)
+* Use checklist infrastructure. 
+
+# multimput 0.2.7.9000
+
+* `aggregate_impute()` now also works on `aggregatedImputed` objects (#34)
