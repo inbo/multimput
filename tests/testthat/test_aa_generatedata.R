@@ -1,34 +1,34 @@
 context("generate data")
-describe("generateData", {
-  context("generateData")
-  n.year <- 2L
-  n.site <- 2L
-  n.run <- 2L
-  n.period <- 2L
+describe("generate_data", {
+  context("generate_data")
+  n_year <- 2L
+  n_site <- 2L
+  n_run <- 2L
+  n_period <- 2L
   it("generates datasets", {
     expect_is(
-      dataset <- generateData(
-        n.year = n.year,
-        n.site = n.site,
-        n.period = n.period,
-        n.run = n.run
+      dataset <- generate_data(
+        n_year = n_year,
+        n_site = n_site,
+        n_period = n_period,
+        n_run = n_run
       ),
       "data.frame"
     )
-    expect_identical(max(dataset$Year), n.year)
-    expect_identical(max(dataset$Period), n.period)
-    expect_identical(max(dataset$Site), n.site)
-    expect_identical(max(dataset$Run), n.run)
+    expect_identical(max(dataset$Year), n_year)
+    expect_identical(max(dataset$Period), n_period)
+    expect_identical(max(dataset$Site), n_site)
+    expect_identical(max(dataset$Run), n_run)
     expect_named(
       dataset,
       c("Year", "Period", "Site", "Mu", "Run", "Count")
     )
     expect_is(
-      dataset <- generateData(
-        n.year = n.year,
-        n.site = n.site,
-        n.period = n.period,
-        n.run = n.run,
+      dataset <- generate_data(
+        n_year = n_year,
+        n_site = n_site,
+        n_period = n_period,
+        n_run = n_run,
         details = TRUE
       ),
       "data.frame"
@@ -43,11 +43,11 @@ describe("generateData", {
   })
   it("gerenates lists of datasets", {
     expect_is(
-      dataset <- generateData(
-        n.year = n.year,
-        n.site = n.site,
-        n.period = n.period,
-        n.run = n.run,
+      dataset <- generate_data(
+        n_year = n_year,
+        n_site = n_site,
+        n_period = n_period,
+        n_run = n_run,
         as.list = TRUE
       ),
       "list"
@@ -57,11 +57,11 @@ describe("generateData", {
       c("Year", "Period", "Site", "Mu", "Count", "Run")
     )
     expect_is(
-      dataset <- generateData(
-        n.year = n.year,
-        n.site = n.site,
-        n.period = n.period,
-        n.run = n.run,
+      dataset <- generate_data(
+        n_year = n_year,
+        n_site = n_site,
+        n_period = n_period,
+        n_run = n_run,
         details = TRUE,
         as.list = TRUE
       ),

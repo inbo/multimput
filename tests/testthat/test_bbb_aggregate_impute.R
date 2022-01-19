@@ -1,6 +1,6 @@
 context("aggregate_impute")
 describe("aggregate_impute", {
-  dataset <- generateData(n.year = 10, n.site = 10, n.run = 1)
+  dataset <- generate_data(n_year = 10, n_site = 10, n_run = 1)
   dataset$Count[sample(nrow(dataset), 10)] <- NA
   dataset$Bottom <- 100000
   model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
@@ -50,14 +50,14 @@ describe("aggregate_impute", {
   })
 
   it("handles datasets without missing observations", {
-    n.imp <- 19L
-    dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
+    n_imp <- 19L
+    dataset <- generateData(n_year = 10, n_site = 50, n_run = 1)
     expect_identical(
       sum(is.na(dataset$Count)),
       0L
     )
     model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
-    imputed <- impute(model, dataset, n.imp = n.imp)
+    imputed <- impute(model, dataset, n_imp = n_imp)
     grouping <- c("Year", "Period")
     fun <- sum
     aggr <- aggregate_impute(imputed, grouping = grouping, fun = fun)
@@ -104,7 +104,7 @@ describe("aggregate_impute", {
   it("checks the sanity of the arguments", {
     expect_error(
       aggregate_impute(object = "junk"),
-"aggregate_impute\\(\\) requires a 'rawImputed' or 'aggregatedImputed' object"
+      "requires a 'rawImputed' or 'aggregatedImputed' object"
     )
     expect_error(
       aggregate_impute(imputed, grouping = "junk", fun = sum),
@@ -151,7 +151,7 @@ describe("aggregate_impute", {
 })
 
 test_that("aggregate_impute() works on aggregatedImputed objects", {
-  dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
+  dataset <- generateData(n_year = 10, n_site = 50, n_run = 1)
   dataset$Count[sample(nrow(dataset), 50)] <- NA
   dataset$Bottom <- 100000
   model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)

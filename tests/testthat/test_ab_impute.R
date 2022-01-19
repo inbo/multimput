@@ -1,13 +1,13 @@
 context("generate imputed values")
 describe("impute", {
   context("impute")
-  dataset <- generateData(n.year = 10, n.site = 10, n.run = 1)
+  dataset <- generate_data(n_year = 10, n_site = 10, n_run = 1)
   dataset$Count[sample(nrow(dataset), 10)] <- NA
   dataset$fYear <- factor(dataset$Year)
   dataset$fPeriod <- factor(dataset$Period)
   dataset$fSite <- factor(dataset$Site)
   dataset$Bottom <- 10000
-  n.imp <- 10L
+  n_imp <- 10L
   it("handles lm", {
     model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
     expect_is(
@@ -28,12 +28,12 @@ describe("impute", {
     )
 
     expect_is(
-      imputed <- impute(model, dataset, n.imp = n.imp),
+      imputed <- impute(model, dataset, n_imp = n_imp),
       "rawImputed"
     )
     expect_identical(
       ncol(imputed@Imputation),
-      n.imp
+      n_imp
     )
     expect_identical(
       nrow(imputed@Imputation),
@@ -90,12 +90,12 @@ describe("impute", {
     )
 
     expect_is(
-      imputed <- impute(model, dataset, n.imp = n.imp),
+      imputed <- impute(model, dataset, n_imp = n_imp),
       "rawImputed"
     )
     expect_identical(
       ncol(imputed@Imputation),
-      n.imp
+      n_imp
     )
     expect_identical(
       nrow(imputed@Imputation),
@@ -150,12 +150,12 @@ describe("impute", {
     )
 
     expect_is(
-      imputed <- impute(model, dataset, n.imp = n.imp),
+      imputed <- impute(model, dataset, n_imp = n_imp),
       "rawImputed"
     )
     expect_identical(
       ncol(imputed@Imputation),
-      n.imp
+      n_imp
     )
     expect_identical(
       nrow(imputed@Imputation),
@@ -182,8 +182,8 @@ describe("impute", {
 
 
   it("handles datasets without missing observations", {
-    n.imp <- 19L
-    dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
+    n_imp <- 19L
+    dataset <- generateData(n_year = 10, n_site = 50, n_run = 1)
     dataset$Bottom <- 10000
     expect_identical(
       sum(is.na(dataset$Count)),
@@ -191,12 +191,12 @@ describe("impute", {
     )
     model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
     expect_is(
-      imputed <- impute(model, dataset, n.imp = n.imp),
+      imputed <- impute(model, dataset, n_imp = n_imp),
       "rawImputed"
     )
     expect_identical(
       ncol(imputed@Imputation),
-      n.imp
+      n_imp
     )
     expect_identical(
       nrow(imputed@Imputation),
@@ -244,7 +244,7 @@ describe("impute", {
   it("is robust for wrong imput", {
     expect_error(
       impute(model = "junk"),
-      "impute\\(\\) can't handle a model of class character at this moment."
+      "can't handle a model of class character at this moment."
     )
     model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
     expect_error(
@@ -252,27 +252,27 @@ describe("impute", {
       "data does not inherit from class data.frame"
     )
     expect_error(
-      impute(model = model, data = dataset, n.imp = -1),
-      "n.imp is not a count \\(a single positive integer\\)"
+      impute(model = model, data = dataset, n_imp = -1),
+      "n_imp is not a count"
     )
     expect_error(
-      impute(model = model, data = dataset, n.imp = 0),
-      "n.imp is not a count \\(a single positive integer\\)"
+      impute(model = model, data = dataset, n_imp = 0),
+      "n_imp is not a count"
     )
     expect_error(
-      impute(model = model, data = dataset, n.imp = "junk"),
-      "n.imp is not a count \\(a single positive integer\\)"
+      impute(model = model, data = dataset, n_imp = "junk"),
+      "n_imp is not a count"
     )
-    wrong.dataset <- dataset
-    wrong.dataset$Year <- NULL
+    wrong_dataset <- dataset
+    wrong_dataset$Year <- NULL
     expect_error(
-      impute(model = model, data = wrong.dataset),
+      impute(model = model, data = wrong_dataset),
       "object 'Year' not found"
     )
-    wrong.dataset <- dataset
-    wrong.dataset$Count <- NULL
+    wrong_dataset <- dataset
+    wrong_dataset$Count <- NULL
     expect_error(
-      impute(model = model, data = wrong.dataset),
+      impute(model = model, data = wrong_dataset),
       "data does not have.*name.*Count"
     )
 
@@ -308,23 +308,23 @@ describe("impute", {
     )
     expect_error(
       impute(model, dataset),
-      "impute can't handle factor\\(\\) in the model"
+      "impute can't handle factor"
     )
     expect_error(
       impute(model = model, data = "junk"),
       "data does not inherit from class data.frame"
     )
     expect_error(
-      impute(model = model, data = dataset, n.imp = -1),
-      "n.imp is not a count \\(a single positive integer\\)"
+      impute(model = model, data = dataset, n_imp = -1),
+      "n_imp is not a count"
     )
     expect_error(
-      impute(model = model, data = dataset, n.imp = 0),
-      "n.imp is not a count \\(a single positive integer\\)"
+      impute(model = model, data = dataset, n_imp = 0),
+      "n_imp is not a count"
     )
     expect_error(
-      impute(model = model, data = dataset, n.imp = "junk"),
-      "n.imp is not a count \\(a single positive integer\\)"
+      impute(model = model, data = dataset, n_imp = "junk"),
+      "n_imp is not a count"
     )
 
     model <- lme4::glmer(
@@ -332,25 +332,25 @@ describe("impute", {
       data = dataset,
       family = poisson
     )
-    wrong.dataset <- dataset
-    wrong.dataset$fPeriod <- NULL
+    wrong_dataset <- dataset
+    wrong_dataset$fPeriod <- NULL
     expect_error(
-      impute(model = model, data = wrong.dataset),
+      impute(model = model, data = wrong_dataset),
       "object 'fPeriod' not found"
     )
-    wrong.dataset <- dataset
-    wrong.dataset$Count <- NULL
+    wrong_dataset <- dataset
+    wrong_dataset$Count <- NULL
     expect_error(
-      impute(model = model, data = wrong.dataset),
+      impute(model = model, data = wrong_dataset),
       "data does not have.*name.*Count"
     )
   })
 
 
-  dataset <- generateData(
-    n.year = 10,
-    n.site = 50,
-    n.run = 1,
+  dataset <- generate_data(
+    n_year = 10,
+    n_site = 50,
+    n_run = 1,
     year.factor = TRUE,
     period.factor = TRUE,
     site.factor = TRUE
@@ -377,12 +377,12 @@ describe("impute", {
     )
 
     expect_is(
-      imputed <- impute(model, dataset, n.imp = n.imp),
+      imputed <- impute(model, dataset, n_imp = n_imp),
       "rawImputed"
     )
     expect_identical(
       ncol(imputed@Imputation),
-      n.imp
+      n_imp
     )
     expect_identical(
       nrow(imputed@Imputation),

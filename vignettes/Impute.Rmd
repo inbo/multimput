@@ -25,7 +25,7 @@ The `multimput` package was originally intended to provide the data and code to 
 This paper is freely available at http://dx.doi.org/10.1007/s10336-016-1404-9.
 The functions were all rewritten to make them more user-friendly and more generic.
 In order to make the package more compact, we removed the original code and data starting for version 0.2.6.
-However both the original code and data remain available in [the older releases](https://github.com/inbo/multimput/releases). 
+However both the original code and data remain available in [the older releases](https://github.com/inbo/multimput/releases).
 
 # Very short intro to multiple imputation
 
@@ -53,10 +53,10 @@ They are aggregated by the formulas below.
 The coefficient will be the average of the coefficient in all imputation sets.
 The standard error of a coefficient is the square root of a sum of two parts.
 The first part is the average of the squared standard error in all imputation sets.
-The second part is the variance of the coefficient among the imputation sets, multiplied by a correction factor $1 + \frac{1}{L}$. 
+The second part is the variance of the coefficient among the imputation sets, multiplied by a correction factor $1 + \frac{1}{L}$.
 
 $$\bar{\gamma}_a = \frac{\sum_{l = 1}^L{\gamma_a}_l}{L}$$
-$$\bar{\sigma}_a = \sqrt{\frac{\sum_{l = 1}^J {{\sigma_a^2}_l}}{L} + (1 + \frac{1}{L}) 
+$$\bar{\sigma}_a = \sqrt{\frac{\sum_{l = 1}^J {{\sigma_a^2}_l}}{L} + (1 + \frac{1}{L})
 \frac{\sum_{l = 1}^L({\gamma_a}_l - \bar{\gamma}_a) ^ 2}{L - 1}}$$
 
 # The dataset
@@ -87,36 +87,36 @@ Variables in dataset
 
 Year
   ~ The year of the observation as an integer
-  
+
 fYear
   ~ The year of the observation as a factor
 
 Period
   ~ The period of the observation as an integer
-  
+
 fPeriod
   ~ The period of the observation as a factor
-  
+
 Site
   ~ The ID of the site as an integer
-  
+
 fSite
   ~ The ID of the site as a factor
-  
+
 Mu
   ~ The expected value of a negative binomial distribution
-  
+
 Count
   ~ A realisation of a negative binomial distribution with expected value `Mu`
-  
+
 Observed
   ~ The `Count` variable with missing data
 
 ```{r plot_data}
 library(ggplot2)
-ggplot(dataset, aes(x = Year, y = Mu, group = Site)) + 
-  geom_line() + 
-  facet_wrap(~Period) + 
+ggplot(dataset, aes(x = Year, y = Mu, group = Site)) +
+  geom_line() +
+  facet_wrap(~Period) +
   scale_y_log10()
 ```
 
@@ -127,52 +127,53 @@ Hence several of the models are not good for a real life application.
 
 ```{r imputation_model}
 # a simple linear model
-imp.lm <- lm(Observed ~ fYear + fPeriod + fSite, data = dataset)
+imp_lm <- lm(Observed ~ fYear + fPeriod + fSite, data = dataset)
 # a mixed model with Poisson distribution
 # fYear and fPeriod are the fixed effects
 # Site are independent and identically distributed random intercepts
 library(lme4)
-imp.glmm <- glmer(
-  Observed ~ fYear + fPeriod + (1 | fSite), 
-  data = dataset, 
+imp_glmm <- glmer(
+  Observed ~ fYear + fPeriod + (1 | fSite),
+  data = dataset,
   family = poisson
 )
 library(INLA)
 # a mixed model with Poisson distribution
 # fYear and fPeriod are the fixed effects
 # Site are independent and identically distributed random intercepts
-# the same model as imp.glmm
-imp.inla.p <- inla(
-  Observed ~ fYear + fPeriod + f(Site, model = "iid"), 
-  data = dataset, 
-  family = "poisson", 
+# the same model as imp_glmm
+imp_inla_p <- inla(
+  Observed ~ fYear + fPeriod + f(Site, model = "iid"),
+  data = dataset,
+  family = "poisson",
   control.compute = list(config = TRUE),
   control.predictor = list(compute = TRUE, link = 1)
 )
-# the same model as imp.inla.p but with negative binomial distribution
-imp.inla.nb <- inla(
-  Observed ~ fYear + fPeriod + f(fSite, model = "iid"), 
-  data = dataset, 
-  family = "nbinomial", 
+# the same model as imp_inla_p but with negative binomial distribution
+imp_inla_nb <- inla(
+  Observed ~ fYear + fPeriod + f(fSite, model = "iid"),
+  data = dataset,
+  family = "nbinomial",
   control.compute = list(config = TRUE),
   control.predictor = list(compute = TRUE, link = 1)
 )
 # a mixed model with negative binomial distribution
 # fPeriod is a fixed effect
-# f(Year, model = "rw1") is a global temporal trend 
+# f(Year, model = "rw1") is a global temporal trend
 #     modelled as a first order random walk
 #     delta_i = Year_i - Year_{i-1} with delta_i \sim N(0, \sigma_{rw1})
 # f(YearCopy, model = "ar1", replicate = Site) is a temporal trend per Site
 #     modelled as an first order autoregressive model
-#     Year_i_k = \rho Year_{i-1}_k + \epsilon_i_k with \epsilon_i_k \sim N(0, \sigma_{ar1})
+#     Year_i_k = \rho Year_{i-1}_k + \epsilon_i_k with
+#     \epsilon_i_k \sim N(0, \sigma_{ar1})
 dataset$YearCopy <- dataset$Year
-imp.better <- inla(
-  Observed ~ 
-    f(Year, model = "rw1") + 
-    f(YearCopy, model = "ar1", replicate = Site) + 
-    fPeriod, 
-  data = dataset, 
-  family = "nbinomial", 
+imp_better <- inla(
+  Observed ~
+    f(Year, model = "rw1") +
+    f(YearCopy, model = "ar1", replicate = Site) +
+    fPeriod,
+  data = dataset,
+  family = "nbinomial",
   control.compute = list(config = TRUE),
   control.predictor = list(compute = TRUE, link = 1)
 )
@@ -191,12 +192,12 @@ Hence the model contains all required information and the `data` is not used.
 The default is `n_imp = 19`.
 
 ```{r impute}
-raw.lm <- impute(imp.lm, data = dataset)
-raw.glmm <- impute(imp.glmm, data = dataset)
-raw.inla.p <- impute(imp.inla.p)
-raw.inla.nb <- impute(imp.inla.nb)
-raw.better <- impute(imp.better)
-raw.better.9 <- impute(imp.better, n_imp = 9)
+raw_lm <- impute(imp_lm, data = dataset)
+raw_glmm <- impute(imp_glmm, data = dataset)
+raw_inla_p <- impute(imp_inla_p)
+raw_inla_nb <- impute(imp_inla_nb)
+raw_better <- impute(imp_better)
+raw_better_9 <- impute(imp_better, n_imp = 9)
 ```
 
 # Aggregate the imputed dataset
@@ -207,34 +208,34 @@ The resulting object will only contain the imputed response and the grouping var
 The easiest way to have a variable like year both a continuous and factor is to add both `Year` and `fYear` to the `grouping`.
 
 ```{r aggregate}
-aggr.lm <- aggregate_impute(
-  raw.lm, 
-  grouping = c("fYear", "fPeriod"), 
+aggr_lm <- aggregate_impute(
+  raw_lm,
+  grouping = c("fYear", "fPeriod"),
   fun = sum
 )
-aggr.glmm <- aggregate_impute(
-  raw.glmm, 
-  grouping = c("fYear", "fPeriod"), 
+aggr_glmm <- aggregate_impute(
+  raw_glmm,
+  grouping = c("fYear", "fPeriod"),
   fun = sum
 )
-aggr.inla.p <- aggregate_impute(
-  raw.inla.p, 
-  grouping = c("fYear", "fPeriod"), 
+aggr_inla_p <- aggregate_impute(
+  raw_inla_p,
+  grouping = c("fYear", "fPeriod"),
   fun = sum
 )
-aggr.inla.nb <- aggregate_impute(
-  raw.inla.nb, 
-  grouping = c("fYear", "fPeriod"), 
+aggr_inla_nb <- aggregate_impute(
+  raw_inla_nb,
+  grouping = c("fYear", "fPeriod"),
   fun = sum
 )
-aggr.better <- aggregate_impute(
-  raw.better, 
-  grouping = c("fYear", "fPeriod"), 
+aggr_better <- aggregate_impute(
+  raw_better,
+  grouping = c("fYear", "fPeriod"),
   fun = sum
 )
-aggr.better.9 <- aggregate_impute(
-  raw.better.9, 
-  grouping = c("fYear", "fPeriod"), 
+aggr_better_9 <- aggregate_impute(
+  raw_better_9,
+  grouping = c("fYear", "fPeriod"),
   fun = sum
 )
 ```
@@ -243,9 +244,9 @@ aggr.better.9 <- aggregate_impute(
 
 ## Simple example
 
-`model_impute()` will apply the `model.fun` to each imputation set.
+`model_impute()` will apply the `model_fun` to each imputation set.
 The covariates are defined in the `rhs` argument.
-So `model.fun = lm` in combination with `rhs = "0 + fYear + fPeriod"` is equivalent to `lm(ImputedResponse ~ 0 + fYear + fPeriod, data = ImputedData)`.
+So `model_fun = lm` in combination with `rhs = "0 + fYear + fPeriod"` is equivalent to `lm(ImputedResponse ~ 0 + fYear + fPeriod, data = ImputedData)`.
 
 The tricky part of this function the  `extractor` argument.
 This is a user defined function which must have an argument called `model`.
@@ -254,14 +255,14 @@ The first column hold the estimate of a parameter of the `model`, the second col
 Each row represents a parameter.
 
 ```{r model_aggregate_lm}
-extractor.lm <- function(model){
+extractor_lm <- function(model) {
   summary(model)$coefficients[, c("Estimate", "Std. Error")]
-}  
+}
 model_impute(
-  aggr.lm, 
-  model.fun = lm, 
-  rhs = "0 + fYear + fPeriod", 
-  extractor = extractor.lm
+  aggr_lm,
+  model_fun = lm,
+  rhs = "0 + fYear + fPeriod",
+  extractor = extractor_lm
 )
 ```
 
@@ -273,48 +274,48 @@ The user doesn't depend on the predefined extractor functions.
 This is illustrated by the following examples.
 
 ```{r model_aggregate_lm2}
-extractor.lm2 <- function(model){
+extractor_lm2 <- function(model) {
   cf <- summary(model)$coefficients
   cf[grepl("fYear", rownames(cf)), c("Estimate", "Std. Error")]
-}  
+}
 model_impute(
-  aggr.lm, 
-  model.fun = lm, 
-  rhs = "0 + fYear + fPeriod", 
-  extractor = extractor.lm2
+  aggr_lm,
+  model_fun = lm,
+  rhs = "0 + fYear + fPeriod",
+  extractor = extractor_lm2
 )
 ```
 
 ## Predict a smoother for predefined values
 
-Note that we pass extra arguments to the `extractor` function through the `extractor.args` argument.
+Note that we pass extra arguments to the `extractor` function through the `extractor_args` argument.
 This has to be a list.
 We recommend to use a named list to avoid confusion.
 
 ```{r model_aggregate_lm3}
 library(mgcv)
-new.set <- expand.grid(
+new_set <- expand.grid(
   Year = pretty(dataset$Year, 20),
   fPeriod = dataset$fPeriod[1]
 )
-extractor.lm3 <- function(model, newdata){
+extractor_lm3 <- function(model, newdata) {
   predictions <- predict(model, newdata = newdata, se.fit = TRUE)
   cbind(
     predictions$fit,
     predictions$se.fit
   )
-}  
-model.gam <- model_impute(
-  aggr.lm, 
-  model.fun = gam, 
-  rhs = "s(Year) + fPeriod", 
-  extractor = extractor.lm3,
-  extractor.args = list(newdata = new.set),
+}
+model_gam <- model_impute(
+  aggr_lm,
+  model_fun = gam,
+  rhs = "s(Year) + fPeriod",
+  extractor = extractor_lm3,
+  extractor_args = list(newdata = new_set),
   mutate = list(Year = ~as.integer(levels(fYear))[fYear])
 )
-model.gam <- cbind(new.set, model.gam)
-ggplot(model.gam, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
-  geom_ribbon(alpha = 0.1) + 
+model_gam <- cbind(new_set, model_gam)
+ggplot(model_gam, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) +
+  geom_ribbon(alpha = 0.1) +
   geom_line()
 ```
 
@@ -336,52 +337,53 @@ Note that the estimated index for year 1 will be 0 and $log(100\%) = 0$.
 
 ```{r glmnb_complete}
 library(MASS)
-aggr.complete <- aggregate(
+aggr_complete <- aggregate(
   dataset[, "Count", drop = FALSE],
   dataset[, c("fYear", "fPeriod")],
   FUN = sum
 )
-model.complete <- glm.nb(Count ~ 0 + fYear + fPeriod, data = aggr.complete)
-summary(model.complete)
-extractor.logindex <- function(model){
+model_complete <- glm.nb(Count ~ 0 + fYear + fPeriod, data = aggr_complete)
+summary(model_complete)
+extractor_logindex <- function(model) {
   coef <- summary(model)$coefficients
-  log.index <- coef[grepl("fYear", rownames(coef)), c("Estimate", "Std. Error")]
-  log.index[, "Estimate"] <- log.index[, "Estimate"] - log.index["fYear1", "Estimate"]
-  log.index
-}  
+  log_index <- coef[grepl("fYear", rownames(coef)), c("Estimate", "Std. Error")]
+  log_index[, "Estimate"] <- log_index[, "Estimate"] -
+    log_index["fYear1", "Estimate"]
+  log_index
+}
 ```
 
 Now that we have a relevant model and extractor function, we can apply them to the aggregate imputed datasets.
 
 ```{r model_glmnb}
-model.glmm <- model_impute(
-  object = aggr.glmm,
-  model.fun = glm.nb,
+model_glmm <- model_impute(
+  object = aggr_glmm,
+  model_fun = glm.nb,
   rhs = "0 + fYear + fPeriod",
-  extractor = extractor.logindex
+  extractor = extractor_logindex
 )
-model.p <- model_impute(
-  object = aggr.inla.p,
-  model.fun = glm.nb,
+model_p <- model_impute(
+  object = aggr_inla_p,
+  model_fun = glm.nb,
   rhs = "0 + fYear + fPeriod",
-  extractor = extractor.logindex
+  extractor = extractor_logindex
 )
-model.nb <- model_impute(
-  object = aggr.inla.nb,
-  model.fun = glm.nb,
+model_nb <- model_impute(
+  object = aggr_inla_nb,
+  model_fun = glm.nb,
   rhs = "0 + fYear + fPeriod",
-  extractor = extractor.logindex
+  extractor = extractor_logindex
 )
-model.better <- model_impute(
-  object = aggr.better,
-  model.fun = glm.nb,
+model_better <- model_impute(
+  object = aggr_better,
+  model_fun = glm.nb,
   rhs = "0 + fYear + fPeriod",
-  extractor = extractor.logindex
+  extractor = extractor_logindex
 )
-model.complete <- extractor.logindex(model.complete)
-colnames(model.complete) <- c("Estimate", "SE")
+model_complete <- extractor_logindex(model_complete)
+colnames(model_complete) <- c("Estimate", "SE")
 library(dplyr)
-model.complete <- model.complete %>%
+model_complete <- model_complete %>%
   as.data.frame() %>%
   mutate(
     LCL = qnorm(0.025, Estimate, SE),
@@ -393,18 +395,20 @@ covar <- data.frame(
 )
 # combine all results and add the Year
 parameters <- rbind(
-  cbind(covar, model.glmm, Model = "glmm"),
-  cbind(covar, model.p, Model = "poisson"),
-  cbind(covar, model.nb, Model = "negative binomial"),
-  cbind(covar, model.better, Model = "better"),
-  cbind(covar, model.complete, Model = "complete")
+  cbind(covar, model_glmm, Model = "glmm"),
+  cbind(covar, model_p, Model = "poisson"),
+  cbind(covar, model_nb, Model = "negative binomial"),
+  cbind(covar, model_better, Model = "better"),
+  cbind(covar, model_complete, Model = "complete")
 )
 # convert estimate and confidence interval to the original scale
-parameters[, c("Estimate", "LCL", "UCL")] <- exp(parameters[, c("Estimate", "LCL", "UCL")])
-ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
+parameters[, c("Estimate", "LCL", "UCL")] <- exp(
+  parameters[, c("Estimate", "LCL", "UCL")]
+)
+ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) +
   geom_hline(yintercept = 1, linetype = 3) +
-  geom_ribbon(alpha = 0.2) + 
-  geom_line() + 
+  geom_ribbon(alpha = 0.2) +
+  geom_line() +
   facet_wrap(~Model)
 ```
 
@@ -415,48 +419,48 @@ Two things are different: 1) instead of `glm.nb` we use `inla` to model the impu
 2) we model the seasonal pattern as a random intercept instead of a fixed effect.
 
 ```{r model_inla}
-extractor.inla <- function(model){
+extractor_inla <- function(model) {
   fe <- model$summary.fixed[, c("mean", "sd")]
-  log.index <- fe[grepl("fYear", rownames(fe)), ]
-  log.index[, "mean"] <- log.index[, "mean"] - log.index["fYear1", "mean"]
-  log.index
+  log_index <- fe[grepl("fYear", rownames(fe)), ]
+  log_index[, "mean"] <- log_index[, "mean"] - log_index["fYear1", "mean"]
+  log_index
 }
-model.p <- model_impute(
-  object = aggr.glmm,
-  model.fun = inla,
+model_p <- model_impute(
+  object = aggr_glmm,
+  model_fun = inla,
   rhs = "0 + fYear + f(fPeriod, model = 'iid')",
-  model.args = list(family = "nbinomial"),
-  extractor = extractor.inla
+  model_args = list(family = "nbinomial"),
+  extractor = extractor_inla
 )
-model.p <- model_impute(
-  object = aggr.inla.p,
-  model.fun = inla,
+model_p <- model_impute(
+  object = aggr_inla_p,
+  model_fun = inla,
   rhs = "0 + fYear + f(fPeriod, model = 'iid')",
-  model.args = list(family = "nbinomial"),
-  extractor = extractor.inla
+  model_args = list(family = "nbinomial"),
+  extractor = extractor_inla
 )
-model.nb <- model_impute(
-  object = aggr.inla.nb,
-  model.fun = inla,
+model_nb <- model_impute(
+  object = aggr_inla_nb,
+  model_fun = inla,
   rhs = "0 + fYear + f(fPeriod, model = 'iid')",
-  model.args = list(family = "nbinomial"),
-  extractor = extractor.inla
+  model_args = list(family = "nbinomial"),
+  extractor = extractor_inla
 )
-model.better <- model_impute(
-  object = aggr.better,
-  model.fun = inla,
+model_better <- model_impute(
+  object = aggr_better,
+  model_fun = inla,
   rhs = "0 + fYear + f(fPeriod, model = 'iid')",
-  model.args = list(family = "nbinomial"),
-  extractor = extractor.inla
+  model_args = list(family = "nbinomial"),
+  extractor = extractor_inla
 )
-m.complete <- inla(
+m_complete <- inla(
   Count ~ 0 + fYear + f(fPeriod, model = "iid"),
-  data = aggr.complete,
+  data = aggr_complete,
   family = "nbinomial"
 )
-model.complete <- extractor.inla(m.complete)
-colnames(model.complete) <- c("Estimate", "SE")
-model.complete <- model.complete %>%
+model_complete <- extractor_inla(m_complete)
+colnames(model_complete) <- c("Estimate", "SE")
+model_complete <- model_complete %>%
   as.data.frame() %>%
   mutate(
     LCL = qnorm(0.025, Estimate, SE),
@@ -465,18 +469,20 @@ model.complete <- model.complete %>%
   )
 # combine all results and add the Year
 parameters <- rbind(
-  cbind(covar, model.glmm, Model = "glmm"),
-  cbind(covar, model.p, Model = "poisson"),
-  cbind(covar, model.nb, Model = "negative binomial"),
-  cbind(covar, model.better, Model = "better"),
-  cbind(covar, model.complete, Model = "complete")
+  cbind(covar, model_glmm, Model = "glmm"),
+  cbind(covar, model_p, Model = "poisson"),
+  cbind(covar, model_nb, Model = "negative binomial"),
+  cbind(covar, model_better, Model = "better"),
+  cbind(covar, model_complete, Model = "complete")
 )
 # convert estimate and confidence interval to the original scale
-parameters[, c("Estimate", "LCL", "UCL")] <- exp(parameters[, c("Estimate", "LCL", "UCL")])
-ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) + 
-  geom_hline(yintercept = 1, linetype = 3) + 
-  geom_ribbon(alpha = 0.2) + 
-  geom_line() + 
+parameters[, c("Estimate", "LCL", "UCL")] <- exp(
+  parameters[, c("Estimate", "LCL", "UCL")]
+)
+ggplot(parameters, aes(x = Year, y = Estimate, ymin = LCL, ymax = UCL)) +
+  geom_hline(yintercept = 1, linetype = 3) +
+  geom_ribbon(alpha = 0.2) +
+  geom_line() +
   facet_wrap(~Model)
 ```
 
