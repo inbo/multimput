@@ -31,17 +31,17 @@ Imports:
     tibble,
     tidyr
 Suggests:
-    INLA,
+    INLA (>= 22.01.19),
     MASS,
     ggplot2,
     knitr,
     mgcv,
     rmarkdown,
+    sn,
     testthat
 VignetteBuilder: 
     knitr
-Remotes: 
-    inbo/INLA
+Additional_repositories: https://inla.r-inla-download.org/R/testing
 Encoding: UTF-8
 LazyData: TRUE
 Roxygen: list(markdown = TRUE)

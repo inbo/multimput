@@ -16,7 +16,14 @@ impute(model, ..., n_imp = 19)
 
 \S4method{impute}{glmerMod}(model, data, ..., n_imp)
 
-\S4method{impute}{inla}(model, ..., n_imp = 19)
+\S4method{impute}{inla}(
+  model,
+  ...,
+  seed = 0L,
+  num_threads = NULL,
+  parallel_configs = TRUE,
+  n_imp = 19
+)
 
 \S4method{impute}{lm}(model, data, ..., n_imp)
 }
@@ -30,6 +37,26 @@ See details}
 Defaults to \code{19}.}
 
 \item{data}{The dataset holding both the observed and the missing values}
+
+\item{seed}{See the same argument in \code{\link[INLA:qsample]{INLA::inla.qsample()}} for further
+information.
+In order to produce reproducible results, you ALSO need to make sure the RNG
+in R is in the same state, see the example in
+\code{\link[INLA:posterior.sample]{INLA::inla.posterior.sample()}}.
+When seed is non-zero, \code{num_threads} is forced to \code{"1:1"} and
+\code{parallel_configs} is set to \code{FALSE}, since parallel sampling would not
+produce a reproducible sequence of pseudo-random numbers.}
+
+\item{num_threads}{The number of threads to use in the format \code{"A:B"}
+defining the number threads in the outer (\code{A}) and inner (\code{B}) layer for
+nested parallelism.
+\verb{A "0"} will be replaced intelligently.
+\code{seed != 0} requires serial computations.}
+
+\item{parallel_configs}{Logical.
+If TRUE and not on Windows, then try to run each configuration in parallel
+(not Windows) using \code{A} threads (see \code{num_threads}), where each of them is
+using \code{B:0} threads.}
 }
 \description{
 Impute a dataset

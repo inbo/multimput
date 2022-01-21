@@ -77,10 +77,7 @@ test_that("handles inla with poisson distribution", {
     control.compute = list(config = TRUE),
     control.predictor = list(compute = TRUE, link = 1)
   )
-  expect_is(
-    imputed <- impute(model),
-    "rawImputed"
-  )
+  expect_is(imputed <- impute(model, parallel_configs = FALSE), "rawImputed")
   expect_identical(
     ncol(imputed@Imputation),
     19L
@@ -95,7 +92,7 @@ test_that("handles inla with poisson distribution", {
   )
 
   expect_is(
-    imputed <- impute(model, dataset, n_imp = n_imp),
+    imputed <- impute(model, dataset, n_imp = n_imp, parallel_configs = FALSE),
     "rawImputed"
   )
   expect_identical(
@@ -108,7 +105,9 @@ test_that("handles inla with poisson distribution", {
   )
 
   expect_is(
-    imputed <- impute(model, dataset, minimum = "Bottom"),
+    imputed <- impute(
+      model, dataset, minimum = "Bottom", parallel_configs = FALSE
+    ),
     "rawImputed"
   )
   expect_identical(
@@ -117,7 +116,7 @@ test_that("handles inla with poisson distribution", {
   )
 
   expect_error(
-    impute(model, dataset, minimum = "Junk"),
+    impute(model, dataset, minimum = "Junk", parallel_configs = FALSE),
     "object@Data does not have .*name.*Junk"
   )
 })
@@ -145,10 +144,7 @@ test_that("handles inla with negative binomial distribution", {
     control.compute = list(config = TRUE),
     control.predictor = list(compute = TRUE, link = 1)
   )
-  expect_is(
-    imputed <- impute(model),
-    "rawImputed"
-  )
+  expect_is(imputed <- impute(model, parallel_configs = FALSE), "rawImputed")
   expect_identical(
     ncol(imputed@Imputation),
     19L
@@ -163,7 +159,7 @@ test_that("handles inla with negative binomial distribution", {
   )
 
   expect_is(
-    imputed <- impute(model, dataset, n_imp = n_imp),
+    imputed <- impute(model, dataset, n_imp = n_imp, parallel_configs = FALSE),
     "rawImputed"
   )
   expect_identical(
@@ -176,7 +172,9 @@ test_that("handles inla with negative binomial distribution", {
   )
 
   expect_is(
-    imputed <- impute(model, dataset, minimum = "Bottom"),
+    imputed <- impute(
+      model, dataset, minimum = "Bottom", parallel_configs = FALSE
+    ),
     "rawImputed"
   )
   expect_identical(
@@ -185,7 +183,7 @@ test_that("handles inla with negative binomial distribution", {
   )
 
   expect_error(
-    impute(model, dataset, minimum = "Junk"),
+    impute(model, dataset, minimum = "Junk", parallel_configs = FALSE),
     "object@Data does not have.*name.*Junk"
   )
 })
@@ -245,10 +243,11 @@ test_that("handles datasets without missing observations", {
     control.compute = list(config = TRUE)
   )
   expect_is(
-    imputed <- impute(model, dataset, minimum = "Bottom"),
+    imputed <- impute(
+      model, dataset, minimum = "Bottom", parallel_configs = FALSE
+    ),
     "rawImputed"
   )
-
 })
 
 
@@ -302,9 +301,8 @@ test_that("is robust for wrong imput", {
     skip("INLA package not available")
   }
   model <- INLA::inla(
-    Mu ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
-    data = dataset,
-    family = "nbinomial"
+    Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
+    data = dataset, family = "nbinomial", control.predictor = list(link = 1)
   )
   expect_error(
     impute(model),
@@ -319,7 +317,7 @@ test_that("is robust for wrong imput", {
     control.predictor = list(link = 1)
   )
   expect_error(
-    impute(model),
+    impute(model, parallel_configs = FALSE),
     "Imputations from the 'binomial' family not yet defined"
   )
 

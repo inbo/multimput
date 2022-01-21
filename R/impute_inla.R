@@ -3,10 +3,30 @@
 #' @importFrom assertthat assert_that is.count
 #' @importFrom stats rgamma rnorm rpois
 #' @include impute_generic.R
+#' @param seed See the same argument in [INLA::inla.qsample()] for further
+#' information.
+#' In order to produce reproducible results, you ALSO need to make sure the RNG
+#' in R is in the same state, see the example in
+#' [INLA::inla.posterior.sample()].
+#' When seed is non-zero, `num_threads` is forced to `"1:1"` and
+#' `parallel_configs` is set to `FALSE`, since parallel sampling would not
+#' produce a reproducible sequence of pseudo-random numbers.
+#' @param num_threads The number of threads to use in the format `"A:B"`
+#' defining the number threads in the outer (`A`) and inner (`B`) layer for
+#' nested parallelism.
+#' `A "0"` will be replaced intelligently.
+#' `seed != 0` requires serial computations.
+#' @param parallel_configs Logical.
+#' If TRUE and not on Windows, then try to run each configuration in parallel
+#' (not Windows) using `A` threads (see `num_threads`), where each of them is
+#' using `B:0` threads.
 setMethod(
   f = "impute",
   signature = signature(model = "inla"),
-  definition = function(model, ..., n_imp) {
+  definition = function(
+    model, ..., seed = 0L, num_threads = NULL, parallel_configs = TRUE,
+    n_imp = 19
+  ) {
     check_old_names(..., old_names = c(n_imp = "n.imp"))
     assert_that(is.count(n_imp))
     assert_that(
@@ -37,9 +57,10 @@ setMethod(
     missing_obs <- sprintf(paste0("Predictor:%i"), missing_obs)
 
     assert_that(requireNamespace("INLA", quietly = TRUE))
+    assert_that(requireNamespace("sn", quietly = TRUE))
     samples <- INLA::inla.posterior.sample(
-      n = n_imp,
-      model
+      n = n_imp, result = model, seed = seed, num.threads = num_threads,
+      parallel.configs = parallel_configs
     )
     imputation <- switch(
       model$.args$family,

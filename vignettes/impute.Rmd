@@ -194,10 +194,12 @@ The default is `n_imp = 19`.
 ```{r impute}
 raw_lm <- impute(imp_lm, data = dataset)
 raw_glmm <- impute(imp_glmm, data = dataset)
-raw_inla_p <- impute(imp_inla_p)
-raw_inla_nb <- impute(imp_inla_nb)
-raw_better <- impute(imp_better)
-raw_better_9 <- impute(imp_better, n_imp = 9)
+# setting `parallel_configs = FALSE` was required to pass R CMD Check
+# in practice you can use the default `parallel_configs = TRUE`
+raw_inla_p <- impute(imp_inla_p, parallel_configs = FALSE)
+raw_inla_nb <- impute(imp_inla_nb, parallel_configs = FALSE)
+raw_better <- impute(imp_better, parallel_configs = FALSE)
+raw_better_9 <- impute(imp_better, n_imp = 9, parallel_configs = FALSE)
 ```
 
 # Aggregate the imputed dataset
@@ -330,7 +332,7 @@ The `0 +` part removes the intercept for the model.
 This simple trick gives direct estimates for the effect of `fYear`.
 
 Only the effects of `fYear` are needed for the index.
-Therefore the extractor functions selects only the parameters who's row name contains fYear.
+Therefore the extractor functions selects only the parameters who's row name contains `fYear`.
 In case that we want the first year to be used as a reference (index year 1 = 100%), we can subtract the estimate for this year from all estimates.
 The result are the indices relative to the first year, but still in the log scale.
 Note that the estimated index for year 1 will be 0 and $log(100\%) = 0$.
