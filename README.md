@@ -2,7 +2,6 @@
 [![License](http://img.shields.io/badge/license-GPL--3-blue.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html)
 [![Release](https://img.shields.io/github/release/qubyte/rubidium.svg)](https://github.com/inbo/multimput/releases)
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.48423.svg)](http://dx.doi.org/10.5281/zenodo.48423)
-[![wercker status](https://app.wercker.com/status/5f154cd480de20b68cde62705e817436/s/master "wercker status")](https://app.wercker.com/project/bykey/5f154cd480de20b68cde62705e817436) 
 [![Build status](https://ci.appveyor.com/api/projects/status/auiumf7qteqttgxa/branch/master?svg=true)](https://ci.appveyor.com/project/ThierryO/multimput/branch/master)
 [![codecov.io](https://codecov.io/github/inbo/multimput/coverage.svg?branch=master)](https://codecov.io/github/inbo/multimput?branch=master)
 
@@ -18,7 +17,7 @@ However both the original code and data remain available in [the older releases]
 
 ## Documentation
 
-All helpfiles and vignettes are available at https://multimput.netlify.app
+All helpfiles and vignettes are available at https://inbo.github.io/multimput/
 
 ## Installation
 
@@ -30,7 +29,7 @@ Hence installing `INLA` from <https://inla.r-inla-download.org> is highly recomm
 
 Once `INLA` is installed, you can install `multimput` using the `remotes` package: `remotes::install_github("inbo/multimput", build_vignettes = TRUE)`). 
 To view the vignette use `vignette("Impute", package = "multimput")`. 
-The vignette is also available at https://multimput.netlify.app/articles/Impute.html
+The vignette is also available at https://inbo.github.io/multimput/articles/impute.html
 
 A docker image with all the required dependencies is available from <https://hub.docker.com/r/inbobmk/multimput/>.
 Use `docker pull inbobmk/multimput` to get it.

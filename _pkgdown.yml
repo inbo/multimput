@@ -4,6 +4,8 @@ navbar:
   left:
   - text: NEWS
     href: news/index.html
+  - text: Tutorials
+    href: articles/index.html
   - text: Functions
     href: reference/index.html
   - text: Contributing
