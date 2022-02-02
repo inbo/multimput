@@ -11,7 +11,7 @@
 #' An optional list of arguments to pass to the `extractor` function.
 #' @inheritParams aggregate_impute
 #' @param mutate An optional argument to alter the aggregated dataset.
-#' Will be passed to the `.dots` argument of \code{\link[dplyr]{mutate}}.
+#' Will be passed to the `.dots` argument of[dplyr::mutate()].
 #' This is mainly useful for simple conversions, e.g. factors to numbers and
 #' vice versa.
 #' @param ... currently ignored.

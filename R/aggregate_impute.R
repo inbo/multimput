@@ -4,10 +4,10 @@
 #' @param fun The function to aggregate.
 #' @param filter
 #' An optional argument to filter the raw dataset before aggregation.
-#' Will be passed to \code{\link[dplyr]{filter}}.
+#' Will be passed to [dplyr::filter()].
 #' @param join
 #' An optional argument to filter the raw dataset based on a data.frame.
-#' A \code{\link[dplyr]{semi_join}} will be applied with `join` or each element
+#' A [dplyr::semi_join()] will be applied with `join` or each element
 #' of `join` in case join is a list.
 #' @name aggregate_impute
 #' @rdname aggregate_impute

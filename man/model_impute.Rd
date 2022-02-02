@@ -60,10 +60,10 @@ the second the standard error of the estimate.}
 \item{extractor_args}{An optional list of arguments to pass to the \code{extractor} function.}
 
 \item{filter}{An optional argument to filter the raw dataset before aggregation.
-Will be passed to \code{\link[dplyr]{filter}}.}
+Will be passed to \code{\link[dplyr:filter]{dplyr::filter()}}.}
 
 \item{mutate}{An optional argument to alter the aggregated dataset.
-Will be passed to the \code{.dots} argument of \code{\link[dplyr]{mutate}}.
+Will be passed to the \code{.dots} argument of\code{\link[dplyr:mutate]{dplyr::mutate()}}.
 This is mainly useful for simple conversions, e.g. factors to numbers and
 vice versa.}
 

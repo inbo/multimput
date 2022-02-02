@@ -3,10 +3,10 @@
 \docType{class}
 \name{aggregatedImputed-class}
 \alias{aggregatedImputed-class}
-\title{The aggregatedimputed class
+\title{The aggregatedImputed class
 Holds an aggregated imputation data set}
 \description{
-The aggregatedimputed class
+The aggregatedImputed class
 Holds an aggregated imputation data set
 }
 \section{Slots}{

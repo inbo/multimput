@@ -1,4 +1,4 @@
-#' Generate missing data mimicing choices made by volunteers.
+#' Generate missing data mimicking choices made by volunteers.
 #'
 #' The observed values will be either equal to the counts or missing.
 #' The probability of missing is the inverse of the counts + 1.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/missing_volunteer.R
 \name{missing_volunteer}
 \alias{missing_volunteer}
-\title{Generate missing data mimicing choices made by volunteers.}
+\title{Generate missing data mimicking choices made by volunteers.}
 \usage{
 missing_volunteer(
   dataset,

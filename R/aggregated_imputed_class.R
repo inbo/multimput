@@ -1,4 +1,4 @@
-#' The aggregatedimputed class
+#' The aggregatedImputed class
 #' Holds an aggregated imputation data set
 #' @section Slots:
 #'   \describe{
