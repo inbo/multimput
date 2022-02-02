@@ -3,18 +3,17 @@ package: yes
 allowed:
   warnings: []
   notes:
-  - motivation: Package not on CRAN
+  - motivation: INLA not on CRAN
     value: |-
       checking CRAN incoming feasibility ... NOTE
       Maintainer: 'Thierry Onkelinx <thierry.onkelinx@inbo.be>'
 
       New submission
 
-      Unknown, possibly mis-spelled, fields in DESCRIPTION:
-        'Remotes'
-
       Suggests or Enhances not in mainstream repositories:
         INLA
+      Availability using Additional_repositories specification:
+        INLA   yes   https://inla.r-inla-download.org/R/testing
 citation_roles:
 - aut
 - cre
