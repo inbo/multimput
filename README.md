@@ -1,9 +1,14 @@
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![Lifecycle:maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html#maturing-1)
 [![License](http://img.shields.io/badge/license-GPL--3-blue.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html)
 [![Release](https://img.shields.io/github/release/qubyte/rubidium.svg)](https://github.com/inbo/multimput/releases)
+[![check package](https://github.com/inbo/multimput/actions/workflows/check_on_branch.yml/badge.svg)](https://github.com/inbo/multimput/actions/workflows/check_on_branch.yml)
+![r-universe name](https://inbo.r-universe.dev/badges/:name?color=c04384)
+![r-universe package](https://inbo.r-universe.dev/badges/multimput)
+[![Codecov test coverage](https://codecov.io/gh/inbo/multimput/branch/main/graph/badge.svg)](https://app.codecov.io/gh/inbo/multimput?branch=main)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/inbo/multimput.svg)
+![GitHub repo size](https://img.shields.io/github/repo-size/inbo/multimput.svg)
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.48423.svg)](http://dx.doi.org/10.5281/zenodo.48423)
-[![Build status](https://ci.appveyor.com/api/projects/status/auiumf7qteqttgxa/branch/master?svg=true)](https://ci.appveyor.com/project/ThierryO/multimput/branch/master)
-[![codecov.io](https://codecov.io/github/inbo/multimput/coverage.svg?branch=master)](https://codecov.io/github/inbo/multimput?branch=master)
 
 # multimput
 
