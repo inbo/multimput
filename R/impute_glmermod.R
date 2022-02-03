@@ -15,12 +15,11 @@ setMethod(
     assert_that(requireNamespace("lme4", quietly = TRUE))
     assert_that(is.count(n_imp))
     assert_that(inherits(data, "data.frame"))
-    if (any(grepl("factor\\(", model@call))) {
-      stop(
-"impute can't handle factor() in the model. Convert the factor in the dataset
-and refit the model."
-      )
-    }
+    assert_that(
+      length(grep("factor\\(", model@call)) == 0,
+      msg = "impute can't handle factor() in the model.
+Convert the factor in the dataset and refit the model."
+    )
 
     response <- colnames(model@frame)[
       attr(
@@ -47,16 +46,13 @@ and refit the model."
     random <- lapply(
       lme4::ranef(model, condVar = TRUE),
       function(x) {
-        if (ncol(x) > 1) {
-          stop("Random slopes are not yet handled.")
-        } else {
-          rnorm(
-            n_imp * nrow(x),
-            mean = x[, 1],
-            sd = sqrt(attr(x, "postVar")[1, ,]) #nolint
-          ) %>%
-            matrix(ncol = n_imp)
-        }
+        assert_that(ncol(x) == 1, msg = "Random slopes are not yet handled.")
+        rnorm(
+          n_imp * nrow(x),
+          mean = x[, 1],
+          sd = sqrt(attr(x, "postVar")[1, ,]) #nolint
+        ) %>%
+          matrix(ncol = n_imp)
       }
     )
     eta <- lapply(

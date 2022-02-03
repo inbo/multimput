@@ -94,13 +94,16 @@ setMethod(
         join <- list(join)
       }
       assert_that(is.list(join))
-      if (!all(sapply(join, inherits, "data.frame"))) {
-        stop("not all objects in join are data.frames")
-      }
+
+      assert_that(
+        all(sapply(join, inherits, "data.frame")),
+        msg = "not all objects in join are data.frames"
+      )
       for (i in seq_along(join)) {
-        if (!all(colnames(join[[i]]) %in% colnames(data))) {
-          stop("all columns in join with be available in the dataset")
-        }
+        assert_that(
+          all(colnames(join[[i]]) %in% colnames(data)),
+          msg = "all columns in join with be available in the dataset"
+        )
         data <- data %>%
           semi_join(join[[i]], by = colnames(join[[i]]))
       }
@@ -182,13 +185,15 @@ setMethod(
         join <- list(join)
       }
       assert_that(is.list(join))
-      if (!all(sapply(join, inherits, "data.frame"))) {
-        stop("not all objects in join are data.frames")
-      }
+      assert_that(
+        all(sapply(join, inherits, "data.frame")),
+        msg = "not all objects in join are data.frames"
+      )
       for (i in seq_along(join)) {
-        if (!all(colnames(join[[i]]) %in% colnames(data))) {
-          stop("all columns in join with be available in the dataset")
-        }
+        assert_that(
+          all(colnames(join[[i]]) %in% colnames(data)),
+          msg = "all columns in join with be available in the dataset"
+        )
         data <- data %>%
           semi_join(join[[i]], by = colnames(join[[i]]))
       }

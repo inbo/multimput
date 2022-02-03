@@ -142,9 +142,7 @@ setMethod(
       }
     )
     failed <- sapply(m, is.null)
-    if (all(failed)) {
-      stop("model failed on all imputations")
-    }
+    assert_that(any(!failed), msg = "model failed on all imputations")
     m %>%
       bind_rows() %>%
       select(Parameter = 1, Estimate = 2, SE = 3) %>%

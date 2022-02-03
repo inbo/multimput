@@ -10,5 +10,5 @@ check_old_names <- function(..., old_names) {
   change <- sprintf(
     "\n`%s` -> `%s`", old_names[problem], names(old_names)[problem]
   )
-  stop("some arguments changed name:", change)
+  stop("some arguments changed name:", change, call. = FALSE)
 }
