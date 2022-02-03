@@ -1,7 +1,8 @@
 #' @rdname impute
-#' @importFrom methods new setMethod
 #' @importFrom assertthat assert_that is.count
-#' @importFrom stats rgamma rnorm rpois
+#' @importFrom methods new setMethod
+#' @importFrom purrr map map_dfr map2_dfr
+#' @importFrom stats rgamma rnorm rpois setNames
 #' @include impute_generic.R
 #' @param seed See the same argument in [INLA::inla.qsample()] for further
 #' information.
@@ -62,57 +63,30 @@ setMethod(
       n = n_imp, result = model, seed = seed, num.threads = num_threads,
       parallel.configs = parallel_configs
     )
+    map(samples, "latent") %>%
+      map(`[`, missing_obs, 1) %>%
+      setNames(paste0("sim_", seq_len(n_imp))) -> latent
+    hyperpar <- map_dfr(samples, "hyperpar")
+
     imputation <- switch(
       model$.args$family,
-      poisson = {
-        sapply(
-          samples,
-          function(x) {
-            rpois(
-              n = length(missing_obs),
-              lambda = exp(x$latent[missing_obs, 1])
-            )
-          }
-        )
-      },
-      nbinomial = {
-        sapply(
-          samples,
-          function(x) {
-            h <- x$hyperpar
-            rnbinom(
-              n = length(missing_obs),
-              size = h[grepl("size for the nbinomial", names(h))],
-              mu = exp(x$latent[missing_obs, 1]))
-          }
-        )
-      },
-      gamma = {
-        sapply(
-          samples,
-          function(x) {
-            h <- x$hyperpar
-            prec <- h[grepl("Gamma observations", names(h))]
-            mu <- exp(x$latent[missing_obs, 1])
-            rate  <- prec * mu
-            shape <- mu * rate
-            rgamma(n = length(missing_obs), shape = shape, rate = rate)
-          }
-        )
-      },
-      gaussian = {
-        sapply(
-          samples,
-          function(x) {
-            h <- x$hyperpar
-            rnorm(
-              n = length(missing_obs),
-              mean = x$latent[missing_obs, 1],
-              sd = h[grepl("Gaussian observations", names(h))]
-            )
-          }
-        )
-      },
+      gamma = map2_dfr(
+        .x = latent, .f = ~rgamma(n = n, shape = .y * .x ^ 2, rate = .y * .x),
+        n = length(missing_obs),
+        .y = hyperpar[[grep("Gamma observations", colnames(hyperpar))]]
+      ),
+      gaussian = map2_dfr(
+        .x = latent, .f = rnorm, n = length(missing_obs),
+        .y = hyperpar[[grep("Gaussian observations", colnames(hyperpar))]]
+      ),
+      nbinomial = map2_dfr(
+        .x = latent,
+        .f = ~rnbinom(size = .y, mu = exp(.x), n = length(missing_obs)),
+        .y = hyperpar[[grep("size for the nbinomial", colnames(hyperpar))]]
+      ),
+      poisson = map_dfr(
+        .x = latent, .f = rpois, n = length(missing_obs)
+      ),
       stop(
         "Imputations from the '", model$.args$family, "' family not yet defined.
 We will consider adding support for other families. Please create an issue with
@@ -121,11 +95,8 @@ a reproducible example at https://github.com/inbo/multimput/issues"
     )
 
     new(
-      "rawImputed",
-      Data = model$.args$data,
-      Response = response,
-      Imputation = imputation,
-      Minimum = dots$minimum
+      "rawImputed", Data = model$.args$data, Response = response,
+      Imputation = as.matrix(imputation), Minimum = dots$minimum
     )
   }
 )

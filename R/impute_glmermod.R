@@ -5,6 +5,7 @@
 #' @importFrom digest sha1
 #' @importFrom dplyr %>%
 #' @importClassesFrom lme4 glmerMod
+#' @importFrom purrr map map_int map2
 #' @importFrom stats model.matrix vcov rnorm as.formula rpois rbinom
 #' @include impute_generic.R
 setMethod(
@@ -22,39 +23,33 @@ Convert the factor in the dataset and refit the model."
     )
 
     response <- colnames(model@frame)[
-      attr(
-        attr(model@frame, "terms"),
-        "response"
-      )
+      attr(attr(model@frame, "terms"), "response")
     ]
     assert_that(has_name(data, response))
     missing_obs <- which(is.na(data[, response]))
-    call <- model@call %>%
-      as.character()
+    call <- as.character(model@call)
     mm <- call[grepl("~", call)] %>%
       gsub(pattern = "^.*~", replacement = "~") %>%
       gsub(pattern = "\\+ \\(.*\\|.*\\)", replacement = "") %>%
       as.formula() %>%
       model.matrix(data = data[missing_obs, ])
     fixed <- rmvnorm(
-      n_imp,
-      mean = lme4::fixef(model),
-      sigma = vcov(model) %>%
-        as.matrix()
+      n_imp, mean = lme4::fixef(model), sigma = as.matrix(vcov(model))
     ) %>%
       tcrossprod(x = mm)
-    random <- lapply(
-      lme4::ranef(model, condVar = TRUE),
-      function(x) {
-        assert_that(ncol(x) == 1, msg = "Random slopes are not yet handled.")
-        rnorm(
-          n_imp * nrow(x),
-          mean = x[, 1],
-          sd = sqrt(attr(x, "postVar")[1, ,]) #nolint
-        ) %>%
-          matrix(ncol = n_imp)
-      }
+    rf <- lme4::ranef(model, condVar = TRUE)
+    assert_that(
+      max(map_int(rf, ncol)) == 1,
+      msg = "Random slopes are not yet handled."
     )
+    map(rf, attr, which = "postVar") %>%
+      map(as.vector) %>%
+      map(sqrt) -> rf_sd
+    map2(
+      .x = rf, .y = rf_sd, n_imp = n_imp,
+      ~rnorm(n = n_imp * nrow(.x), mean = .x[[1]], sd = .y)
+    ) %>%
+      map(matrix, ncol = n_imp) -> random
     eta <- lapply(
       names(random),
       function(x) {

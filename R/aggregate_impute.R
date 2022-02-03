@@ -88,7 +88,6 @@ setMethod(
       data <- data %>%
         filter(!!!dots)
     }
-
     if (!missing(join)) {
       if (inherits(join, "data.frame")) {
         join <- list(join)
