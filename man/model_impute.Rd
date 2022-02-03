@@ -7,47 +7,83 @@
 \alias{model_impute,aggregatedImputed-method}
 \title{Model an imputed dataset}
 \usage{
-model_impute(object, model.fun, rhs, model.args, extractor, extractor.args,
-  filter, mutate)
+model_impute(
+  object,
+  model_fun,
+  rhs,
+  model_args,
+  extractor,
+  extractor_args,
+  filter,
+  mutate,
+  ...
+)
 
-\S4method{model_impute}{ANY}(object, model.fun, rhs, model.args, extractor,
-  extractor.args, filter, mutate)
+\S4method{model_impute}{ANY}(
+  object,
+  model_fun,
+  rhs,
+  model_args,
+  extractor,
+  extractor_args,
+  filter,
+  mutate,
+  ...
+)
 
-\S4method{model_impute}{aggregatedImputed}(object, model.fun, rhs,
-  model.args, extractor, extractor.args, filter, mutate)
+\S4method{model_impute}{aggregatedImputed}(
+  object,
+  model_fun,
+  rhs,
+  model_args,
+  extractor,
+  extractor_args,
+  filter,
+  mutate,
+  ...
+)
 }
 \arguments{
-\item{object}{the imputed dataset}
+\item{object}{The imputed dataset.}
 
-\item{model.fun}{the function to apply on each imputation set}
+\item{model_fun}{The function to apply on each imputation set.}
 
-\item{rhs}{the right hand side of the model}
+\item{rhs}{The right hand side of the model.}
 
-\item{model.args}{an optional list of arguments to pass to the model function.}
+\item{model_args}{An optional list of arguments to pass to the model
+function.}
 
-\item{extractor}{a function which return a \code{matrix} or \code{data.frame}. The first column should contain the estimate, the second the standard error of the estimate}
+\item{extractor}{A function which return a \code{matrix} or \code{data.frame}.
+The first column should contain the estimate,
+the second the standard error of the estimate.}
 
-\item{extractor.args}{an optional list of arguments to pass to the extractor function.}
+\item{extractor_args}{An optional list of arguments to pass to the \code{extractor} function.}
 
-\item{filter}{an optional argument to filter the raw dataset before aggregation. Will be passed to the \code{.dots} argument of \code{\link[dplyr]{filter_}}}
+\item{filter}{An optional argument to filter the raw dataset before aggregation.
+Will be passed to \code{\link[dplyr:filter]{dplyr::filter()}}.}
 
-\item{mutate}{an optional argument to alter the aggregated dataset. Will be passed to the \code{.dots} argument of \code{\link[dplyr]{mutate_}}. This is mainly useful for simple convertions, e.g. factors to numbers and viceversa}
+\item{mutate}{An optional argument to alter the aggregated dataset.
+Will be passed to the \code{.dots} argument of\code{\link[dplyr:mutate]{dplyr::mutate()}}.
+This is mainly useful for simple conversions, e.g. factors to numbers and
+vice versa.}
+
+\item{...}{currently ignored.}
 }
 \description{
 Model an imputed dataset
 }
 \examples{
-dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
+dataset <- generate_data(n_year = 10, n_site = 50, n_run = 1)
 dataset$Count[sample(nrow(dataset), 50)] <- NA
 model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
 imputed <- impute(data = dataset, model = model)
 aggr <- aggregate_impute(imputed, grouping = c("Year", "Period"), fun = sum)
-extractor <- function(model){
+extractor <- function(model) {
   summary(model)$coefficients[, c("Estimate", "Std. Error")]
 }
 model_impute(
   object = aggr,
-  model.fun = lm,
+  model_fun = lm,
   rhs = "0 + factor(Year)",
   extractor = extractor
 )

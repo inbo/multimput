@@ -1,12 +1,20 @@
 #' Model an imputed dataset
-#' @param object the imputed dataset
-#' @param model.fun the function to apply on each imputation set
-#' @param rhs the right hand side of the model
-#' @param model.args an optional list of arguments to pass to the model function.
-#' @param extractor a function which return a \code{matrix} or \code{data.frame}. The first column should contain the estimate, the second the standard error of the estimate
-#' @param extractor.args an optional list of arguments to pass to the extractor function.
+#' @param object The imputed dataset.
+#' @param model_fun The function to apply on each imputation set.
+#' @param rhs The right hand side of the model.
+#' @param model_args An optional list of arguments to pass to the model
+#' function.
+#' @param extractor A function which return a `matrix` or `data.frame`.
+#' The first column should contain the estimate,
+#' the second the standard error of the estimate.
+#' @param extractor_args
+#' An optional list of arguments to pass to the `extractor` function.
 #' @inheritParams aggregate_impute
-#' @param mutate an optional argument to alter the aggregated dataset. Will be passed to the \code{.dots} argument of \code{\link[dplyr]{mutate_}}. This is mainly useful for simple convertions, e.g. factors to numbers and viceversa
+#' @param mutate An optional argument to alter the aggregated dataset.
+#' Will be passed to the `.dots` argument of[dplyr::mutate()].
+#' This is mainly useful for simple conversions, e.g. factors to numbers and
+#' vice versa.
+#' @param ... currently ignored.
 #' @name model_impute
 #' @rdname model_impute
 #' @exportMethod model_impute
@@ -15,15 +23,9 @@
 setGeneric(
   name = "model_impute",
   def = function(
-    object,
-    model.fun,
-    rhs,
-    model.args,
-    extractor,
-    extractor.args,
-    filter,
-    mutate
-){
+    object, model_fun, rhs, model_args, extractor, extractor_args, filter,
+    mutate, ...
+) {
     standard.generic("model_impute") # nocov
   }
 )
@@ -34,15 +36,9 @@ setMethod(
   f = "model_impute",
   signature = signature(object = "ANY"),
   definition = function(
-    object,
-    model.fun,
-    rhs,
-    model.args,
-    extractor,
-    extractor.args,
-    filter,
-    mutate
-  ){
+    object, model_fun, rhs, model_args, extractor, extractor_args, filter,
+    mutate, ...
+  ) {
     stop("model_impute() doesn't handle a '", class(object), "' object")
   }
 )
@@ -50,64 +46,76 @@ setMethod(
 #' @rdname model_impute
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
-#' @importFrom dplyr %>% group_by bind_rows filter_ summarise_ n mutate_ transmute_
-#' @importFrom rlang .data
+#' @importFrom digest sha1
+#' @importFrom dplyr %>% bind_rows filter group_by mutate n row_number select
+#' summarise transmute ungroup
+#' @importFrom purrr map
+#' @importFrom rlang expr parse_expr .data !! !!! :=
 #' @importFrom tibble rownames_to_column
-#' @importFrom stats var
+#' @importFrom stats as.formula qnorm var
 #' @examples
-#' dataset <- generateData(n.year = 10, n.site = 50, n.run = 1)
+#' dataset <- generate_data(n_year = 10, n_site = 50, n_run = 1)
 #' dataset$Count[sample(nrow(dataset), 50)] <- NA
 #' model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
 #' imputed <- impute(data = dataset, model = model)
 #' aggr <- aggregate_impute(imputed, grouping = c("Year", "Period"), fun = sum)
-#' extractor <- function(model){
+#' extractor <- function(model) {
 #'   summary(model)$coefficients[, c("Estimate", "Std. Error")]
 #' }
 #' model_impute(
 #'   object = aggr,
-#'   model.fun = lm,
+#'   model_fun = lm,
 #'   rhs = "0 + factor(Year)",
 #'   extractor = extractor
 #' )
-#' @include aggregatedImputed_class.R
+#' @include aggregated_imputed_class.R
 setMethod(
   f = "model_impute",
   signature = signature(object = "aggregatedImputed"),
   definition = function(
-    object,
-    model.fun,
-    rhs,
-    model.args,
-    extractor,
-    extractor.args,
-    filter,
-    mutate
-  ){
-    assert_that(inherits(model.fun, "function"))
+    object, model_fun, rhs, model_args, extractor, extractor_args, filter,
+    mutate, ...
+  ) {
+    check_old_names(
+      ...,
+      old_names = c(
+        model_fun = "model.fun", model_args = "model.args",
+        extractor_args = "extractor.args"
+      )
+    )
+    assert_that(inherits(model_fun, "function"))
     assert_that(inherits(extractor, "function"))
     assert_that(is.character(rhs))
 
-    if (missing(model.args)) {
-      model.args <- list()
+    if (missing(model_args)) {
+      model_args <- list()
     } else {
-      assert_that(inherits(model.args, "list"))
+      assert_that(inherits(model_args, "list"))
     }
-    if (missing(extractor.args)) {
-      extractor.args <- list()
+    if (missing(extractor_args)) {
+      extractor_args <- list()
     } else {
-      assert_that(inherits(extractor.args, "list"))
+      assert_that(inherits(extractor_args, "list"))
     }
 
     id_column <- paste0("ID", sha1(Sys.time()))
     object@Covariate <- object@Covariate %>%
-      mutate_(.dots = setNames("seq_len(n())", id_column))
+      dplyr::mutate(!!id_column := row_number())
     if (!missing(filter)) {
+      dots <- map(
+        filter,
+        ~expr(!!parse_expr(as.character(.x)[2]))
+      )
       object@Covariate <- object@Covariate %>%
-        filter_(.dots = filter)
+        filter(!!!dots)
     }
     if (!missing(mutate)) {
+      dots <- map(
+        mutate,
+        ~expr(!!parse_expr(as.character(.x)[2]))
+      )
       object@Covariate <- object@Covariate %>%
-        mutate_(.dots = mutate)
+        dplyr::mutate(!!!dots)
     }
 
     object@Imputation <- object@Imputation[object@Covariate[[id_column]], ]
@@ -115,47 +123,45 @@ setMethod(
     form <- as.formula(paste("Imputed", rhs, sep = "~"))
     m <- lapply(
       seq_len(ncol(object@Imputation)),
-      function(i){
+      function(i) {
         data <- cbind(
           Imputed = object@Imputation[, i],
           object@Covariate
         )
         model <- try(
-          do.call(model.fun, c(form, list(data = data), model.args)),
+          do.call(model_fun, c(form, list(data = data), model_args)),
           silent = TRUE
         )
         if (inherits(model, "try-error")) {
           NULL
         } else {
-          do.call(extractor, c(list(model), extractor.args)) %>%
+          do.call(extractor, c(list(model), extractor_args)) %>%
             as.data.frame() %>%
             rownames_to_column("Variable")
         }
       }
     )
     failed <- sapply(m, is.null)
-    if (all(failed)) {
-      stop("model failed on all imputations")
-    }
+    assert_that(any(!failed), msg = "model failed on all imputations")
     m %>%
       bind_rows() %>%
-      select_(Parameter = 1, Estimate = 2, SE = 3) %>%
-      mutate_(
-        Parameter = ~factor(Parameter, levels = unique(Parameter))
+      select(Parameter = 1, Estimate = 2, SE = 3) %>%
+      dplyr::mutate(
+        Parameter = factor(.data$Parameter, levels = unique(.data$Parameter))
       ) -> m
     m %>%
       group_by(.data$Parameter) %>%
-      summarise_(
-        SE = ~sqrt(mean(SE ^ 2) + var(Estimate) * (n() + 1) / n()),
-        Estimate = ~mean(Estimate)
+      summarise(
+        SE = sqrt(mean(.data$SE ^ 2) + var(.data$Estimate) * (n() + 1) / n()),
+        Estimate = mean(.data$Estimate)
       ) %>%
       ungroup() %>%
-      transmute_(
-        ~Parameter,
-        ~Estimate,
-        ~SE,
-        LCL = ~qnorm(0.025, Estimate, SE),
-        UCL = ~qnorm(0.975, Estimate, SE)
+      transmute(
+        .data$Parameter,
+        .data$Estimate,
+        .data$SE,
+        LCL = qnorm(0.025, .data$Estimate, .data$SE),
+        UCL = qnorm(0.975, .data$Estimate, .data$SE)
       ) -> result
     attr(result, "detail") <- m
     return(result)

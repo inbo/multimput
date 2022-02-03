@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it as below.
+authors:
+- family-names: Onkelinx
+  given-names: Thierry
+  orcid: https://orcid.org/0000-0001-8804-4216
+- family-names: Devos
+  given-names: Koen
+  orcid: https://orcid.org/0000-0001-7265-6349
+- family-names: Quataert
+  given-names: Paul
+  orcid: https://orcid.org/0000-0002-6894-9402
+contact:
+- email: thierry.onkelinx@inbo.be
+  family-names: Onkelinx
+  given-names: Thierry
+- email: info@inbo.be
+  name: Research Institute for Nature and Forest
+title: 'multimput: Using Multiple Imputation to Address Missing Data'
+version: 0.2.10
+abstract: 'Accompaning package for the paper: "Working with population totals in the
+  presence of with missing data".'
+license: GPL-3.0
+type: software
+doi: 10.5281/zenodo.598331
+repository-code: https://github.com/inbo/multimput
+identifiers: []

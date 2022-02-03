@@ -2,13 +2,11 @@
 #'
 #' Data for fig 1 and 2 in Onkelinx et al
 #'
-#' \itemize{
-#'   \item \code{Site} Site ID
-#'   \item \code{Winter} Winter ID
-#'   \item \code{Period} ID of the month
-#'   \item \code{Species} Number of observed species
-#'   \item \code{Birds} Total number of birds
-#' }
+#' - `Site` Site ID.
+#' - `Winter` Winter ID.
+#' - `Period` ID of the month.
+#' - `Species` Number of observed species.
+#' - `Birds` Total number of birds.
 #'
 #' @docType data
 #' @keywords datasets
