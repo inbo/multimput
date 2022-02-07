@@ -1,6 +1,6 @@
 {
   "title": "multimput: Using Multiple Imputation to Address Missing Data",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "description": "Accompaning package for the paper: \"Working with population totals in the presence of with missing data\".",
   "creators": [
     {

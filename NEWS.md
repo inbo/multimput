@@ -1,3 +1,8 @@
+# multimput 0.2.11
+
+* Vignette runs without INLA.
+  Required to make the package build on https://inbo.r-universe.dev
+
 # multimput 0.2.10
 
 * Use checklist infrastructure. 
