@@ -9,7 +9,6 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   %\VignetteDepends{ggplot2}
-  %\VignetteDepends{INLA}
   %\VignetteDepends{mgcv}
   %\VignetteDepends{MASS}
 ---
@@ -71,9 +70,7 @@ Have a look at the help-file of `generateData()` for more details on the model.
 library(multimput)
 set.seed(123)
 prop_missing <- 0.5
-dataset <- generate_data(
-  n_year = 10, n_period = 6, n_site = 50, n_run = 1
-)
+dataset <- generate_data(n_year = 10, n_period = 6, n_site = 50, n_run = 1)
 dataset$Observed <- dataset$Count
 which_missing <- sample(nrow(dataset), size = nrow(dataset) * prop_missing)
 dataset$Observed[which_missing] <- NA
@@ -137,6 +134,18 @@ imp_glmm <- glmer(
   data = dataset,
   family = poisson
 )
+```
+
+```{r inla, echo = FALSE, results='asis'}
+inla_available <- require("INLA")
+inla_available <- FALSE
+cat("**_This vignette requires the INLA package.
+It was build on a system without the INLA package.
+Please have look at the vignette on the
+[website](https://inbo.github.io/multimput/articles/impute.html)._**")
+```
+
+```{r imputation_model_inla, eval = inla_available}
 library(INLA)
 # a mixed model with Poisson distribution
 # fYear and fPeriod are the fixed effects
@@ -194,6 +203,10 @@ The default is `n_imp = 19`.
 ```{r impute}
 raw_lm <- impute(imp_lm, data = dataset)
 raw_glmm <- impute(imp_glmm, data = dataset)
+```
+
+
+```{r impute_inla, eval = inla_available}
 # setting `parallel_configs = FALSE` was required to pass R CMD Check
 # in practice you can use the default `parallel_configs = TRUE`
 raw_inla_p <- impute(imp_inla_p, parallel_configs = FALSE)
@@ -210,35 +223,23 @@ The resulting object will only contain the imputed response and the grouping var
 The easiest way to have a variable like year both a continuous and factor is to add both `Year` and `fYear` to the `grouping`.
 
 ```{r aggregate}
-aggr_lm <- aggregate_impute(
-  raw_lm,
-  grouping = c("fYear", "fPeriod"),
-  fun = sum
-)
+aggr_lm <- aggregate_impute(raw_lm, grouping = c("fYear", "fPeriod"), fun = sum)
 aggr_glmm <- aggregate_impute(
-  raw_glmm,
-  grouping = c("fYear", "fPeriod"),
-  fun = sum
+  raw_glmm, grouping = c("fYear", "fPeriod"), fun = sum
 )
+```
+```{r aggregate_inla, eval = inla_available}
 aggr_inla_p <- aggregate_impute(
-  raw_inla_p,
-  grouping = c("fYear", "fPeriod"),
-  fun = sum
+  raw_inla_p, grouping = c("fYear", "fPeriod"), fun = sum
 )
 aggr_inla_nb <- aggregate_impute(
-  raw_inla_nb,
-  grouping = c("fYear", "fPeriod"),
-  fun = sum
+  raw_inla_nb, grouping = c("fYear", "fPeriod"), fun = sum
 )
 aggr_better <- aggregate_impute(
-  raw_better,
-  grouping = c("fYear", "fPeriod"),
-  fun = sum
+  raw_better, grouping = c("fYear", "fPeriod"), fun = sum
 )
 aggr_better_9 <- aggregate_impute(
-  raw_better_9,
-  grouping = c("fYear", "fPeriod"),
-  fun = sum
+  raw_better_9, grouping = c("fYear", "fPeriod"), fun = sum
 )
 ```
 
@@ -261,10 +262,7 @@ extractor_lm <- function(model) {
   summary(model)$coefficients[, c("Estimate", "Std. Error")]
 }
 model_impute(
-  aggr_lm,
-  model_fun = lm,
-  rhs = "0 + fYear + fPeriod",
-  extractor = extractor_lm
+  aggr_lm, model_fun = lm, rhs = "0 + fYear + fPeriod", extractor = extractor_lm
 )
 ```
 
@@ -281,9 +279,7 @@ extractor_lm2 <- function(model) {
   cf[grepl("fYear", rownames(cf)), c("Estimate", "Std. Error")]
 }
 model_impute(
-  aggr_lm,
-  model_fun = lm,
-  rhs = "0 + fYear + fPeriod",
+  aggr_lm, model_fun = lm, rhs = "0 + fYear + fPeriod",
   extractor = extractor_lm2
 )
 ```
@@ -302,17 +298,11 @@ new_set <- expand.grid(
 )
 extractor_lm3 <- function(model, newdata) {
   predictions <- predict(model, newdata = newdata, se.fit = TRUE)
-  cbind(
-    predictions$fit,
-    predictions$se.fit
-  )
+  cbind(predictions$fit, predictions$se.fit)
 }
 model_gam <- model_impute(
-  aggr_lm,
-  model_fun = gam,
-  rhs = "s(Year) + fPeriod",
-  extractor = extractor_lm3,
-  extractor_args = list(newdata = new_set),
+  aggr_lm, model_fun = gam, rhs = "s(Year) + fPeriod",
+  extractor = extractor_lm3, extractor_args = list(newdata = new_set),
   mutate = list(Year = ~as.integer(levels(fYear))[fYear])
 )
 model_gam <- cbind(new_set, model_gam)
@@ -340,9 +330,7 @@ Note that the estimated index for year 1 will be 0 and $log(100\%) = 0$.
 ```{r glmnb_complete}
 library(MASS)
 aggr_complete <- aggregate(
-  dataset[, "Count", drop = FALSE],
-  dataset[, c("fYear", "fPeriod")],
-  FUN = sum
+  dataset[, "Count", drop = FALSE], dataset[, c("fYear", "fPeriod")], FUN = sum
 )
 model_complete <- glm.nb(Count ~ 0 + fYear + fPeriod, data = aggr_complete)
 summary(model_complete)
@@ -359,29 +347,26 @@ Now that we have a relevant model and extractor function, we can apply them to t
 
 ```{r model_glmnb}
 model_glmm <- model_impute(
-  object = aggr_glmm,
-  model_fun = glm.nb,
-  rhs = "0 + fYear + fPeriod",
+  object = aggr_glmm, model_fun = glm.nb, rhs = "0 + fYear + fPeriod",
   extractor = extractor_logindex
 )
+```
+```{r model_glmnb_inla, eval = inla_available}
 model_p <- model_impute(
-  object = aggr_inla_p,
-  model_fun = glm.nb,
-  rhs = "0 + fYear + fPeriod",
+  object = aggr_inla_p, model_fun = glm.nb, rhs = "0 + fYear + fPeriod",
   extractor = extractor_logindex
 )
 model_nb <- model_impute(
-  object = aggr_inla_nb,
-  model_fun = glm.nb,
-  rhs = "0 + fYear + fPeriod",
+  object = aggr_inla_nb, model_fun = glm.nb, rhs = "0 + fYear + fPeriod",
   extractor = extractor_logindex
 )
 model_better <- model_impute(
-  object = aggr_better,
-  model_fun = glm.nb,
-  rhs = "0 + fYear + fPeriod",
+  object = aggr_better, model_fun = glm.nb, rhs = "0 + fYear + fPeriod",
   extractor = extractor_logindex
 )
+```
+
+```{r model_glmnb2}
 model_complete <- extractor_logindex(model_complete)
 colnames(model_complete) <- c("Estimate", "SE")
 library(dplyr)
@@ -395,6 +380,8 @@ model_complete <- model_complete %>%
 covar <- data.frame(
   Year = sort(unique(dataset$Year))
 )
+```
+```{r model_glmnb_inla2, eval = inla_available}
 # combine all results and add the Year
 parameters <- rbind(
   cbind(covar, model_glmm, Model = "glmm"),
@@ -403,6 +390,12 @@ parameters <- rbind(
   cbind(covar, model_better, Model = "better"),
   cbind(covar, model_complete, Model = "complete")
 )
+```
+```{r model_glmnb_inla3, eval = !inla_available, echo = FALSE}
+# combine all results and add the Year
+parameters <- cbind(covar, model_glmm, Model = "glmm")
+```
+```{r model_glmnb_plot}
 # convert estimate and confidence interval to the original scale
 parameters[, c("Estimate", "LCL", "UCL")] <- exp(
   parameters[, c("Estimate", "LCL", "UCL")]
@@ -420,7 +413,7 @@ The example below does something similar.
 Two things are different: 1) instead of `glm.nb` we use `inla` to model the imputed totals.
 2) we model the seasonal pattern as a random intercept instead of a fixed effect.
 
-```{r model_inla}
+```{r model_inla, eval = inla_available}
 extractor_inla <- function(model) {
   fe <- model$summary.fixed[, c("mean", "sd")]
   log_index <- fe[grepl("fYear", rownames(fe)), ]
@@ -428,36 +421,22 @@ extractor_inla <- function(model) {
   log_index
 }
 model_p <- model_impute(
-  object = aggr_glmm,
-  model_fun = inla,
+  object = aggr_glmm, model_fun = inla,
   rhs = "0 + fYear + f(fPeriod, model = 'iid')",
-  model_args = list(family = "nbinomial"),
-  extractor = extractor_inla
-)
-model_p <- model_impute(
-  object = aggr_inla_p,
-  model_fun = inla,
-  rhs = "0 + fYear + f(fPeriod, model = 'iid')",
-  model_args = list(family = "nbinomial"),
-  extractor = extractor_inla
+  model_args = list(family = "nbinomial"), extractor = extractor_inla
 )
 model_nb <- model_impute(
-  object = aggr_inla_nb,
-  model_fun = inla,
+  object = aggr_inla_nb, model_fun = inla,
   rhs = "0 + fYear + f(fPeriod, model = 'iid')",
-  model_args = list(family = "nbinomial"),
-  extractor = extractor_inla
+  model_args = list(family = "nbinomial"), extractor = extractor_inla
 )
 model_better <- model_impute(
-  object = aggr_better,
-  model_fun = inla,
+  object = aggr_better, model_fun = inla,
   rhs = "0 + fYear + f(fPeriod, model = 'iid')",
-  model_args = list(family = "nbinomial"),
-  extractor = extractor_inla
+  model_args = list(family = "nbinomial"), extractor = extractor_inla
 )
 m_complete <- inla(
-  Count ~ 0 + fYear + f(fPeriod, model = "iid"),
-  data = aggr_complete,
+  Count ~ 0 + fYear + f(fPeriod, model = "iid"), data = aggr_complete,
   family = "nbinomial"
 )
 model_complete <- extractor_inla(m_complete)
