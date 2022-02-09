@@ -23,11 +23,12 @@
 #' using `B:0` threads.
 setMethod(
   f = "impute",
-  signature = signature(model = "inla"),
+  signature = signature(model = "maybeInla"),
   definition = function(
     model, ..., seed = 0L, num_threads = NULL, parallel_configs = TRUE,
     n_imp = 19
   ) {
+    assert_that(!is.null(model), msg = "model should be an inla object")
     check_old_names(..., old_names = c(n_imp = "n.imp"))
     assert_that(is.count(n_imp))
     assert_that(
