@@ -85,7 +85,7 @@ setMethod(
         .y = hyperpar[[grep("size for the nbinomial", colnames(hyperpar))]]
       ),
       poisson = map_dfr(
-        .x = latent, .f = rpois, n = length(missing_obs)
+        .x = latent, .f = ~rpois(n = length(missing_obs), lambda = exp(.x))
       ),
       stop(
         "Imputations from the '", model$.args$family, "' family not yet defined.
