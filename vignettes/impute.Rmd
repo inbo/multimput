@@ -137,8 +137,7 @@ imp_glmm <- glmer(
 ```
 
 ```{r inla, echo = FALSE, results='asis'}
-inla_available <- require("INLA")
-inla_available <- FALSE
+inla_available <- requireNamespace("INLA")
 cat("**_This vignette requires the INLA package.
 It was build on a system without the INLA package.
 Please have look at the vignette on the
