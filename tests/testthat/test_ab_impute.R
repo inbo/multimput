@@ -12,40 +12,22 @@ test_that("handles lm", {
     imputed <- impute(model, dataset),
     "rawImputed"
   )
-  expect_identical(
-    ncol(imputed@Imputation),
-    19L
-  )
-  expect_identical(
-    nrow(imputed@Imputation),
-    sum(is.na(dataset$Count))
-  )
-  expect_identical(
-    imputed@Minimum,
-    ""
-  )
+  expect_identical(ncol(imputed@Imputation), 19L)
+  expect_identical(nrow(imputed@Imputation), sum(is.na(dataset$Count)))
+  expect_identical(imputed@Minimum, "")
 
   expect_is(
     imputed <- impute(model, dataset, n_imp = n_imp),
     "rawImputed"
   )
-  expect_identical(
-    ncol(imputed@Imputation),
-    n_imp
-  )
-  expect_identical(
-    nrow(imputed@Imputation),
-    sum(is.na(dataset$Count))
-  )
+  expect_identical(ncol(imputed@Imputation), n_imp)
+  expect_identical(nrow(imputed@Imputation), sum(is.na(dataset$Count)))
 
   expect_is(
     imputed <- impute(model, dataset, minimum = "Bottom"),
     "rawImputed"
   )
-  expect_identical(
-    imputed@Minimum,
-    "Bottom"
-  )
+  expect_identical(imputed@Minimum, "Bottom")
 
   expect_error(
     impute(model, dataset, minimum = "Junk"),
@@ -78,31 +60,16 @@ test_that("handles inla with gaussian distribution", {
     control.predictor = list(compute = TRUE, link = 1)
   )
   expect_is(imputed <- impute(model, parallel_configs = FALSE), "rawImputed")
-  expect_identical(
-    ncol(imputed@Imputation),
-    19L
-  )
-  expect_identical(
-    nrow(imputed@Imputation),
-    sum(is.na(dataset$Count))
-  )
-  expect_identical(
-    imputed@Minimum,
-    ""
-  )
+  expect_identical(ncol(imputed@Imputation), 19L)
+  expect_identical(nrow(imputed@Imputation), sum(is.na(dataset$Count)))
+  expect_identical(imputed@Minimum, "")
 
   expect_is(
     imputed <- impute(model, dataset, n_imp = n_imp, parallel_configs = FALSE),
     "rawImputed"
   )
-  expect_identical(
-    ncol(imputed@Imputation),
-    n_imp
-  )
-  expect_identical(
-    nrow(imputed@Imputation),
-    sum(is.na(dataset$Count))
-  )
+  expect_identical(ncol(imputed@Imputation), n_imp)
+  expect_identical(nrow(imputed@Imputation), sum(is.na(dataset$Count)))
 
   expect_is(
     imputed <- impute(
@@ -110,10 +77,7 @@ test_that("handles inla with gaussian distribution", {
     ),
     "rawImputed"
   )
-  expect_identical(
-    imputed@Minimum,
-    "Bottom"
-  )
+  expect_identical(imputed@Minimum, "Bottom")
 
   expect_error(
     impute(model, dataset, minimum = "Junk", parallel_configs = FALSE),
@@ -145,31 +109,16 @@ test_that("handles inla with negative binomial distribution", {
     control.predictor = list(compute = TRUE, link = 1)
   )
   expect_is(imputed <- impute(model, parallel_configs = FALSE), "rawImputed")
-  expect_identical(
-    ncol(imputed@Imputation),
-    19L
-  )
-  expect_identical(
-    nrow(imputed@Imputation),
-    sum(is.na(dataset$Count))
-  )
-  expect_identical(
-    imputed@Minimum,
-    ""
-  )
+  expect_identical(ncol(imputed@Imputation), 19L)
+  expect_identical(nrow(imputed@Imputation), sum(is.na(dataset$Count)))
+  expect_identical(imputed@Minimum, "")
 
   expect_is(
     imputed <- impute(model, dataset, n_imp = n_imp, parallel_configs = FALSE),
     "rawImputed"
   )
-  expect_identical(
-    ncol(imputed@Imputation),
-    n_imp
-  )
-  expect_identical(
-    nrow(imputed@Imputation),
-    sum(is.na(dataset$Count))
-  )
+  expect_identical(ncol(imputed@Imputation), n_imp)
+  expect_identical(nrow(imputed@Imputation), sum(is.na(dataset$Count)))
 
   expect_is(
     imputed <- impute(
@@ -177,10 +126,7 @@ test_that("handles inla with negative binomial distribution", {
     ),
     "rawImputed"
   )
-  expect_identical(
-    imputed@Minimum,
-    "Bottom"
-  )
+  expect_identical(imputed@Minimum, "Bottom")
 
   expect_error(
     impute(model, dataset, minimum = "Junk", parallel_configs = FALSE),
@@ -211,31 +157,16 @@ test_that("handles inla with poisson distribution", {
     control.predictor = list(compute = TRUE, link = 1)
   )
   expect_is(imputed <- impute(model, parallel_configs = FALSE), "rawImputed")
-  expect_identical(
-    ncol(imputed@Imputation),
-    19L
-  )
-  expect_identical(
-    nrow(imputed@Imputation),
-    sum(is.na(dataset$Count))
-  )
-  expect_identical(
-    imputed@Minimum,
-    ""
-  )
+  expect_identical(ncol(imputed@Imputation), 19L)
+  expect_identical(nrow(imputed@Imputation), sum(is.na(dataset$Count)))
+  expect_identical(imputed@Minimum, "")
 
   expect_is(
     imputed <- impute(model, dataset, n_imp = n_imp, parallel_configs = FALSE),
     "rawImputed"
   )
-  expect_identical(
-    ncol(imputed@Imputation),
-    n_imp
-  )
-  expect_identical(
-    nrow(imputed@Imputation),
-    sum(is.na(dataset$Count))
-  )
+  expect_identical(ncol(imputed@Imputation), n_imp)
+  expect_identical(nrow(imputed@Imputation), sum(is.na(dataset$Count)))
 
   expect_is(
     imputed <- impute(

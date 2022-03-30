@@ -44,7 +44,7 @@ Defaults to \code{FALSE}.}
 \item{site_factor}{Convert site to a factor.
 Defaults to \code{FALSE}.}
 
-\item{trend}{The longterm linear trend on the log-scale.}
+\item{trend}{The long-term linear trend on the log-scale.}
 
 \item{sd_rw_year}{The standard deviation of the year effects on the
 log-scale.}
@@ -85,7 +85,7 @@ scale.
 \code{Count} are the simulated counts.
 }
 \description{
-Generate data for a regural monitoring design.
+Generate data for a regular monitoring design.
 The counts follow a negative binomial distribution with given size parameters
 and the true mean mu depending on a year, period and site effect.
 All effects are independent from each other and have, on the log-scale, a

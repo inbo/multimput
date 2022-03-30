@@ -13,7 +13,7 @@ allowed:
       Suggests or Enhances not in mainstream repositories:
         INLA
       Availability using Additional_repositories specification:
-        INLA   yes   https://inla.r-inla-download.org/R/testing
+        INLA   yes   https://inla.r-inla-download.org/R/stable
 citation_roles:
 - aut
 - cre

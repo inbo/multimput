@@ -1,7 +1,7 @@
 {
   "title": "multimput: Using Multiple Imputation to Address Missing Data",
-  "version": "0.2.10",
-  "description": "Accompaning package for the paper: \"Working with population totals in the presence of with missing data\".",
+  "version": "0.2.11",
+  "description": "Accompanying package for the paper: \"Working with population totals in the presence of with missing data\".",
   "creators": [
     {
       "name": "Onkelinx, Thierry",
@@ -34,5 +34,6 @@
       "type": "ContactPerson",
       "orcid": "https://orcid.org/0000-0001-8804-4216"
     }
-  ]
+  ],
+  "language": "eng"
 }

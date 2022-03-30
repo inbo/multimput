@@ -1,5 +1,5 @@
 #' Aggregate an imputed dataset
-#' @param object A rawImputed object.
+#' @param object A `rawImputed` object.
 #' @param grouping A vector of variables names to group the aggregation on.
 #' @param fun The function to aggregate.
 #' @param filter

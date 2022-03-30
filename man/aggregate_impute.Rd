@@ -17,7 +17,7 @@ aggregate_impute(object, grouping, fun, filter, join)
 \S4method{aggregate_impute}{aggregatedImputed}(object, grouping, fun, filter, join)
 }
 \arguments{
-\item{object}{A rawImputed object.}
+\item{object}{A \code{rawImputed} object.}
 
 \item{grouping}{A vector of variables names to group the aggregation on.}
 

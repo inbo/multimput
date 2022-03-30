@@ -3,17 +3,17 @@
 \docType{class}
 \name{aggregatedImputed-class}
 \alias{aggregatedImputed-class}
-\title{The aggregatedImputed class
+\title{The \code{aggregatedImputed} class
 Holds an aggregated imputation data set}
 \description{
-The aggregatedImputed class
+The \code{aggregatedImputed} class
 Holds an aggregated imputation data set
 }
 \section{Slots}{
 
 \describe{
 \item{\code{Covariate}}{A data.frame with the covariates.}
-\item{\code{Imputation}}{A matrix wih aggregated imputed values.}
+\item{\code{Imputation}}{A matrix with aggregated imputed values.}
 }
 }
 

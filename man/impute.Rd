@@ -6,7 +6,7 @@
 \alias{impute}
 \alias{impute,ANY-method}
 \alias{impute,glmerMod-method}
-\alias{impute,inla-method}
+\alias{impute,maybeInla-method}
 \alias{impute,lm-method}
 \title{Impute a dataset}
 \usage{
@@ -16,7 +16,7 @@ impute(model, ..., n_imp = 19)
 
 \S4method{impute}{glmerMod}(model, data, ..., n_imp)
 
-\S4method{impute}{inla}(
+\S4method{impute}{maybeInla}(
   model,
   ...,
   seed = 0L,

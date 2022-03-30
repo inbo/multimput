@@ -81,7 +81,7 @@ Defaults to \code{FALSE}.}
 \item{site.factor}{Convert site to a factor.
 Defaults to \code{FALSE}.}
 
-\item{trend}{The longterm linear trend on the log-scale.}
+\item{trend}{The long-term linear trend on the log-scale.}
 
 \item{sd.rw.year}{The standard deviation of the year effects on the
 log-scale.}

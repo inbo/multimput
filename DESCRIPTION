@@ -1,7 +1,7 @@
 Type: Package
 Package: multimput
 Title: Using Multiple Imputation to Address Missing Data
-Version: 0.2.10
+Version: 0.2.11
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8804-4216")),
@@ -11,11 +11,11 @@ Authors@R: c(
            comment = c(ORCID = "0000-0002-6894-9402")),
     person("Research Institute for Nature and Forest", , , "info@inbo.be", role = c("cph", "fnd"))
   )
-Description: Accompaning package for the paper: "Working with population
+Description: Accompanying package for the paper: "Working with population
     totals in the presence of with missing data".
 License: GPL-3
 URL: https://doi.org/10.5281/zenodo.598331,
-    https://github.com/inbo/multimput
+    https://github.com/inbo/multimput, https://inbo.github.io/multimput/
 BugReports: https://github.com/inbo/multimput/issues
 Depends:
     R (>= 3.0.0)
@@ -41,8 +41,9 @@ Suggests:
     testthat
 VignetteBuilder: 
     knitr
-Additional_repositories: https://inla.r-inla-download.org/R/testing
+Additional_repositories: https://inla.r-inla-download.org/R/stable
 Encoding: UTF-8
+Language: en-GB
 LazyData: TRUE
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
