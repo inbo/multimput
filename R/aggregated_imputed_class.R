@@ -1,9 +1,9 @@
-#' The aggregatedImputed class
+#' The `aggregatedImputed` class
 #' Holds an aggregated imputation data set
 #' @section Slots:
 #'   \describe{
 #'    \item{`Covariate`}{A data.frame with the covariates.}
-#'    \item{`Imputation`}{A matrix wih aggregated imputed values.}
+#'    \item{`Imputation`}{A matrix with aggregated imputed values.}
 #'   }
 #' @name aggregatedImputed-class
 #' @rdname aggregatedImputed-class

@@ -1,7 +1,7 @@
 #' @importFrom methods setOldClass
 setOldClass("inla")
 
-#' `The maybeInla class
+#' The `maybeInla` class
 #'
 #' A superclass holding either `NULL` or an object of the `inla` class.
 #' @importFrom methods setClassUnion

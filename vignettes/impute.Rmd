@@ -54,9 +54,9 @@ The standard error of a coefficient is the square root of a sum of two parts.
 The first part is the average of the squared standard error in all imputation sets.
 The second part is the variance of the coefficient among the imputation sets, multiplied by a correction factor $1 + \frac{1}{L}$.
 
-$$\bar{\gamma}_a = \frac{\sum_{l = 1}^L{\gamma_a}_l}{L}$$
-$$\bar{\sigma}_a = \sqrt{\frac{\sum_{l = 1}^J {{\sigma_a^2}_l}}{L} + (1 + \frac{1}{L})
-\frac{\sum_{l = 1}^L({\gamma_a}_l - \bar{\gamma}_a) ^ 2}{L - 1}}$$
+$$\bar{\gamma}_a = \frac{\sum_{l = 1}^L{\gamma_a}_l}{L}$$<!-- spell-check: ignore -->
+
+$$\bar{\sigma}_a = \sqrt{\frac{\sum_{l = 1}^J {{\sigma_a^2}_l}}{L} + (1 + \frac{1}{L}) \frac{\sum_{l = 1}^L({\gamma_a}_l - \bar{\gamma}_a) ^ 2}{L - 1}}$$<!-- spell-check: ignore -->
 
 # The dataset
 
@@ -82,31 +82,31 @@ str(dataset)
 
 Variables in dataset
 
-Year
+`Year`
   ~ The year of the observation as an integer
 
-fYear
+`fYear`
   ~ The year of the observation as a factor
 
-Period
+`Period`
   ~ The period of the observation as an integer
 
-fPeriod
+`fPeriod`
   ~ The period of the observation as a factor
 
-Site
+`Site`
   ~ The ID of the site as an integer
 
-fSite
+`fSite`
   ~ The ID of the site as a factor
 
-Mu
+`Mu`
   ~ The expected value of a negative binomial distribution
 
-Count
+`Count`
   ~ A realisation of a negative binomial distribution with expected value `Mu`
 
-Observed
+`Observed`
   ~ The `Count` variable with missing data
 
 ```{r plot_data}
@@ -252,7 +252,7 @@ So `model_fun = lm` in combination with `rhs = "0 + fYear + fPeriod"` is equival
 
 The tricky part of this function the  `extractor` argument.
 This is a user defined function which must have an argument called `model`.
-The function should return a `data.frame` or `matrix` with two columuns.
+The function should return a `data.frame` or `matrix` with two columns.
 The first column hold the estimate of a parameter of the `model`, the second column their standard error.
 Each row represents a parameter.
 

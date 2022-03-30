@@ -18,8 +18,8 @@ contact:
   name: Research Institute for Nature and Forest
 title: 'multimput: Using Multiple Imputation to Address Missing Data'
 version: 0.2.11
-abstract: 'Accompaning package for the paper: "Working with population totals in the
-  presence of with missing data".'
+abstract: 'Accompanying package for the paper: "Working with population totals in
+  the presence of with missing data".'
 license: GPL-3.0
 type: software
 doi: 10.5281/zenodo.598331

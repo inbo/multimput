@@ -1,4 +1,4 @@
-#' The rawimputed class
+#' The `rawImputed` class
 #' Holds a dataset and imputed values
 #' @section Slots:
 #'   \describe{
@@ -6,7 +6,7 @@
 #'    \item{`Response`}{A character holding the name of the response variable.}
 #'    \item{`Minimum`}{An optional character holding the name of the variable
 #'    with the minimum.}
-#'    \item{`Imputation`}{A matrix wih imputed values.}
+#'    \item{`Imputation`}{A matrix with imputed values.}
 #'   }
 #' @name rawImputed-class
 #' @rdname rawImputed-class

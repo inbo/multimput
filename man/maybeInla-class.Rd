@@ -3,7 +3,7 @@
 \docType{class}
 \name{maybeInla-class}
 \alias{maybeInla-class}
-\title{`The maybeInla class}
+\title{The \code{maybeInla} class}
 \description{
 A superclass holding either \code{NULL} or an object of the \code{inla} class.
 }

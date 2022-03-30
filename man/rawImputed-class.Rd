@@ -3,10 +3,10 @@
 \docType{class}
 \name{rawImputed-class}
 \alias{rawImputed-class}
-\title{The rawimputed class
+\title{The \code{rawImputed} class
 Holds a dataset and imputed values}
 \description{
-The rawimputed class
+The \code{rawImputed} class
 Holds a dataset and imputed values
 }
 \section{Slots}{
@@ -16,7 +16,7 @@ Holds a dataset and imputed values
 \item{\code{Response}}{A character holding the name of the response variable.}
 \item{\code{Minimum}}{An optional character holding the name of the variable
 with the minimum.}
-\item{\code{Imputation}}{A matrix wih imputed values.}
+\item{\code{Imputation}}{A matrix with imputed values.}
 }
 }
 
