@@ -53,7 +53,7 @@ Convert the factor in the dataset and refit the model."
     eta <- lapply(
       names(random),
       function(x) {
-        if (class(data[, x]) != "factor") {
+        if (!inherits(data[, x], "factor")) {
           hash <- paste0("tmp", sha1(data[, x]))
           data[, hash] <- factor(data[, x])
         } else {
