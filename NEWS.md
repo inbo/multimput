@@ -1,3 +1,7 @@
+# multimput 0.2.12
+
+* Update [`checklist`](https://inbo.github.io/checklist/) infrastructure.
+
 # multimput 0.2.11
 
 * Vignette runs without INLA.
@@ -5,7 +9,7 @@
 
 # multimput 0.2.10
 
-* Use checklist infrastructure. 
+* Use [`checklist`](https://inbo.github.io/checklist/) infrastructure. 
 
 # multimput 0.2.7.9000
 

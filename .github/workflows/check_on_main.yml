@@ -14,8 +14,7 @@ jobs:
     name: "check package"
     env:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      ORCID_TOKEN: ${{ secrets.ORCID_TOKEN }}
     steps:
-      - uses: inbo/actions/check_pkg@master
+      - uses: inbo/actions/check_pkg@token
         with:
           token: ${{ secrets.PAT }}
