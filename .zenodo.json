@@ -1,39 +1,45 @@
 {
   "title": "multimput: Using Multiple Imputation to Address Missing Data",
-  "version": "0.2.11",
-  "description": "Accompanying package for the paper: \"Working with population totals in the presence of with missing data\".",
+  "version": "0.2.12",
+  "license": "GPL-3.0",
+  "upload_type": "software",
+  "description": "<p>Accompanying package for the paper: Working with population totals in\nthe presence of missing data comparing imputation methods in terms of\nbias and precision. Published in 2017 in the Journal of Ornithology\nvolume 158 page 603–615 (doi:10.1007/s10336-016-1404-9).<\/p>",
+  "keywords": [
+    "missing data, multiple imputation, Rubin"
+  ],
+  "language": "eng",
+  "contributors": [
+    {
+      "name": "Onkelinx, Thierry",
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "orcid": "0000-0001-8804-4216",
+      "type": "ContactPerson"
+    },
+    {
+      "name": "Research Institute for Nature and Forest",
+      "type": "RightsHolder"
+    }
+  ],
   "creators": [
     {
       "name": "Onkelinx, Thierry",
-      "orcid": "https://orcid.org/0000-0001-8804-4216"
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "orcid": "0000-0001-8804-4216"
     },
     {
       "name": "Devos, Koen",
-      "orcid": "https://orcid.org/0000-0001-7265-6349"
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "orcid": "0000-0001-7265-6349"
     },
     {
       "name": "Quataert, Paul",
-      "orcid": "https://orcid.org/0000-0002-6894-9402"
+      "orcid": "0000-0002-6894-9402"
     }
   ],
-  "upload_type": "software",
   "access_right": "open",
-  "license": "GPL-3.0",
   "communities": [
     {
       "identifier": "inbo"
     }
-  ],
-  "contributors": [
-    {
-      "name": "Research Institute for Nature and Forest",
-      "type": "RightsHolder"
-    },
-    {
-      "name": "Onkelinx, Thierry",
-      "type": "ContactPerson",
-      "orcid": "https://orcid.org/0000-0001-8804-4216"
-    }
-  ],
-  "language": "eng"
+  ]
 }
