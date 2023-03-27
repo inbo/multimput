@@ -64,10 +64,11 @@ setMethod(
       n = n_imp, result = model, seed = seed, num.threads = num_threads,
       parallel.configs = parallel_configs
     )
-    map(samples, "latent") %>%
-      map(`[`, missing_obs, 1) %>%
+    map(samples, "latent") |>
+      map(`[`, missing_obs, 1) |>
       setNames(paste0("sim_", seq_len(n_imp))) -> latent
-    hyperpar <- map_dfr(samples, "hyperpar")
+    INLA::inla.hyperpar.sample(n = n_imp, result = model) |>
+      as.data.frame() -> hyperpar
 
     imputation <- switch(
       model$.args$family,
@@ -88,6 +89,11 @@ setMethod(
       poisson = map_dfr(
         .x = latent, .f = ~rpois(n = length(missing_obs), lambda = exp(.x))
       ),
+      zeroinflatedpoisson1 = map2_dfr(
+        .x = latent,
+        .y = hyperpar[[grep("zero-probability", colnames(hyperpar))]],
+        .f = ~rzip1(n = length(missing_obs), lambda = exp(.x), prob = .y)
+      ),
       stop(
         "Imputations from the '", model$.args$family, "' family not yet defined.
 We will consider adding support for other families. Please create an issue with
@@ -101,3 +107,7 @@ a reproducible example at https://github.com/inbo/multimput/issues"
     )
   }
 )
+
+rzip1 <- function(n, lambda, prob) {
+  rbinom(n = n, size = 1, prob = 1 - prob) * rpois(n, lambda = lambda)
+}
