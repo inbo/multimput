@@ -89,6 +89,11 @@ setMethod(
       poisson = map_dfr(
         .x = latent, .f = ~rpois(n = length(missing_obs), lambda = exp(.x))
       ),
+      zeroinflatedpoisson0 = map2_dfr(
+        .x = latent,
+        .y = hyperpar[[grep("zero-probability", colnames(hyperpar))]],
+        .f = ~rzip0(n = length(missing_obs), lambda = exp(.x), prob = .y)
+      ),
       zeroinflatedpoisson1 = map2_dfr(
         .x = latent,
         .y = hyperpar[[grep("zero-probability", colnames(hyperpar))]],
@@ -107,6 +112,34 @@ a reproducible example at https://github.com/inbo/multimput/issues"
     )
   }
 )
+
+rzip0 <- function(n, lambda, prob, tol = 2e-10) {
+  count <- rbinom(n = n, size = 1, prob = 1 - prob)
+  non_zero <- which(count == 1)
+  n <- length(non_zero)
+  if (n == 0) {
+    return(count)
+  }
+  if (length(lambda) == 1) {
+    lambda <- rep(lambda, n)
+  } else {
+    lambda <- lambda[non_zero]
+  }
+  low <- which(lambda < tol)
+  if (length(low) == 0) {
+    dpois(x = 0, lambda = lambda) |>
+      runif(n = n, max = 1) |>
+      qpois(lambda = lambda) -> count[non_zero]
+    return(count)
+  }
+  if (length(low) == n) {
+    return(count)
+  }
+  dpois(0, lambda[-low]) |>
+    runif(n = n - length(low), max = 1) |>
+    qpois(lambda = lambda[][-low]) -> count[non_zero][-low]
+  return(count)
+}
 
 rzip1 <- function(n, lambda, prob) {
   rbinom(n = n, size = 1, prob = 1 - prob) * rpois(n, lambda = lambda)
