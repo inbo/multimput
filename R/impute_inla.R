@@ -1,7 +1,7 @@
 #' @rdname impute
 #' @importFrom assertthat assert_that is.count
 #' @importFrom methods new setMethod
-#' @importFrom purrr map map_dfr map2_dfr
+#' @importFrom purrr map map_dfr map2_dfr pmap_dfr
 #' @importFrom stats rgamma rnorm rpois setNames
 #' @include impute_generic.R
 #' @param seed See the same argument in [INLA::inla.qsample()] for further
@@ -89,6 +89,18 @@ setMethod(
       poisson = map_dfr(
         .x = latent, .f = ~rpois(n = length(missing_obs), lambda = exp(.x))
       ),
+      zeroinflatednbinomial1 = pmap_dfr(
+        list(
+          eta = latent,
+          prob = hyperpar[[grep("zero-probability", colnames(hyperpar))]],
+          size = hyperpar[[grep("size for nbinomial", colnames(hyperpar))]]
+        ),
+        .f = function(n, eta, prob, size) {
+          rzinb1(
+            n = length(missing_obs), mu = exp(eta), prob = prob, size = size
+          )
+        }
+      ),
       zeroinflatedpoisson0 = map2_dfr(
         .x = latent,
         .y = hyperpar[[grep("zero-probability", colnames(hyperpar))]],
@@ -112,6 +124,10 @@ a reproducible example at https://github.com/inbo/multimput/issues"
     )
   }
 )
+
+rzinb1 <- function(n, mu, size, prob) {
+  rbinom(n = n, size = 1, prob = 1 - prob) * rnbinom(n, mu = mu, size = size)
+}
 
 rzip0 <- function(n, lambda, prob, tol = 2e-10) {
   count <- rbinom(n = n, size = 1, prob = 1 - prob)
