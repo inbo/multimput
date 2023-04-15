@@ -37,14 +37,15 @@ See ?impute or ?aggregate_impute"
 #' @rdname aggregate_impute
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
-#' @importFrom tidyr pivot_wider
-#' @importFrom dplyr %>% bind_rows filter group_by mutate n select
-#' semi_join starts_with summarise_at vars ungroup
-#' @importFrom rlang expr parse_expr syms !! !!! :=
+#' @importFrom digest sha1
+#' @importFrom dplyr across bind_rows filter group_by mutate n select
+#' semi_join starts_with summarise ungroup
 #' @importFrom purrr map
 #' @importFrom methods new
+#' @importFrom rlang expr parse_expr syms !! !!! :=
 #' @importFrom stats na.omit
-#' @importFrom digest sha1
+#' @importFrom tidyr pivot_wider
+#' @importFrom tidyselect all_of
 #' @examples
 #' dataset <- generate_data(n_year = 10, n_site = 50, n_run = 1)
 #' dataset$Count[sample(nrow(dataset), 50)] <- NA
@@ -68,24 +69,21 @@ setMethod(
         sprintf("ifelse(is.na(%1$s), cumsum(is.na(%1$s)), NA)", response)
       )
     )
-    data <- object@Data %>%
+    data <- object@Data |>
       mutate(!!id_column := !!dots)
     if (object@Minimum == "") {
-      data <- data %>%
+      data <- data |>
         mutate(!!minimum_column := -Inf)
     } else {
-      data <- data %>%
+      data <- data |>
         mutate(!!minimum_column := !!parse_expr(object@Minimum))
     }
     imputation <- object@Imputation
 
     if (!missing(filter)) {
       assert_that(is.list(filter))
-      dots <- map(
-        filter,
-        ~expr(!!parse_expr(as.character(.x)[2]))
-      )
-      data <- data %>%
+      dots <- map(filter, ~expr(!!parse_expr(as.character(.x)[2])))
+      data <- data |>
         filter(!!!dots)
     }
     if (!missing(join)) {
@@ -103,56 +101,53 @@ setMethod(
           all(colnames(join[[i]]) %in% colnames(data)),
           msg = "all columns in join with be available in the dataset"
         )
-        data <- data %>%
+        data <- data |>
           semi_join(join[[i]], by = colnames(join[[i]]))
       }
     }
 
-    imputation <- imputation[
-      data[[id_column]] %>%
-        na.omit(),
-      ,
-      drop = FALSE
-    ]
+    imputation <- imputation[na.omit(data[[id_column]]), , drop = FALSE]
 
     missing_obs <- which(is.na(data[, response]))
     total <- lapply(
       seq_len(ncol(imputation)),
       function(i) {
         data[missing_obs, response] <- pmax(
-          imputation[, i],
-          data[[minimum_column]][missing_obs],
-          na.rm = TRUE
+          imputation[, i], data[[minimum_column]][missing_obs], na.rm = TRUE
         )
-        data %>%
-          group_by(!!!grouping) %>%
-          summarise_at(.funs = list(fun), .vars = vars(response)) %>%
+        data |>
+          group_by(!!!grouping) |>
+          summarise(
+            across(
+              .cols = all_of(response), .fns = list(fun), .names = "{.col}"
+            )
+          ) |>
           mutate(Imputation = !!sprintf("Imputation%04i", i))
       }
-    ) %>%
-      do.call(what = bind_rows) %>%
-      pivot_wider(names_from = "Imputation", values_from = response) %>%
+    ) |>
+      bind_rows() |>
+      pivot_wider(names_from = "Imputation", values_from = all_of(response)) |>
       ungroup()
     new(
       "aggregatedImputed",
-      Covariate = total %>%
-        select(-starts_with("Imputation")) %>%
+      Covariate = total |>
+        select(-starts_with("Imputation")) |>
         as.data.frame(),
-      Imputation = total %>%
-        select(starts_with("Imputation")) %>%
+      Imputation = total |>
+        select(starts_with("Imputation")) |>
         as.matrix()
     )
   }
 )
 
 #' @rdname aggregate_impute
-#' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
-#' @importFrom dplyr %>% filter group_by inner_join mutate n row_number
-#' select semi_join starts_with summarise_at vars
-#' @importFrom methods new
-#' @importFrom rlang !! !!! :=
 #' @importFrom digest sha1
+#' @importFrom dplyr across filter group_by inner_join mutate n row_number
+#' select semi_join starts_with
+#' @importFrom methods new setMethod
+#' @importFrom rlang !! !!! :=
+#' @importFrom tidyselect all_of
 #' @include aggregated_imputed_class.R
 setMethod(
   f = "aggregate_impute",
@@ -162,20 +157,17 @@ setMethod(
     assert_that(inherits(fun, "function"))
 
     id_column <- paste0("ID", sha1(Sys.time()))
-    data <- object@Covariate %>%
+    data <- object@Covariate |>
       mutate(!!id_column := row_number())
     grouping <- syms(grouping)
-    imputation <- object@Imputation %>%
-      as.data.frame() %>%
+    imputation <- object@Imputation |>
+      as.data.frame() |>
       mutate(!!id_column := row_number())
 
     if (!missing(filter)) {
       assert_that(is.list(filter))
-      dots <- map(
-        filter,
-        ~expr(!!parse_expr(as.character(.x)[2]))
-      )
-      data <- data %>%
+      dots <- map(filter, ~expr(!!parse_expr(as.character(.x)[2])))
+      data <- data |>
         filter(!!!dots)
     }
 
@@ -193,26 +185,28 @@ setMethod(
           all(colnames(join[[i]]) %in% colnames(data)),
           msg = "all columns in join with be available in the dataset"
         )
-        data <- data %>%
+        data <- data |>
           semi_join(join[[i]], by = colnames(join[[i]]))
       }
     }
 
-    total <- data %>%
-      inner_join(imputation, by = id_column) %>%
-      group_by(!!!grouping) %>%
-      summarise_at(
-        .funs = list(fun),
-        .vars = vars(colnames(object@Imputation))
+    total <- data |>
+      inner_join(imputation, by = id_column) |>
+      group_by(!!!grouping) |>
+      summarise(
+        across(
+          .cols = all_of(colnames(object@Imputation)), .fns = list(fun),
+          .names = "{.col}"
+        )
       )
 
     new(
       "aggregatedImputed",
-      Covariate = total %>%
-        select(-starts_with("Imputation")) %>%
+      Covariate = total |>
+        select(-starts_with("Imputation")) |>
         as.data.frame(),
-      Imputation = total %>%
-        select(starts_with("Imputation")) %>%
+      Imputation = total |>
+        select(starts_with("Imputation")) |>
         as.matrix()
     )
   }

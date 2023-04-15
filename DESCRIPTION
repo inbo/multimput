@@ -31,7 +31,8 @@ Imports:
     purrr,
     rlang,
     tibble,
-    tidyr
+    tidyr,
+    tidyselect
 Suggests:
     ggplot2,
     INLA (>= 22.01.19),
