@@ -12,7 +12,7 @@
 setMethod(
   f = "impute",
   signature = signature(model = "lm"),
-  definition = function(model, data, ..., n_imp) {
+  definition = function(model, data, ..., extra, n_imp) {
     check_old_names(..., old_names = c(n_imp = "n.imp"))
     assert_that(inherits(data, "data.frame"))
     assert_that(is.count(n_imp))
@@ -33,12 +33,16 @@ setMethod(
     if (is.null(dots$minimum)) {
       dots$minimum <- ""
     }
+    if (missing(extra)) {
+      extra <- data[0, ]
+    } else {
+      assert_that(
+        class(extra) == "data.frame", msg = "`extra` is not a `data.frame`"
+      )
+    }
     new(
-      "rawImputed",
-      Data = data,
-      Response = response,
-      Imputation = prediction$fit + rt_value * prediction$se.pred,
-      Minimum = dots$minimum
+      "rawImputed", Data = data, Response = response, Minimum = dots$minimum,
+      Imputation = prediction$fit + rt_value * prediction$se.pred, Extra = extra
     )
   }
 )

@@ -10,11 +10,11 @@
 \alias{impute,lm-method}
 \title{Impute a dataset}
 \usage{
-impute(model, ..., n_imp = 19)
+impute(model, ..., extra, n_imp = 19)
 
-\S4method{impute}{ANY}(model, ..., n_imp = 19)
+\S4method{impute}{ANY}(model, ..., extra, n_imp = 19)
 
-\S4method{impute}{glmerMod}(model, data, ..., n_imp)
+\S4method{impute}{glmerMod}(model, data, ..., extra, n_imp)
 
 \S4method{impute}{maybeInla}(
   model,
@@ -22,16 +22,20 @@ impute(model, ..., n_imp = 19)
   seed = 0L,
   num_threads = NULL,
   parallel_configs = TRUE,
+  extra,
   n_imp = 19
 )
 
-\S4method{impute}{lm}(model, data, ..., n_imp)
+\S4method{impute}{lm}(model, data, ..., extra, n_imp)
 }
 \arguments{
 \item{model}{model to impute the dataset}
 
 \item{...}{other arguments.
 See details}
+
+\item{extra}{a \code{data.frame} with extra observations not used in the model.
+They will be added in subsequent analyses.}
 
 \item{n_imp}{the number of imputations.
 Defaults to \code{19}.}

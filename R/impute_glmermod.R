@@ -11,7 +11,7 @@
 setMethod(
   f = "impute",
   signature = signature(model = "glmerMod"),
-  definition = function(model, data, ..., n_imp) {
+  definition = function(model, data, ..., extra, n_imp) {
     check_old_names(..., old_names = c(n_imp = "n.imp"))
     assert_that(requireNamespace("lme4", quietly = TRUE))
     assert_that(is.count(n_imp))
@@ -79,12 +79,16 @@ Convert the factor in the dataset and refit the model."
     if (is.null(dots$minimum)) {
       dots$minimum <- ""
     }
+    if (missing(extra)) {
+      extra <- data[0, ]
+    } else {
+      assert_that(
+        class(extra) == "data.frame", msg = "`extra` is not a `data.frame`"
+      )
+    }
     new(
-      "rawImputed",
-      Data = data,
-      Response = response,
-      Imputation = y,
-      Minimum = dots$minimum
+      "rawImputed", Data = data, Response = response, Imputation = y,
+      Minimum = dots$minimum, Extra = extra
     )
   }
 )

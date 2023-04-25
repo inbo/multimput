@@ -13,10 +13,16 @@ Holds a dataset and imputed values
 
 \describe{
 \item{\code{Data}}{A data.frame with the data.}
+
 \item{\code{Response}}{A character holding the name of the response variable.}
-\item{\code{Minimum}}{An optional character holding the name of the variable
-with the minimum.}
+
+\item{\code{Minimum}}{An optional character holding the name of the variable with the
+minimum.}
+
 \item{\code{Imputation}}{A matrix with imputed values.}
-}
-}
+
+\item{\code{Extra}}{A data.frame with extra data to add to the imputations.
+This data is not uses in the imputation model.
+It must contain the same variables as the original data.}
+}}
 

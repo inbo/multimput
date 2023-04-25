@@ -25,7 +25,7 @@ setMethod(
   f = "impute",
   signature = signature(model = "maybeInla"),
   definition = function(
-    model, ..., seed = 0L, num_threads = NULL, parallel_configs = TRUE,
+    model, ..., seed = 0L, num_threads = NULL, parallel_configs = TRUE, extra,
     n_imp = 19
   ) {
     assert_that(!is.null(model), msg = "model should be an inla object")
@@ -41,17 +41,22 @@ setMethod(
     if (is.null(dots$minimum)) {
       dots$minimum <- ""
     }
+    if (missing(extra)) {
+      extra <- data[0, ]
+    } else {
+      assert_that(
+        class(extra) == "data.frame", msg = "`extra` is not a `data.frame`"
+      )
+    }
 
     response <- as.character(model$.args$formula)[2]
     missing_obs <- which(is.na(model$.args$data[, response]))
     if (length(missing_obs) == 0) {
       return(
         new(
-          "rawImputed",
-          Data = model$.args$data,
-          Response = response,
-          Imputation = matrix(integer(0), ncol = n_imp),
-          Minimum = dots$minimum
+          "rawImputed", Data = model$.args$data, Response = response,
+          Imputation = matrix(integer(0), ncol = n_imp), Minimum = dots$minimum,
+          Extra = extra
         )
       )
     }
@@ -120,7 +125,7 @@ a reproducible example at https://github.com/inbo/multimput/issues"
 
     new(
       "rawImputed", Data = model$.args$data, Response = response,
-      Imputation = as.matrix(imputation), Minimum = dots$minimum
+      Imputation = as.matrix(imputation), Minimum = dots$minimum, Extra = extra
     )
   }
 )
