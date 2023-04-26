@@ -24,11 +24,13 @@ test_that("handles lm", {
   expect_identical(nrow(imputed@Imputation), sum(is.na(dataset$Count)))
 
   expect_is(
-    imputed <- impute(model, dataset, minimum = "Bottom", extra = dataset[1, ]),
+    imputed <- impute(
+      model, dataset, minimum = "Bottom", extra = na.omit(dataset)[1, ]
+    ),
     "rawImputed"
   )
   expect_identical(imputed@Minimum, "Bottom")
-  expect_identical(imputed@Extra, dataset[1, ])
+  expect_identical(imputed@Extra, na.omit(dataset)[1, ])
 
   expect_error(
     impute(model, dataset, minimum = "Junk"),
@@ -75,12 +77,12 @@ test_that("handles inla with gaussian distribution", {
   expect_is(
     imputed <- impute(
       model, dataset, minimum = "Bottom", parallel_configs = FALSE,
-      extra = dataset[1, ]
+      extra = na.omit(dataset)[1, ]
     ),
     "rawImputed"
   )
   expect_identical(imputed@Minimum, "Bottom")
-  expect_identical(imputed@Extra, dataset[1, ])
+  expect_identical(imputed@Extra, na.omit(dataset)[1, ])
 
   expect_error(
     impute(model, dataset, minimum = "Junk", parallel_configs = FALSE),
@@ -126,12 +128,12 @@ test_that("handles inla with negative binomial distribution", {
   expect_is(
     imputed <- impute(
       model, dataset, minimum = "Bottom", parallel_configs = FALSE,
-      extra = dataset[1, ]
+      extra = na.omit(dataset)[1, ]
     ),
     "rawImputed"
   )
   expect_identical(imputed@Minimum, "Bottom")
-  expect_identical(imputed@Extra, dataset[1, ])
+  expect_identical(imputed@Extra, na.omit(dataset)[1, ])
 
   expect_error(
     impute(model, dataset, minimum = "Junk", parallel_configs = FALSE),
@@ -176,12 +178,12 @@ test_that("handles inla with poisson distribution", {
   expect_is(
     imputed <- impute(
       model, dataset, minimum = "Bottom", parallel_configs = FALSE,
-      extra = dataset[1, ]
+      extra = na.omit(dataset)[1, ]
     ),
     "rawImputed"
   )
   expect_identical(imputed@Minimum, "Bottom")
-  expect_identical(imputed@Extra, dataset[1, ])
+  expect_identical(imputed@Extra, na.omit(dataset)[1, ])
 
   expect_error(
     impute(model, dataset, minimum = "Junk", parallel_configs = FALSE),
@@ -239,12 +241,12 @@ test_that("handles inla with zeroinflatednbinomial1 distribution", {
   expect_is(
     imputed <- impute(
       model, dataset, minimum = "Bottom", parallel_configs = FALSE,
-      extra = dataset[1, ]
+      extra = na.omit(dataset)[1, ]
     ),
     "rawImputed"
   )
   expect_identical(imputed@Minimum, "Bottom")
-  expect_identical(imputed@Extra, dataset[1, ])
+  expect_identical(imputed@Extra, na.omit(dataset)[1, ])
 
   expect_error(
     impute(model, dataset, minimum = "Junk", parallel_configs = FALSE),
@@ -286,12 +288,12 @@ test_that("handles inla with zeroinflatedpoisson0 distribution", {
   expect_is(
     imputed <- impute(
       model, dataset, minimum = "Bottom", parallel_configs = FALSE,
-      extra = dataset[1, ]
+      extra = na.omit(dataset)[1, ]
     ),
     "rawImputed"
   )
   expect_identical(imputed@Minimum, "Bottom")
-  expect_identical(imputed@Extra, dataset[1, ])
+  expect_identical(imputed@Extra, na.omit(dataset)[1, ])
 
   expect_error(
     impute(model, dataset, minimum = "Junk", parallel_configs = FALSE),
@@ -340,12 +342,12 @@ test_that("handles inla with zeroinflatedpoisson1 distribution", {
   expect_is(
     imputed <- impute(
       model, dataset, minimum = "Bottom", parallel_configs = FALSE,
-      extra = dataset[1, ]
+      extra = na.omit(dataset)[1, ]
     ),
     "rawImputed"
   )
   expect_identical(imputed@Minimum, "Bottom")
-  expect_identical(imputed@Extra, dataset[1, ])
+  expect_identical(imputed@Extra, na.omit(dataset)[1, ])
 
   expect_error(
     impute(model, dataset, minimum = "Junk", parallel_configs = FALSE),
@@ -381,11 +383,13 @@ test_that("handles datasets without missing observations", {
   )
 
   expect_is(
-    imputed <- impute(model, dataset, minimum = "Bottom", extra = dataset[1, ]),
+    imputed <- impute(
+      model, dataset, minimum = "Bottom", extra = na.omit(dataset)[1, ]
+    ),
     "rawImputed"
   )
   expect_identical(imputed@Minimum, "Bottom")
-  expect_identical(imputed@Extra, dataset[1, ])
+  expect_identical(imputed@Extra, na.omit(dataset)[1, ])
 
   expect_error(
     impute(model, dataset, minimum = "Junk"),
@@ -404,7 +408,7 @@ test_that("handles datasets without missing observations", {
   expect_is(
     imputed <- impute(
       model, dataset, minimum = "Bottom", parallel_configs = FALSE,
-      extra = dataset[1, ]
+      extra = na.omit(dataset)[1, ]
     ),
     "rawImputed"
   )
@@ -451,6 +455,11 @@ test_that("is robust for wrong imput", {
     "object 'Year' not found"
   )
   wrong_dataset <- dataset
+  wrong_dataset$Count <- NA
+  expect_error(
+    impute(model = model, data = dataset, extra = wrong_dataset),
+    "Response variable in `Extra` contains `NA` values."
+  )
   wrong_dataset$Count <- NULL
   expect_error(
     impute(model = model, data = wrong_dataset),

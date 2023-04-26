@@ -34,6 +34,10 @@ setValidity(
       all(colnames(object@Data) %in% colnames(object@Extra)),
       msg = "All colnames in `Extra` must be contain all variables in `Data`"
     )
+    assert_that(
+      all(!is.na(object@Extra[[object@Response]])),
+      msg = "Response variable in `Extra` contains `NA` values."
+    )
 
     assert_that(length(object@Minimum) == 1)
     if (!is.na(object@Minimum) && object@Minimum != "") {

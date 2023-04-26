@@ -42,7 +42,7 @@ setMethod(
       dots$minimum <- ""
     }
     if (missing(extra)) {
-      extra <- data[0, ]
+      extra <- model$.args$data[0, ]
     } else {
       assert_that(
         class(extra) == "data.frame", msg = "`extra` is not a `data.frame`"

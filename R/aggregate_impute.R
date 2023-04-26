@@ -70,7 +70,8 @@ setMethod(
       )
     )
     data <- object@Data |>
-      mutate(!!id_column := !!dots)
+      mutate(!!id_column := !!dots) |>
+      bind_rows(object@Extra)
     if (object@Minimum == "") {
       data <- data |>
         mutate(!!minimum_column := -Inf)
@@ -120,7 +121,7 @@ setMethod(
           summarise(
             across(
               .cols = all_of(response), .fns = list(fun), .names = "{.col}"
-            )
+            ), .groups = "drop"
           ) |>
           mutate(Imputation = !!sprintf("Imputation%04i", i))
       }
