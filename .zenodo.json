@@ -7,6 +7,7 @@
   "keywords": [
     "missing data, multiple imputation, Rubin"
   ],
+  "access_right": "open",
   "language": "eng",
   "contributors": [
     {
@@ -36,7 +37,6 @@
       "orcid": "0000-0002-6894-9402"
     }
   ],
-  "access_right": "open",
   "communities": [
     {
       "identifier": "inbo"
