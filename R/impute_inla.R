@@ -2,7 +2,7 @@
 #' @importFrom assertthat assert_that is.count
 #' @importFrom methods new setMethod
 #' @importFrom purrr map map_dfr map2_dfr pmap_dfr
-#' @importFrom stats qpois rgamma rnorm rpois setNames
+#' @importFrom stats plogis qpois rgamma rnorm rpois setNames
 #' @include impute_generic.R
 #' @param seed See the same argument in [INLA::inla.qsample()] for further
 #' information.
@@ -74,6 +74,14 @@ setMethod(
       setNames(paste0("sim_", seq_len(n_imp))) -> latent
     INLA::inla.hyperpar.sample(n = n_imp, result = model) |>
       as.data.frame() -> hyperpar
+    if (
+      model$.args$family == "zeroinflatednbinomial0" &&
+      !"zero-probability parameter for zero-inflated nbinomial_0" %in%
+        colnames(hyperpar)
+    ) {
+      hyperpar[["zero-probability parameter for zero-inflated nbinomial_0"]] <-
+        plogis(model$.args$control.family[[1]]$hyper$theta2$initial)
+    }
 
     imputation <- switch(
       model$.args$family,
@@ -93,6 +101,18 @@ setMethod(
       ),
       poisson = map_dfr(
         .x = latent, .f = ~rpois(n = length(missing_obs), lambda = exp(.x))
+      ),
+      zeroinflatednbinomial0 = pmap_dfr(
+        list(
+          eta = latent,
+          prob = hyperpar[[grep("zero-probability", colnames(hyperpar))]],
+          size = hyperpar[[grep("size for nbinomial", colnames(hyperpar))]]
+        ),
+        .f = function(n, eta, prob, size) {
+          rzinb0(
+            n = length(missing_obs), mu = exp(eta), prob = prob, size = size
+          )
+        }
       ),
       zeroinflatednbinomial1 = pmap_dfr(
         list(
