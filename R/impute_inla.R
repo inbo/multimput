@@ -43,10 +43,6 @@ setMethod(
     }
     if (missing(extra)) {
       extra <- model$.args$data[0, ]
-    } else {
-      assert_that(
-        class(extra) == "data.frame", msg = "`extra` is not a `data.frame`"
-      )
     }
 
     response <- as.character(model$.args$formula)[2]

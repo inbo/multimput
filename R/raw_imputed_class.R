@@ -6,7 +6,7 @@
 #' minimum.
 #' @slot Imputation A matrix with imputed values.
 #' @slot Extra A data.frame with extra data to add to the imputations.
-#' This data is not uses in the imputation model.
+#' This data is not used in the imputation model.
 #' It must contain the same variables as the original data.
 #' @name rawImputed-class
 #' @rdname rawImputed-class
