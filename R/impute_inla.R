@@ -85,6 +85,10 @@ setMethod(
 
     imputation <- switch(
       model$.args$family,
+      binomial = map_dfr(
+        .x = latent,
+        .f = ~rbinom(n = length(missing_obs), size = 1, prob = plogis(.x))
+      ),
       gamma = map2_dfr(
         .x = latent, .f = ~rgamma(n = n, shape = .y * .x ^ 2, rate = .y * .x),
         n = length(missing_obs),

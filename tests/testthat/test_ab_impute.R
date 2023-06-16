@@ -532,14 +532,13 @@ test_that("is robust for wrong imput", {
   model <- INLA::inla(
     Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
     data = dataset,
-    family = "binomial",
-    Ntrials = max(dataset$Count, na.rm = TRUE),
+    family = "nbinomial2",
     control.compute = list(config = TRUE),
     control.predictor = list(link = 1)
   )
   expect_error(
     impute(model, parallel_configs = FALSE),
-    "Imputations from the 'binomial' family not yet defined"
+    "Imputations from the 'nbinomial2' family not yet defined"
   )
 })
 
