@@ -1,7 +1,7 @@
 citHeader("To cite `multimput` in publications please use:")
 # begin checklist entry
-citEntry(
-  entry = "Manual",
+bibentry(
+  bibtype = "Manual",
   title = "multimput: Using Multiple Imputation to Address Missing Data. Version 0.2.12",
   author = c( author = c(person(given = "Thierry", family = "Onkelinx"), person(given = "Koen", family = "Devos"), person(given = "Paul", family = "Quataert"))),
   year = 2023,

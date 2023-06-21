@@ -5,7 +5,7 @@ Version: 0.2.12
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8804-4216", affiliation = "Research Institute for Nature and Forest (INBO)")),
-    person("Koen", "Devos", role = "aut",
+    person("Koen", "Devos", , "koen.devos@inbo.be", role = "aut",
            comment = c(ORCID = "0000-0001-7265-6349", affiliation = "Research Institute for Nature and Forest (INBO)")),
     person("Paul", "Quataert", role = "aut",
            comment = c(ORCID = "0000-0002-6894-9402")),
