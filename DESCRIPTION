@@ -60,6 +60,7 @@ Collate:
     'datasets.R'
     'deprecated.R'
     'generate_data.R'
+    'hurdle_impute.R'
     'import_s3_classes.R'
     'impute_generic.R'
     'impute_glmermod.R'

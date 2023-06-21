@@ -2,6 +2,7 @@
 
 export(generateData)
 export(generate_data)
+export(hurdle_impute)
 export(missingAtRandom)
 export(missingCurrentCount)
 export(missingObserved)
