@@ -10,13 +10,14 @@
 #' @param presence the `rawImputed` object for the presence.
 #' @param count the `rawImputed` object for counts.
 #' @export
-#' @importFrom methods new
+#' @importFrom methods new validObject
 hurdle_impute <- function(presence, count) {
   stopifnot(
     "`presence` is not a `rawImputed` object" =
       inherits(presence, "rawImputed"),
     "`count` is not a `rawImputed` object" =
       inherits(count, "rawImputed"),
+    validObject(presence), validObject(count),
     "unequal number of rows in count and presence" =
       nrow(count@Data) == nrow(presence@Data),
     "unequal number of imputations in count and presence" =
