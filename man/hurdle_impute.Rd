@@ -7,9 +7,9 @@
 hurdle_impute(presence, count)
 }
 \arguments{
-\item{presence}{the model for the presence.}
+\item{presence}{the \code{rawImputed} object for the presence.}
 
-\item{count}{the model for counts.}
+\item{count}{the \code{rawImputed} object for counts.}
 }
 \description{
 Multiplies the imputed values for the \code{presence} model with those of the

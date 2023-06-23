@@ -7,8 +7,8 @@
 #' The resulting object will contain the union of the covariates of both models.
 #' Variables with the same name and different values get a `presence_` or
 #' `count_` prefix.
-#' @param presence the model for the presence.
-#' @param count the model for counts.
+#' @param presence the `rawImputed` object for the presence.
+#' @param count the `rawImputed` object for counts.
 #' @export
 #' @importFrom methods new
 hurdle_impute <- function(presence, count) {
@@ -20,7 +20,9 @@ hurdle_impute <- function(presence, count) {
     "unequal number of rows in count and presence" =
       nrow(count@Data) == nrow(presence@Data),
     "unequal number of imputations in count and presence" =
-      ncol(count@Imputation) == ncol(presence@Imputation)
+      ncol(count@Imputation) == ncol(presence@Imputation),
+    "Only add extra observations to the `count` model" =
+      nrow(presence@Extra) == 0
   )
 
   # prepare imputations
@@ -61,18 +63,41 @@ hurdle_impute <- function(presence, count) {
   extra_count <- colnames(cv_count)[!colnames(cv_count) %in% common]
   extra_presence <- colnames(cv_presence)[!colnames(cv_presence) %in% common]
   ren_count <- cv_count[, extra_count[extra_count %in% extra_presence]]
-  colnames(ren_count) <- sprintf("count_", colnames(ren_count))
+  colnames(ren_count) <- sprintf("count_%s", colnames(ren_count))
   ren_presence <- cv_presence[, extra_presence[extra_presence %in% extra_count]]
-  colnames(ren_presence) <- sprintf("presence_", colnames(ren_presence))
+  colnames(ren_presence) <- sprintf("presence_%s", colnames(ren_presence))
+  cv <- cbind(
+    cv_count[, common],
+    cv_count[, extra_count[!extra_count %in% extra_presence]], ren_count,
+    cv_presence[, extra_presence[!extra_presence %in% extra_count]],
+    ren_presence
+  )
+  if (nrow(count@Extra) == 0) {
+    extra <- matrix(nrow = 0, ncol = ncol(count_resp))
+  } else {
+    extra <- matrix(
+      count@Extra[[count@Response]], nrow = nrow(count@Extra),
+      ncol = ncol(count_resp)
+    )
+    ren_count <- count@Extra[, extra_count[extra_count %in% extra_presence]]
+    colnames(ren_count) <- sprintf("count_", colnames(ren_count))
+    cv_extra <- cbind(
+      count@Extra[, common],
+      count@Extra[, extra_count[!extra_count %in% extra_presence]], ren_count
+    )
+    c(
+      extra_presence[!extra_presence %in% extra_count],
+      extra_presence[extra_presence %in% extra_count] |>
+        sprintf(fmt = "presence_%s")
+    ) -> extra_presence
+    matrix(NA, ncol = length(extra_presence), nrow = nrow(cv_extra)) |>
+      `colnames<-`(extra_presence) |>
+      as.data.frame() -> cv_extra_presence
+    cv <- rbind(cv, cbind(cv_extra, cv_extra_presence))
+  }
 
   new(
-    "aggregatedImputed",
-    Covariate = cbind(
-      cv_count[, common],
-      cv_count[, extra_count[!extra_count %in% extra_presence]], ren_count,
-      cv_presence[, extra_presence[!extra_presence %in% extra_count]],
-      ren_presence
-    ),
-    Imputation = presence_resp * count_resp
+    "aggregatedImputed", Covariate = cv,
+    Imputation = rbind(presence_resp * count_resp, extra)
   )
 }
