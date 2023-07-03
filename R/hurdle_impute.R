@@ -99,6 +99,7 @@ hurdle_impute <- function(presence, count) {
 
   new(
     "aggregatedImputed", Covariate = cv,
-    Imputation = rbind(presence_resp * count_resp, extra)
+    Imputation = rbind(presence_resp * count_resp, extra) |>
+      `colnames<-`(sprintf("Imputation%04i", seq_len(ncol(count_resp))))
   )
 }
