@@ -455,7 +455,7 @@ test_that("is robust for wrong imput", {
     "object 'Year' not found"
   )
   wrong_dataset <- dataset
-  wrong_dataset$Count <- NA
+  wrong_dataset$Count <- NA_real_
   expect_error(
     impute(model = model, data = dataset, extra = wrong_dataset),
     "Response variable in `Extra` contains `NA` values."

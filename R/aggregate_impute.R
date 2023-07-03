@@ -16,7 +16,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "aggregate_impute",
-  def = function(object, grouping, fun, filter, join) {
+  def = function(object, grouping, fun, filter = list(), join) {
     standard.generic("aggregate_impute") # nocov
   }
 )
@@ -26,7 +26,7 @@ setGeneric(
 setMethod(
   f = "aggregate_impute",
   signature = signature(object = "ANY"),
-  definition = function(object, grouping, fun, filter, join) {
+  definition = function(object, grouping, fun, filter = list(), join) {
     stop(
 "aggregate_impute() requires a 'rawImputed' or 'aggregatedImputed' object.
 See ?impute or ?aggregate_impute"
@@ -56,11 +56,12 @@ See ?impute or ?aggregate_impute"
 setMethod(
   f = "aggregate_impute",
   signature = signature(object = "rawImputed"),
-  definition = function(object, grouping, fun, filter, join) {
-    assert_that(is.character(grouping))
-    assert_that(inherits(fun, "function"))
+  definition = function(object, grouping, fun, filter = list(), join) {
+    assert_that(
+      is.character(grouping), inherits(fun, "function"),
+      inherits(filter, "list")
+    )
     grouping <- syms(grouping)
-
     id_column <- paste0("ID", sha1(Sys.time()))
     minimum_column <- paste0("Minimum", sha1(Sys.time()))
     response <- object@Response
@@ -81,12 +82,9 @@ setMethod(
     }
     imputation <- object@Imputation
 
-    if (!missing(filter)) {
-      assert_that(is.list(filter))
-      dots <- map(filter, ~expr(!!parse_expr(as.character(.x)[2])))
-      data <- data |>
-        filter(!!!dots)
-    }
+    map(filter, trans) |>
+      c(.data = list(data)) |>
+      do.call(what = dplyr::filter) -> data
     if (!missing(join)) {
       if (inherits(join, "data.frame")) {
         join <- list(join)
@@ -153,9 +151,11 @@ setMethod(
 setMethod(
   f = "aggregate_impute",
   signature = signature(object = "aggregatedImputed"),
-  definition = function(object, grouping, fun, filter, join) {
-    assert_that(is.character(grouping))
-    assert_that(inherits(fun, "function"))
+  definition = function(object, grouping, fun, filter = list(), join) {
+    assert_that(
+      is.character(grouping), inherits(fun, "function"),
+      inherits(filter, "list")
+    )
 
     id_column <- paste0("ID", sha1(Sys.time()))
     data <- object@Covariate |>
@@ -165,12 +165,9 @@ setMethod(
       as.data.frame() |>
       mutate(!!id_column := row_number())
 
-    if (!missing(filter)) {
-      assert_that(is.list(filter))
-      dots <- map(filter, ~expr(!!parse_expr(as.character(.x)[2])))
-      data <- data |>
-        filter(!!!dots)
-    }
+    map(filter, trans) |>
+      c(.data = list(data)) |>
+      do.call(what = dplyr::filter) -> data
 
     if (!missing(join)) {
       if (inherits(join, "data.frame")) {
@@ -191,15 +188,16 @@ setMethod(
       }
     }
 
-    total <- data |>
+    data |>
       inner_join(imputation, by = id_column) |>
       group_by(!!!grouping) |>
       summarise(
         across(
           .cols = all_of(colnames(object@Imputation)), .fns = list(fun),
           .names = "{.col}"
-        )
-      )
+        ),
+        .groups = "drop"
+      ) -> total
 
     new(
       "aggregatedImputed",

@@ -81,7 +81,7 @@ test_that("aggregate_impute", {
   )
   expect_error(
     aggregate_impute(imputed, grouping = "Year", fun = sum, filter = "junk"),
-    "filter is not a list"
+    "filter does not inherit from class list"
   )
 
   # aggregates an aggregatedImputed
