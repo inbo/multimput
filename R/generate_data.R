@@ -43,7 +43,7 @@
 #' scale.
 #' `Count` are the simulated counts.
 #' @importFrom stats rnorm rnbinom
-#' @importFrom dplyr %>% group_by group_map mutate select
+#' @importFrom dplyr group_by group_map mutate select
 #' @importFrom rlang .data !!!
 generate_data <- function(
   intercept = 2, n_year = 24, n_period = 6, n_site = 20, year_factor = FALSE,
@@ -54,24 +54,14 @@ generate_data <- function(
 ) {
   #generate the design
   dataset <- expand.grid(
-    Year = seq_len(n_year),
-    Period = seq_len(n_period),
-    Site = seq_len(n_site)
+    Year = seq_len(n_year), Period = seq_len(n_period), Site = seq_len(n_site)
   )
   year_rw_effect <- cumsum(rnorm(n_year, mean = 0, sd = sd_rw_year))
   phase <- rnorm(n_year + 1, mean = mean_phase_period, sd = sd_phase_period)
   site_rw_effect <- rbind(
-    rnorm(
-      n_site,
-      mean = 0,
-      sd = sd_site
-    ),
+    rnorm(n_site, mean = 0, sd = sd_site),
     matrix(
-      rnorm(
-        (n_year - 1) * n_site,
-        mean = 0,
-        sd = sd_rw_site
-      ),
+      rnorm((n_year - 1) * n_site, mean = 0, sd = sd_rw_site),
       ncol = n_site
     )
   )
@@ -96,9 +86,7 @@ generate_data <- function(
     )
     dataset$PeriodEffect <- exp(
       amplitude_period *
-        sin(
-          dataset$Period * pi / n_period + phase[dataset$Year]
-        )
+        sin(dataset$Period * pi / n_period + phase[dataset$Year])
     )
     dataset$SiteEffect <- exp(
       site_rw_effect[dataset$Year + (dataset$Site - 1) * n_year]
@@ -116,9 +104,7 @@ generate_data <- function(
   # add the runs
   dataset <- merge(
     dataset,
-    data.frame(
-      Run = seq_len(n_run)
-    )
+    data.frame(Run = seq_len(n_run))
   )
 
   #generate the counts
@@ -128,12 +114,14 @@ generate_data <- function(
     return(dataset)
   }
 
-  dataset %>%
-    group_by(.data$Run) %>%
+  dataset |>
+    group_by(.data$Run) |>
     group_map(~relevant(.x, details = details, run = .y))
 }
 
 # internal function for generate_data()
+#' @importFrom dplyr mutate select
+#' @importFrom rlang !!!
 relevant <- function(x, details, run) {
   if (details) {
     dots <- c("Year", "Period", "Site", "Mu", "YearEffect", "PeriodEffect",
@@ -141,8 +129,8 @@ relevant <- function(x, details, run) {
   } else {
     dots <- c("Year", "Period", "Site", "Mu", "Count")
   }
-  x %>%
-    select(!!!dots) %>%
-    mutate(Run = run$Run) %>%
+  x |>
+    select(!!!dots) |>
+    mutate(Run = run$Run) |>
     as.data.frame()
 }

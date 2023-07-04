@@ -47,7 +47,7 @@ setMethod(
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
 #' @importFrom digest sha1
-#' @importFrom dplyr %>% bind_rows filter group_by mutate n row_number select
+#' @importFrom dplyr bind_rows filter group_by mutate n row_number select
 #' summarise transmute ungroup
 #' @importFrom purrr map
 #' @importFrom rlang .data !! !!! :=

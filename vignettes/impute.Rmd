@@ -369,8 +369,8 @@ model_better <- model_impute(
 model_complete <- extractor_logindex(model_complete)
 colnames(model_complete) <- c("Estimate", "SE")
 library(dplyr)
-model_complete <- model_complete %>%
-  as.data.frame() %>%
+model_complete <- model_complete |>
+  as.data.frame() |>
   mutate(
     LCL = qnorm(0.025, Estimate, SE),
     UCL = qnorm(0.975, Estimate, SE),
@@ -440,8 +440,8 @@ m_complete <- inla(
 )
 model_complete <- extractor_inla(m_complete)
 colnames(model_complete) <- c("Estimate", "SE")
-model_complete <- model_complete %>%
-  as.data.frame() %>%
+model_complete <- model_complete |>
+  as.data.frame() |>
   mutate(
     LCL = qnorm(0.025, Estimate, SE),
     UCL = qnorm(0.975, Estimate, SE),
