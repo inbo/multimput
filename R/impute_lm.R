@@ -1,6 +1,7 @@
 #' @rdname impute
 #' @importFrom methods new setMethod
 #' @importFrom assertthat assert_that is.count has_name
+#' @importFrom dplyr coalesce
 #' @importFrom stats terms predict rt
 #' @param data The dataset holding both the observed and the missing values
 #' @examples
@@ -30,9 +31,6 @@ setMethod(
       ncol = n_imp
     )
     dots <- list(...)
-    if (is.null(dots$minimum)) {
-      dots$minimum <- ""
-    }
     if (missing(extra)) {
       extra <- data[0, ]
     } else {
@@ -41,7 +39,8 @@ setMethod(
       )
     }
     new(
-      "rawImputed", Data = data, Response = response, Minimum = dots$minimum,
+      "rawImputed", Data = data, Response = response,
+      Minimum = coalesce(dots$minimum, ""),
       Imputation = prediction$fit + rt_value * prediction$se.pred, Extra = extra
     )
   }

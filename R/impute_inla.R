@@ -1,5 +1,6 @@
 #' @rdname impute
 #' @importFrom assertthat assert_that is.count
+#' @importFrom dplyr coalesce
 #' @importFrom methods new setMethod
 #' @importFrom purrr map map_dfr map2_dfr pmap_dfr
 #' @importFrom stats plogis qpois rgamma rnorm rpois setNames
@@ -38,9 +39,6 @@ setMethod(
     )
 
     dots <- list(...)
-    if (is.null(dots$minimum)) {
-      dots$minimum <- ""
-    }
     if (missing(extra)) {
       extra <- model$.args$data[0, ]
     }
@@ -51,8 +49,8 @@ setMethod(
       return(
         new(
           "rawImputed", Data = model$.args$data, Response = response,
-          Imputation = matrix(integer(0), ncol = n_imp), Minimum = dots$minimum,
-          Extra = extra
+          Imputation = matrix(integer(0), ncol = n_imp),
+          Minimum = coalesce(dots$minimum, ""), Extra = extra
         )
       )
     }
@@ -145,7 +143,8 @@ a reproducible example at https://github.com/inbo/multimput/issues"
 
     new(
       "rawImputed", Data = model$.args$data, Response = response,
-      Imputation = as.matrix(imputation), Minimum = dots$minimum, Extra = extra
+      Imputation = as.matrix(imputation), Minimum = coalesce(dots$minimum, ""),
+      Extra = extra
     )
   }
 )

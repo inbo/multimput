@@ -1,6 +1,7 @@
 #' @rdname impute
 #' @importFrom methods new setMethod
 #' @importFrom assertthat assert_that has_name is.count
+#' @importFrom dplyr coalesce
 #' @importFrom mvtnorm rmvnorm
 #' @importFrom digest sha1
 #' @importClassesFrom lme4 glmerMod
@@ -75,9 +76,6 @@ Convert the factor in the dataset and refit the model."
     ) |>
       matrix(ncol = n_imp)
     dots <- list(...)
-    if (is.null(dots$minimum)) {
-      dots$minimum <- ""
-    }
     if (missing(extra)) {
       extra <- data[0, ]
     } else {
@@ -87,7 +85,7 @@ Convert the factor in the dataset and refit the model."
     }
     new(
       "rawImputed", Data = data, Response = response, Imputation = y,
-      Minimum = dots$minimum, Extra = extra
+      Minimum = coalesce(dots$minimum, ""), Extra = extra
     )
   }
 )
