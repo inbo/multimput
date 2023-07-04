@@ -58,7 +58,7 @@ Convert the factor in the dataset and refit the model."
         } else {
           hash <- x
         }
-        paste("~0 + ", hash) |> #nolint
+        paste("~0 + ", hash) |>
             as.formula() |>
             model.matrix(data = data[missing_obs, ]) |>
             tcrossprod(t(random[[x]]))
