@@ -23,8 +23,8 @@
 setGeneric(
   name = "model_impute",
   def = function(
-    object, model_fun, rhs, model_args, extractor, extractor_args, filter,
-    mutate, ...
+    object, model_fun, rhs, model_args = list(), extractor,
+    extractor_args = list(), filter = list(), mutate = list(), ...
 ) {
     standard.generic("model_impute") # nocov
   }
@@ -36,8 +36,8 @@ setMethod(
   f = "model_impute",
   signature = signature(object = "ANY"),
   definition = function(
-    object, model_fun, rhs, model_args, extractor, extractor_args, filter,
-    mutate, ...
+    object, model_fun, rhs, model_args = list(), extractor,
+    extractor_args = list(), filter = list(), mutate = list(), ...
   ) {
     stop("model_impute() doesn't handle a '", class(object), "' object")
   }
@@ -47,10 +47,10 @@ setMethod(
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that
 #' @importFrom digest sha1
-#' @importFrom dplyr %>% bind_rows filter group_by mutate n row_number select
+#' @importFrom dplyr bind_rows filter group_by mutate n row_number select
 #' summarise transmute ungroup
 #' @importFrom purrr map
-#' @importFrom rlang expr parse_expr .data !! !!! :=
+#' @importFrom rlang .data !! !!! :=
 #' @importFrom tibble rownames_to_column
 #' @importFrom stats as.formula qnorm var
 #' @examples
@@ -73,8 +73,8 @@ setMethod(
   f = "model_impute",
   signature = signature(object = "aggregatedImputed"),
   definition = function(
-    object, model_fun, rhs, model_args, extractor, extractor_args, filter,
-    mutate, ...
+    object, model_fun, rhs, model_args = list(), extractor,
+    extractor_args = list(), filter = list(), mutate = list(), ...
   ) {
     check_old_names(
       ...,
@@ -83,51 +83,29 @@ setMethod(
         extractor_args = "extractor.args"
       )
     )
-    assert_that(inherits(model_fun, "function"))
-    assert_that(inherits(extractor, "function"))
-    assert_that(is.character(rhs))
-
-    if (missing(model_args)) {
-      model_args <- list()
-    } else {
-      assert_that(inherits(model_args, "list"))
-    }
-    if (missing(extractor_args)) {
-      extractor_args <- list()
-    } else {
-      assert_that(inherits(extractor_args, "list"))
-    }
-
+    assert_that(
+      inherits(model_fun, "function"), inherits(extractor, "function"),
+      is.character(rhs), inherits(model_args, "list"),
+      inherits(extractor_args, "list"), inherits(mutate, "list"),
+      inherits(filter, "list")
+    )
     id_column <- paste0("ID", sha1(Sys.time()))
-    object@Covariate <- object@Covariate %>%
+    object@Covariate <- object@Covariate |>
       dplyr::mutate(!!id_column := row_number())
-    if (!missing(filter)) {
-      dots <- map(
-        filter,
-        ~expr(!!parse_expr(as.character(.x)[2]))
-      )
-      object@Covariate <- object@Covariate %>%
-        filter(!!!dots)
-    }
-    if (!missing(mutate)) {
-      dots <- map(
-        mutate,
-        ~expr(!!parse_expr(as.character(.x)[2]))
-      )
-      object@Covariate <- object@Covariate %>%
-        dplyr::mutate(!!!dots)
-    }
-
+    map(filter, trans) |>
+      c(.data = list(object@Covariate)) |>
+      do.call(what = dplyr::filter) -> object@Covariate
+    map(mutate, trans) |>
+      c(.data = list(object@Covariate)) |>
+      do.call(what = dplyr::mutate) -> object@Covariate
     object@Imputation <- object@Imputation[object@Covariate[[id_column]], ]
 
-    form <- as.formula(paste("Imputed", rhs, sep = "~"))
+    paste("Imputed", rhs, sep = "~") |>
+      as.formula() -> form
     m <- lapply(
       seq_len(ncol(object@Imputation)),
       function(i) {
-        data <- cbind(
-          Imputed = object@Imputation[, i],
-          object@Covariate
-        )
+        data <- cbind(Imputed = object@Imputation[, i], object@Covariate)
         model <- try(
           do.call(model_fun, c(form, list(data = data), model_args)),
           silent = TRUE
@@ -135,31 +113,29 @@ setMethod(
         if (inherits(model, "try-error")) {
           NULL
         } else {
-          do.call(extractor, c(list(model), extractor_args)) %>%
-            as.data.frame() %>%
+          do.call(extractor, c(list(model), extractor_args)) |>
+            as.data.frame() |>
             rownames_to_column("Variable")
         }
       }
     )
-    failed <- sapply(m, is.null)
+    failed <- vapply(m, is.null, logical(1))
     assert_that(any(!failed), msg = "model failed on all imputations")
-    m %>%
-      bind_rows() %>%
-      select(Parameter = 1, Estimate = 2, SE = 3) %>%
+    m |>
+      bind_rows() |>
+      select(Parameter = 1, Estimate = 2, SE = 3) |>
       dplyr::mutate(
         Parameter = factor(.data$Parameter, levels = unique(.data$Parameter))
       ) -> m
-    m %>%
-      group_by(.data$Parameter) %>%
+    m |>
+      group_by(.data$Parameter) |>
       summarise(
         SE = sqrt(mean(.data$SE ^ 2) + var(.data$Estimate) * (n() + 1) / n()),
         Estimate = mean(.data$Estimate)
-      ) %>%
-      ungroup() %>%
+      ) |>
+      ungroup() |>
       transmute(
-        .data$Parameter,
-        .data$Estimate,
-        .data$SE,
+        .data$Parameter, .data$Estimate, .data$SE,
         LCL = qnorm(0.025, .data$Estimate, .data$SE),
         UCL = qnorm(0.975, .data$Estimate, .data$SE)
       ) -> result
@@ -167,3 +143,10 @@ setMethod(
     return(result)
   }
 )
+
+#' @importFrom rlang parse_expr
+trans <- function(x) {
+  stopifnot(inherits(x, "character") || inherits(x, "formula"))
+  ifelse(is.character(x), x, as.character(x)[2]) |>
+    parse_expr()
+}

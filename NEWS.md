@@ -1,3 +1,18 @@
+# multimput 0.2.12
+
+* `impute()` gains an `extra` argument.
+  Use it for observations not in the model that you still want to add in the
+  follow-up analysis.
+  For example: exclude rare observations from the model but you want them in the
+  aggregations.
+* `impute()` on INLA models now also handles the binomial, the zero-inflated
+  Poison (type 0 and 1) and the zero-inflated negative binomial (type 0 and 1)
+  distributions.
+* Add `hurdle_impute()` to fit a hurdle model based on a model of the presences
+  and a model of the counts.
+* Added validation rules for `rawImputed` and `aggregatedImputed` objects.
+* Update [`checklist`](https://inbo.github.io/checklist/) infrastructure.
+
 # multimput 0.2.11
 
 * Vignette runs without INLA.
@@ -5,7 +20,7 @@
 
 # multimput 0.2.10
 
-* Use checklist infrastructure. 
+* Use [`checklist`](https://inbo.github.io/checklist/) infrastructure. 
 
 # multimput 0.2.7.9000
 

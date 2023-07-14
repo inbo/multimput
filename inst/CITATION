@@ -1,13 +1,14 @@
 citHeader("To cite `multimput` in publications please use:")
 # begin checklist entry
-citEntry(
-  entry = "Manual",
-  title = "multimput: Using Multiple Imputation to Address Missing Data. Version 0.2.11",
-  author = c(person(given = "Thierry", family = "Onkelinx"), person(given = "Koen", family = "Devos"), person(given = "Paul", family = "Quataert")),
-  year = 2022,
-  url = "https://doi.org/10.5281/zenodo.598331",
-  abstract = "Accompanying package for the paper: \"Working with population totals in the presence of with missing data\".",
-  textVersion = "Onkelinx, Thierry; Devos, Koen; Quataert, Paul (2022) multimput: Using Multiple Imputation to Address Missing Data. Version 0.2.11. https://doi.org/10.5281/zenodo.598331, https://github.com/inbo/multimput, https://inbo.github.io/multimput/",
+bibentry(
+  bibtype = "Manual",
+  title = "multimput: Using Multiple Imputation to Address Missing Data. Version 0.2.12",
+  author = c( author = c(person(given = "Thierry", family = "Onkelinx"), person(given = "Koen", family = "Devos"), person(given = "Paul", family = "Quataert"))),
+  year = 2023,
+  url = "https://inbo.github.io/multimput/",
+  abstract = "Accompanying package for the paper: Working with population totals in the presence of missing data comparing imputation methods in terms of bias and precision. Published in 2017 in the Journal of Ornithology volume 158 page 603–615 (doi:10.1007/s10336-016-1404-9).",
+  textVersion = "Onkelinx, Thierry; Devos, Koen; Quataert, Paul (2023) multimput: Using Multiple Imputation to Address Missing Data. Version 0.2.12. https://inbo.github.io/multimput/",
+  keywords = "missing data, multiple imputation, Rubin",
   doi = "10.5281/zenodo.598331",
 )
 # end checklist entry

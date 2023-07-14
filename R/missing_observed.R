@@ -66,7 +66,7 @@ missing_observed <- function(
     levels = sort(unique(periods)),
     labels = levels(periods)
   )
-  if (class(dataset[, year_variable]) == "factor") {
+  if (!inherits(dataset[, year_variable], "factor")) {
     pattern[, year_variable] <- factor(
       pattern[, year_variable],
       levels = sort(unique(dataset[, year_variable])),

@@ -11,11 +11,11 @@ model_impute(
   object,
   model_fun,
   rhs,
-  model_args,
+  model_args = list(),
   extractor,
-  extractor_args,
-  filter,
-  mutate,
+  extractor_args = list(),
+  filter = list(),
+  mutate = list(),
   ...
 )
 
@@ -23,11 +23,11 @@ model_impute(
   object,
   model_fun,
   rhs,
-  model_args,
+  model_args = list(),
   extractor,
-  extractor_args,
-  filter,
-  mutate,
+  extractor_args = list(),
+  filter = list(),
+  mutate = list(),
   ...
 )
 
@@ -35,11 +35,11 @@ model_impute(
   object,
   model_fun,
   rhs,
-  model_args,
+  model_args = list(),
   extractor,
-  extractor_args,
-  filter,
-  mutate,
+  extractor_args = list(),
+  filter = list(),
+  mutate = list(),
   ...
 )
 }
