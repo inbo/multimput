@@ -188,7 +188,7 @@ rzinb0 <- function(n, mu, size, prob, tol = 2e-10) {
   }
   dnbinom(x = 0, mu = mu[-low], size = size) |>
     runif(n = n - length(low), max = 1) |>
-    qnbinom(mu = mu[-low]) -> count[non_zero][-low]
+    qnbinom(mu = mu[-low], size = size) -> count[non_zero][-low]
   return(count)
 }
 
