@@ -209,6 +209,27 @@ setMethod(
       }
     }
 
+    if (nrow(data) == 0) {
+      return(
+        new(
+          "aggregatedImputed",
+          Covariate = data |>
+            select(!!!grouping) |>
+            as.data.frame(),
+          Imputation = ncol(imputation) |>
+            seq_len() |>
+            sprintf(fmt = "Imputation%04i") |>
+            list() |>
+            c(list(character(0))) |>
+            rev() |>
+            matrix(
+              data = NA_real_, nrow = 0, ncol = ncol(imputation),
+              byrow = FALSE
+            )
+        )
+      )
+    }
+
     data |>
       inner_join(imputation, by = id_column) |>
       group_by(!!!grouping) |>
