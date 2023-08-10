@@ -1,3 +1,8 @@
+# multimput 0.2.13
+
+* `aggregate_impute()` handles the corner case when `join` results in an empty 
+  dataset.
+
 # multimput 0.2.12
 
 * `impute()` gains an `extra` argument.
