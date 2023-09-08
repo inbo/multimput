@@ -216,14 +216,14 @@ setMethod(
           Covariate = data |>
             select(!!!grouping) |>
             as.data.frame(),
-          Imputation = ncol(imputation) |>
-            seq_len() |>
-            sprintf(fmt = "Imputation%04i") |>
+          Imputation = imputation |>
+            select(starts_with("Imputation")) |>
+            colnames() |>
             list() |>
             c(list(character(0))) |>
             rev() |>
             matrix(
-              data = NA_real_, nrow = 0, ncol = ncol(imputation),
+              data = NA_real_, nrow = 0, ncol = ncol(imputation) - 1,
               byrow = FALSE
             )
         )

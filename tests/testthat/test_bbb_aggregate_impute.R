@@ -96,6 +96,14 @@ test_that("aggregate_impute", {
     ),
     "aggregatedImputed"
   )
+
+  # handles empty datasets
+  empty_imputed <- impute(data = dataset[integer(0), ], model = model)
+  empty_aggr <- aggregate_impute(empty_imputed, grouping = grouping, fun = fun)
+  expect_is(empty_aggr, "aggregatedImputed")
+  expect_identical(colnames(empty_aggr@Covariate), grouping)
+  expect_identical(nrow(empty_aggr@Covariate), nrow(empty_aggr@Imputation))
+  expect_identical(ncol(empty_imputed@Imputation), ncol(empty_aggr@Imputation))
 })
 
 test_that("aggregate_impute() works on aggregatedImputed objects", {
@@ -112,4 +120,13 @@ test_that("aggregate_impute() works on aggregatedImputed objects", {
     aggr2 <- aggregate_impute(aggr, grouping = grouping2, fun = sum),
     "aggregatedImputed"
   )
+
+  # handles empty datasets
+  empty_imputed <- impute(data = dataset[integer(0), ], model = model)
+  empty_aggr <- aggregate_impute(empty_imputed, grouping = grouping, fun = fun)
+  empty_aggr2 <- aggregate_impute(empty_aggr, grouping = grouping2, fun = fun)
+  expect_is(empty_aggr2, "aggregatedImputed")
+  expect_identical(colnames(empty_aggr2@Covariate), grouping2)
+  expect_identical(nrow(empty_aggr2@Covariate), nrow(empty_aggr2@Imputation))
+  expect_identical(ncol(empty_aggr@Imputation), ncol(empty_aggr2@Imputation))
 })
