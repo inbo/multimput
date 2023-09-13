@@ -2,6 +2,10 @@
 
 * `aggregate_impute()` handles the corner case when `join` results in an empty 
   dataset.
+* The `model_fun` argument of `model_impute()` can be either a function or a
+  string containing the name of a function (like `"glm"`).
+  Include the package name in case the function is not available in base R (like
+  `"INLA::inla"`).
 
 # multimput 0.2.12
 
