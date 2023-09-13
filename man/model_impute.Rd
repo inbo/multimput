@@ -46,7 +46,11 @@ model_impute(
 \arguments{
 \item{object}{The imputed dataset.}
 
-\item{model_fun}{The function to apply on each imputation set.}
+\item{model_fun}{The function to apply on each imputation set.
+Or a string with the name of the function.
+Include the package name when the function is not in one of the base R
+packages.
+For example: \code{"glm"} or \code{"INLA::inla"}.}
 
 \item{rhs}{The right hand side of the model.}
 

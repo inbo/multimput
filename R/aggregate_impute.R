@@ -92,7 +92,7 @@ setMethod(
       assert_that(is.list(join))
 
       assert_that(
-        all(sapply(join, inherits, "data.frame")),
+        all(vapply(join, inherits, logical(1), "data.frame")),
         msg = "not all objects in join are data.frames"
       )
       for (i in seq_along(join)) {
@@ -103,6 +103,27 @@ setMethod(
         data <- data |>
           semi_join(join[[i]], by = colnames(join[[i]]))
       }
+    }
+
+    if (nrow(data) == 0) {
+      return(
+        new(
+          "aggregatedImputed",
+          Covariate = data |>
+            select(!!!grouping) |>
+            as.data.frame(),
+          Imputation = ncol(imputation) |>
+            seq_len() |>
+            sprintf(fmt = "Imputation%04i") |>
+            list() |>
+            c(list(character(0))) |>
+            rev() |>
+            matrix(
+              data = NA_real_, nrow = 0, ncol = ncol(imputation),
+              byrow = FALSE
+            )
+        )
+      )
     }
 
     imputation <- imputation[na.omit(data[[id_column]]), , drop = FALSE]
@@ -186,6 +207,27 @@ setMethod(
         data <- data |>
           semi_join(join[[i]], by = colnames(join[[i]]))
       }
+    }
+
+    if (nrow(data) == 0) {
+      return(
+        new(
+          "aggregatedImputed",
+          Covariate = data |>
+            select(!!!grouping) |>
+            as.data.frame(),
+          Imputation = imputation |>
+            select(starts_with("Imputation")) |>
+            colnames() |>
+            list() |>
+            c(list(character(0))) |>
+            rev() |>
+            matrix(
+              data = NA_real_, nrow = 0, ncol = ncol(imputation) - 1,
+              byrow = FALSE
+            )
+        )
+      )
     }
 
     data |>

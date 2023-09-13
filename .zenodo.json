@@ -1,6 +1,6 @@
 {
   "title": "multimput: Using Multiple Imputation to Address Missing Data",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "license": "GPL-3.0",
   "upload_type": "software",
   "description": "<p>Accompanying package for the paper: Working with population totals in\nthe presence of missing data comparing imputation methods in terms of\nbias and precision. Published in 2017 in the Journal of Ornithology\nvolume 158 page 603–615 (doi:10.1007/s10336-016-1404-9).<\/p>",
