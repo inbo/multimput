@@ -1,6 +1,10 @@
 #' Model an imputed dataset
 #' @param object The imputed dataset.
 #' @param model_fun The function to apply on each imputation set.
+#' Or a string with the name of the function.
+#' Include the package name when the function is not in one of the base R
+#' packages.
+#' For example: `"glm"` or `"INLA::inla"`.
 #' @param rhs The right hand side of the model.
 #' @param model_args An optional list of arguments to pass to the model
 #' function.
@@ -50,7 +54,7 @@ setMethod(
 #' @importFrom dplyr bind_rows filter group_by mutate n row_number select
 #' summarise transmute ungroup
 #' @importFrom purrr map
-#' @importFrom rlang .data !! !!! :=
+#' @importFrom rlang .data !! !!! := parse_expr
 #' @importFrom tibble rownames_to_column
 #' @importFrom stats as.formula qnorm var
 #' @examples
@@ -83,6 +87,13 @@ setMethod(
         extractor_args = "extractor.args"
       )
     )
+    if (is.string(model_fun) && noNA(model_fun)) {
+      package_name <- gsub("(.*)::(.*)", "\\1", model_fun)
+      if (package_name != model_fun) {
+        stopifnot(requireNamespace(package_name, quietly = TRUE))
+      }
+      model_fun <- eval(parse_expr(model_fun))
+    }
     assert_that(
       inherits(model_fun, "function"), inherits(extractor, "function"),
       is.character(rhs), inherits(model_args, "list"),
@@ -100,7 +111,8 @@ setMethod(
       do.call(what = dplyr::mutate) -> object@Covariate
     object@Imputation <- object@Imputation[object@Covariate[[id_column]], ]
 
-    paste("Imputed", rhs, sep = "~") |>
+    gsub("\\s*~", "", rhs) |>
+      sprintf(fmt = "Imputed ~ %s") |>
       as.formula() -> form
     m <- lapply(
       seq_len(ncol(object@Imputation)),
@@ -111,12 +123,13 @@ setMethod(
           silent = TRUE
         )
         if (inherits(model, "try-error")) {
-          NULL
-        } else {
-          do.call(extractor, c(list(model), extractor_args)) |>
-            as.data.frame() |>
-            rownames_to_column("Variable")
+          return(NULL)
         }
+        list(model) |>
+          c(extractor_args) |>
+          do.call(what = extractor) |>
+          as.data.frame() |>
+          rownames_to_column("Variable")
       }
     )
     failed <- vapply(m, is.null, logical(1))
