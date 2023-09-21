@@ -1,3 +1,7 @@
+# multimput 0.2.14
+
+* `model_impute()` handles empty data.
+
 # multimput 0.2.13
 
 * `aggregate_impute()` handles the corner case when `join` results in an empty 
