@@ -80,6 +80,14 @@ setMethod(
     object, model_fun, rhs, model_args = list(), extractor,
     extractor_args = list(), filter = list(), mutate = list(), ...
   ) {
+    if (nrow(object@Covariate) == 0) {
+      return(
+        data.frame(
+          Parameter = character(0), Estimate = numeric(0), SE = numeric(0),
+          LCL = numeric(0), UCL = numeric(0)
+        )
+      )
+    }
     check_old_names(
       ...,
       old_names = c(
