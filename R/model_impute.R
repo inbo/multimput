@@ -122,6 +122,22 @@ setMethod(
     gsub("\\s*~", "", rhs) |>
       sprintf(fmt = "Imputed ~ %s") |>
       as.formula() -> form
+    if (all(apply(object@Imputation, 1, sd) < .Machine$double.eps)) {
+      data <- cbind(Imputed = object@Imputation[, 1], object@Covariate)
+      model <- do.call(model_fun, c(form, list(data = data), model_args))
+      list(model) |>
+        c(extractor_args) |>
+        do.call(what = extractor) |>
+        as.data.frame() |>
+        rownames_to_column(var = "Parameter") |>
+        select(Parameter = 1, Estimate = 2, SE = 3) |>
+        transmute(
+          .data$Parameter, .data$Estimate, .data$SE,
+          LCL = qnorm(0.025, .data$Estimate, .data$SE),
+          UCL = qnorm(0.975, .data$Estimate, .data$SE)
+        ) -> result
+      return(result)
+    }
     m <- lapply(
       seq_len(ncol(object@Imputation)),
       function(i) {
