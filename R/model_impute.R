@@ -13,9 +13,14 @@
 #' the second the standard error of the estimate.
 #' @param extractor_args
 #' An optional list of arguments to pass to the `extractor` function.
-#' @inheritParams aggregate_impute
+#' @param filter An optional argument to alter the aggregated dataset.
+#' Will be passed to the `.dots` argument of [dplyr::filter()].
+#' You can filter on the covariates in the aggregated dataset.
+#' Besides those you can also filter on `Imputation_min` and `Imputation_max`.
+#' These variables represent the lowest and highest value of the imputations per
+#' row in the data.
 #' @param mutate An optional argument to alter the aggregated dataset.
-#' Will be passed to the `.dots` argument of[dplyr::mutate()].
+#' Will be passed to the `.dots` argument of [dplyr::mutate()].
 #' This is mainly useful for simple conversions, e.g. factors to numbers and
 #' vice versa.
 #' @param ... currently ignored.
@@ -109,8 +114,17 @@ setMethod(
       inherits(filter, "list")
     )
     id_column <- paste0("ID", sha1(Sys.time()))
+    stopifnot(
+      "Covariate cannot have `Imputation_min` or `Imputation_max`" = !any(
+        c("Imputation_min", "Imputation_max") %in% colnames(object@Covariate)
+      )
+    )
     object@Covariate <- object@Covariate |>
-      dplyr::mutate(!!id_column := row_number())
+      dplyr::mutate(
+        !!id_column := row_number(),
+        Imputation_min = apply(object@Imputation, 1, min),
+        Imputation_max = apply(object@Imputation, 1, max)
+      )
     map(filter, trans) |>
       c(.data = list(object@Covariate)) |>
       do.call(what = dplyr::filter) -> object@Covariate
@@ -122,7 +136,9 @@ setMethod(
     gsub("\\s*~", "", rhs) |>
       sprintf(fmt = "Imputed ~ %s") |>
       as.formula() -> form
-    if (all(apply(object@Imputation, 1, sd) < .Machine$double.eps)) {
+    if (
+      !any(apply(object@Imputation, 1, min) < apply(object@Imputation, 1, max))
+    ) {
       data <- cbind(Imputed = object@Imputation[, 1], object@Covariate)
       model <- do.call(model_fun, c(form, list(data = data), model_args))
       list(model) |>
