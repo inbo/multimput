@@ -111,7 +111,7 @@ setMethod(
       inherits(model_fun, "function"), inherits(extractor, "function"),
       is.character(rhs), inherits(model_args, "list"),
       inherits(extractor_args, "list"), inherits(mutate, "list"),
-      inherits(filter, "list")
+      inherits(filter, "list") | is.function(filter)
     )
     id_column <- paste0("ID", sha1(Sys.time()))
     stopifnot(
@@ -125,9 +125,13 @@ setMethod(
         Imputation_min = apply(object@Imputation, 1, min),
         Imputation_max = apply(object@Imputation, 1, max)
       )
-    map(filter, trans) |>
-      c(.data = list(object@Covariate)) |>
-      do.call(what = dplyr::filter) -> object@Covariate
+    if (is.function(filter)) {
+      object@Covariate <- filter(object@Covariate)
+    } else {
+      map(filter, trans) |>
+        c(.data = list(object@Covariate)) |>
+        do.call(what = dplyr::filter) -> object@Covariate
+    }
     map(mutate, trans) |>
       c(.data = list(object@Covariate)) |>
       do.call(what = dplyr::mutate) -> object@Covariate
