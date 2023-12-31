@@ -136,6 +136,16 @@ setMethod(
       c(.data = list(object@Covariate)) |>
       do.call(what = dplyr::mutate) -> object@Covariate
     object@Imputation <- object@Imputation[object@Covariate[[id_column]], ]
+    if (nrow(object@Covariate) == 0) {
+      data.frame(
+        Parameter = character(0), Estimate = numeric(0), SE = numeric(0),
+        LCL = numeric(0), UCL = numeric(0)
+      ) -> result
+      attr(result, "detail") <- data.frame(
+        Parameter = character(0), Estimate = character(0), SE = character(0)
+      )
+      return(result)
+    }
 
     gsub("\\s*~", "", rhs) |>
       sprintf(fmt = "Imputed ~ %s") |>
