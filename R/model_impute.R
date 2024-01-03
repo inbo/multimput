@@ -132,10 +132,6 @@ setMethod(
         c(.data = list(object@Covariate)) |>
         do.call(what = dplyr::filter) -> object@Covariate
     }
-    map(mutate, trans) |>
-      c(.data = list(object@Covariate)) |>
-      do.call(what = dplyr::mutate) -> object@Covariate
-    object@Imputation <- object@Imputation[object@Covariate[[id_column]], ]
     if (nrow(object@Covariate) == 0) {
       data.frame(
         Parameter = character(0), Estimate = numeric(0), SE = numeric(0),
@@ -146,6 +142,10 @@ setMethod(
       )
       return(result)
     }
+    map(mutate, trans) |>
+      c(.data = list(object@Covariate)) |>
+      do.call(what = dplyr::mutate) -> object@Covariate
+    object@Imputation <- object@Imputation[object@Covariate[[id_column]], ]
 
     gsub("\\s*~", "", rhs) |>
       sprintf(fmt = "Imputed ~ %s") |>
