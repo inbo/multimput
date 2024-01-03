@@ -63,8 +63,9 @@ the second the standard error of the estimate.}
 
 \item{extractor_args}{An optional list of arguments to pass to the \code{extractor} function.}
 
-\item{filter}{An optional argument to alter the aggregated dataset.
-Will be passed to the \code{.dots} argument of \code{\link[dplyr:filter]{dplyr::filter()}}.
+\item{filter}{An optional argument to filter the aggregated dataset.
+Either a function which takes the \code{Covariate} slot as an argument.
+Or a list which will be passed to the \code{.dots} argument of \code{\link[dplyr:filter]{dplyr::filter()}}.
 You can filter on the covariates in the aggregated dataset.
 Besides those you can also filter on \code{Imputation_min} and \code{Imputation_max}.
 These variables represent the lowest and highest value of the imputations per

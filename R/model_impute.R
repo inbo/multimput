@@ -13,8 +13,9 @@
 #' the second the standard error of the estimate.
 #' @param extractor_args
 #' An optional list of arguments to pass to the `extractor` function.
-#' @param filter An optional argument to alter the aggregated dataset.
-#' Will be passed to the `.dots` argument of [dplyr::filter()].
+#' @param filter An optional argument to filter the aggregated dataset.
+#' Either a function which takes the `Covariate` slot as an argument.
+#' Or a list which will be passed to the `.dots` argument of [dplyr::filter()].
 #' You can filter on the covariates in the aggregated dataset.
 #' Besides those you can also filter on `Imputation_min` and `Imputation_max`.
 #' These variables represent the lowest and highest value of the imputations per
