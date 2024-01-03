@@ -25,6 +25,9 @@
 #' This is mainly useful for simple conversions, e.g. factors to numbers and
 #' vice versa.
 #' @param ... currently ignored.
+#' @param timeout Maximum duration allowed for fitting a single imputation
+#' model in seconds.
+#' Defaults to `3600` seconds (1 hour).
 #' @name model_impute
 #' @rdname model_impute
 #' @exportMethod model_impute
@@ -34,7 +37,8 @@ setGeneric(
   name = "model_impute",
   def = function(
     object, model_fun, rhs, model_args = list(), extractor,
-    extractor_args = list(), filter = list(), mutate = list(), ...
+    extractor_args = list(), filter = list(), mutate = list(), ...,
+    timeout = 3600
 ) {
     standard.generic("model_impute") # nocov
   }
@@ -47,7 +51,8 @@ setMethod(
   signature = signature(object = "ANY"),
   definition = function(
     object, model_fun, rhs, model_args = list(), extractor,
-    extractor_args = list(), filter = list(), mutate = list(), ...
+    extractor_args = list(), filter = list(), mutate = list(), ...,
+    timeout = 3600
   ) {
     stop("model_impute() doesn't handle a '", class(object), "' object")
   }
@@ -84,7 +89,8 @@ setMethod(
   signature = signature(object = "aggregatedImputed"),
   definition = function(
     object, model_fun, rhs, model_args = list(), extractor,
-    extractor_args = list(), filter = list(), mutate = list(), ...
+    extractor_args = list(), filter = list(), mutate = list(), ...,
+    timeout = 3600
   ) {
     if (nrow(object@Covariate) == 0) {
       return(
@@ -94,6 +100,7 @@ setMethod(
         )
       )
     }
+    assert_that(is.number(timeout), timeout > 0)
     check_old_names(
       ...,
       old_names = c(
@@ -155,7 +162,12 @@ setMethod(
       !any(apply(object@Imputation, 1, min) < apply(object@Imputation, 1, max))
     ) {
       data <- cbind(Imputed = object@Imputation[, 1], object@Covariate)
-      model <- do.call(model_fun, c(form, list(data = data), model_args))
+      model <- try({
+        setTimeLimit(cpu = timeout, elapsed = timeout)
+        do.call(model_fun, c(form, list(data = data), model_args))
+      },
+        silent = TRUE
+      )
       list(model) |>
         c(extractor_args) |>
         do.call(what = extractor) |>
@@ -173,8 +185,10 @@ setMethod(
       seq_len(ncol(object@Imputation)),
       function(i) {
         data <- cbind(Imputed = object@Imputation[, i], object@Covariate)
-        model <- try(
-          do.call(model_fun, c(form, list(data = data), model_args)),
+        model <- try({
+          setTimeLimit(cpu = timeout, elapsed = timeout)
+          do.call(model_fun, c(form, list(data = data), model_args))
+        },
           silent = TRUE
         )
         if (inherits(model, "try-error")) {

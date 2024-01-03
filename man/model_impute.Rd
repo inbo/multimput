@@ -16,7 +16,8 @@ model_impute(
   extractor_args = list(),
   filter = list(),
   mutate = list(),
-  ...
+  ...,
+  timeout = 3600
 )
 
 \S4method{model_impute}{ANY}(
@@ -28,7 +29,8 @@ model_impute(
   extractor_args = list(),
   filter = list(),
   mutate = list(),
-  ...
+  ...,
+  timeout = 3600
 )
 
 \S4method{model_impute}{aggregatedImputed}(
@@ -40,7 +42,8 @@ model_impute(
   extractor_args = list(),
   filter = list(),
   mutate = list(),
-  ...
+  ...,
+  timeout = 3600
 )
 }
 \arguments{
@@ -77,6 +80,10 @@ This is mainly useful for simple conversions, e.g. factors to numbers and
 vice versa.}
 
 \item{...}{currently ignored.}
+
+\item{timeout}{Maximum duration allowed for fitting a single imputation
+model in seconds.
+Defaults to \code{3600} seconds (1 hour).}
 }
 \description{
 Model an imputed dataset

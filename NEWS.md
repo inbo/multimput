@@ -5,7 +5,8 @@
   It reports the mean and standard errors based on the single model as-is.
 * `model_impute()` handles empty data.
 * `model_impute()` can filter the covariates with a user supplied function.
-* Bugfix in generating zero-inflated negative binomial data
+* `model_impute()` gains a `timeout` argument.
+* Bugfix in generating zero-inflated negative binomial data.
 
 # multimput 0.2.13
 
