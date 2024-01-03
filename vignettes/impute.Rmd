@@ -138,10 +138,13 @@ imp_glmm <- glmer(
 
 ```{r inla, echo = FALSE, results='asis'}
 inla_available <- requireNamespace("INLA")
-cat("**_This vignette requires the INLA package.
+cat(
+  "**_This vignette requires the INLA package.
 It was build on a system without the INLA package.
 Please have look at the vignette on the
-[website](https://inbo.github.io/multimput/articles/impute.html)._**")
+[website](https://inbo.github.io/multimput/articles/impute.html)._**
+"[!inla_available]
+)
 ```
 
 ```{r imputation_model_inla, eval = inla_available}
