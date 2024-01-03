@@ -106,7 +106,8 @@ test_that("model_impute handles empty datasets", {
   )
 
   model_aggr <- model_impute(
-    aggr, model_fun = "stats::lm", rhs = "0 + factor(Year)", extractor = extractor,
+    aggr, model_fun = "stats::lm", rhs = "0 + factor(Year)",
+    extractor = extractor,
     filter = function(x) {
       return(x[0, ])
     }
