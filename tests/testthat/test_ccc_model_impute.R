@@ -85,3 +85,35 @@ test_that("model_impute checks the sanity of the arguments", {
     "model failed on all imputations"
   )
 })
+
+test_that("model_impute handles empty datasets", {
+  model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
+  imputed <- impute(data = dataset, model = model)
+  aggr <- aggregate_impute(imputed, grouping = c("Year", "Period"), fun = sum)
+  extractor <- function(model) {
+    summary(model)$coefficients[, c("Estimate", "Std. Error")]
+  }
+
+  empty <- aggr
+  empty@Covariate <- empty@Covariate[0, ]
+  model_aggr <- model_impute(
+    empty, model_fun = lm, rhs = "0 + factor(Year)", extractor = extractor
+  )
+  expect_s3_class(model_aggr, "data.frame")
+  expect_equal(nrow(model_aggr), 0)
+  expect_identical(
+    colnames(model_aggr), c("Parameter", "Estimate", "SE", "LCL", "UCL")
+  )
+
+  model_aggr <- model_impute(
+    aggr, model_fun = "stats::lm", rhs = "0 + factor(Year)", extractor = extractor,
+    filter = function(x) {
+      return(x[0, ])
+    }
+  )
+  expect_s3_class(model_aggr, "data.frame")
+  expect_equal(nrow(model_aggr), 0)
+  expect_identical(
+    colnames(model_aggr), c("Parameter", "Estimate", "SE", "LCL", "UCL")
+  )
+})
