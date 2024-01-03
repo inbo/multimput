@@ -58,7 +58,6 @@ Collate:
     'aggregate_impute.R'
     'check_old_names.R'
     'datasets.R'
-    'deprecated.R'
     'generate_data.R'
     'hurdle_impute.R'
     'import_s3_classes.R'
