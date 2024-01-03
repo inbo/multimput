@@ -1,6 +1,11 @@
 # multimput 0.2.14
 
+* In case all imputed values are identical, `model_impute()` only runs a single
+  model on one imputation.
+  It reports the mean and standard errors based on the single model as-is.
 * `model_impute()` handles empty data.
+* `model_impute()` can filter the covariates with a user supplied function.
+* Bugfix in generating zero-inflated negative binomial data
 
 # multimput 0.2.13
 
