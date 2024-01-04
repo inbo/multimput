@@ -17,7 +17,7 @@ model_impute(
   filter = list(),
   mutate = list(),
   ...,
-  timeout = 3600
+  timeout = 600
 )
 
 \S4method{model_impute}{ANY}(
@@ -30,7 +30,7 @@ model_impute(
   filter = list(),
   mutate = list(),
   ...,
-  timeout = 3600
+  timeout = 600
 )
 
 \S4method{model_impute}{aggregatedImputed}(
@@ -43,7 +43,7 @@ model_impute(
   filter = list(),
   mutate = list(),
   ...,
-  timeout = 3600
+  timeout = 600
 )
 }
 \arguments{
@@ -83,7 +83,7 @@ vice versa.}
 
 \item{timeout}{Maximum duration allowed for fitting a single imputation
 model in seconds.
-Defaults to \code{3600} seconds (1 hour).}
+Defaults to \code{600} seconds (10 minutes).}
 }
 \description{
 Model an imputed dataset

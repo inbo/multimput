@@ -118,3 +118,30 @@ test_that("model_impute handles empty datasets", {
     colnames(model_aggr), c("Parameter", "Estimate", "SE", "LCL", "UCL")
   )
 })
+
+test_that("model_impute handles timeout", {
+  model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
+  imputed <- impute(data = dataset, model = model, n_imp = 2)
+  aggr <- aggregate_impute(imputed, grouping = c("Year", "Period"), fun = sum)
+  extractor <- function(model) {
+    model$summary.fixed[, c("mean", "sd")]
+  }
+  expect_error(
+    model_impute(
+      aggr, model_fun = "INLA::inla", rhs = "0 + factor(Year)", timeout = 1,
+      extractor = extractor, model_args = list(safe = FALSE, silent = TRUE)
+    ),
+    "time limit"
+  )
+
+  dataset$Count[sample(nrow(dataset), 10)] <- NA
+  imputed <- impute(data = dataset, model = model, n_imp = 2)
+  aggr <- aggregate_impute(imputed, grouping = c("Year", "Period"), fun = sum)
+  expect_error(
+    model_impute(
+      aggr, model_fun = "INLA::inla", rhs = "0 + factor(Year)",  timeout = 1,
+      extractor = extractor, model_args = list(safe = FALSE, silent = TRUE)
+    ),
+    "model failed on all imputations"
+  )
+})

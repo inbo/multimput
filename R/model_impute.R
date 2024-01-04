@@ -27,7 +27,7 @@
 #' @param ... currently ignored.
 #' @param timeout Maximum duration allowed for fitting a single imputation
 #' model in seconds.
-#' Defaults to `3600` seconds (1 hour).
+#' Defaults to `600` seconds (10 minutes).
 #' @name model_impute
 #' @rdname model_impute
 #' @exportMethod model_impute
@@ -38,7 +38,7 @@ setGeneric(
   def = function(
     object, model_fun, rhs, model_args = list(), extractor,
     extractor_args = list(), filter = list(), mutate = list(), ...,
-    timeout = 3600
+    timeout = 600
 ) {
     standard.generic("model_impute") # nocov
   }
@@ -52,7 +52,7 @@ setMethod(
   definition = function(
     object, model_fun, rhs, model_args = list(), extractor,
     extractor_args = list(), filter = list(), mutate = list(), ...,
-    timeout = 3600
+    timeout = 600
   ) {
     stop("model_impute() doesn't handle a '", class(object), "' object")
   }
@@ -90,7 +90,7 @@ setMethod(
   definition = function(
     object, model_fun, rhs, model_args = list(), extractor,
     extractor_args = list(), filter = list(), mutate = list(), ...,
-    timeout = 3600
+    timeout = 600
   ) {
     if (nrow(object@Covariate) == 0) {
       return(
@@ -162,12 +162,9 @@ setMethod(
       !any(apply(object@Imputation, 1, min) < apply(object@Imputation, 1, max))
     ) {
       data <- cbind(Imputed = object@Imputation[, 1], object@Covariate)
-      model <- try({
-        setTimeLimit(cpu = timeout, elapsed = timeout)
-        do.call(model_fun, c(form, list(data = data), model_args))
-      },
-        silent = TRUE
-      )
+      setTimeLimit(cpu = timeout, elapsed = timeout)
+      on.exit(setTimeLimit(cpu = Inf, elapsed = Inf))
+      model <- do.call(model_fun, c(form, list(data = data), model_args))
       list(model) |>
         c(extractor_args) |>
         do.call(what = extractor) |>
@@ -185,12 +182,12 @@ setMethod(
       seq_len(ncol(object@Imputation)),
       function(i) {
         data <- cbind(Imputed = object@Imputation[, i], object@Covariate)
-        model <- try({
-          setTimeLimit(cpu = timeout, elapsed = timeout)
-          do.call(model_fun, c(form, list(data = data), model_args))
-        },
+        setTimeLimit(cpu = timeout, elapsed = timeout)
+        model <- try(
+          do.call(model_fun, c(form, list(data = data), model_args)),
           silent = TRUE
         )
+        setTimeLimit(cpu = Inf, elapsed = Inf)
         if (inherits(model, "try-error")) {
           return(NULL)
         }
