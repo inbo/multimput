@@ -39,24 +39,26 @@ setMethod(
     )
 
     dots <- list(...)
+
+    covariates <- get_covariates(model)
     if (missing(extra)) {
-      extra <- model$.args$data[0, ]
+      extra <- covariates[0, ]
     }
 
     response <- as.character(model$.args$formula)[2]
-    missing_obs <- which(is.na(model$.args$data[, response]))
+    missing_obs <- which(is.na(model$.args$data[[response]]))
     if (length(missing_obs) == 0) {
       return(
         new(
-          "rawImputed", Data = model$.args$data, Response = response,
+          "rawImputed", Data = covariates, Response = response,
           Imputation = matrix(integer(0), ncol = n_imp),
           Minimum = coalesce(dots$minimum, ""), Extra = extra
         )
       )
     }
 
-    missing_obs <- sprintf(paste0("Predictor:%i"), missing_obs)
-
+    ifelse(is.null(model$model.spde2.blc), "Predictor:%i", "APredictor:%i") |>
+      sprintf(missing_obs) -> missing_obs
     assert_that(requireNamespace("INLA", quietly = TRUE))
     assert_that(requireNamespace("sn", quietly = TRUE))
     samples <- INLA::inla.posterior.sample(
@@ -142,9 +144,8 @@ a reproducible example at https://github.com/inbo/multimput/issues"
     )
 
     new(
-      "rawImputed", Data = model$.args$data, Response = response,
-      Imputation = as.matrix(imputation), Minimum = coalesce(dots$minimum, ""),
-      Extra = extra
+      "rawImputed", Data = covariates, Response = response, Extra = extra,
+      Imputation = as.matrix(imputation), Minimum = coalesce(dots$minimum, "")
     )
   }
 )
@@ -229,4 +230,24 @@ rzip0 <- function(n, lambda, prob, tol = 2e-10) {
 #' @importFrom stats rbinom rpois
 rzip1 <- function(n, lambda, prob) {
   rbinom(n = n, size = 1, prob = 1 - prob) * rpois(n, lambda = lambda)
+}
+
+get_covariates <- function(model) {
+  if (is.null(model$model.spde2.blc)) {
+    return(as.data.frame(model$.args$data))
+  }
+  covariates <- names(model$.args$data)
+  covariates <- covariates[
+    !covariates %in% c("spde", as.character(model$.args$formula)[2])
+  ]
+  names(model$summary.spde2.blc) |>
+    sprintf(fmt = "^%s") |>
+    grep(covariates, invert = TRUE) -> relevant
+  model$.args$data[covariates[relevant]] |>
+    as.data.frame() -> covariates
+  covariates <- covariates[
+    is.na(model$.args$data[[names(model$summary.spde2.blc)]]),
+  ]
+  model$.args$data[as.character(model$.args$formula)[2]] |>
+    cbind(covariates)
 }
