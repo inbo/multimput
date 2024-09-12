@@ -120,6 +120,7 @@ test_that("model_impute handles empty datasets", {
 })
 
 test_that("model_impute handles timeout", {
+  dataset <- generate_data(n_year = 1000, n_site = 10, n_run = 1)
   model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
   imputed <- impute(data = dataset, model = model, n_imp = 2)
   aggr <- aggregate_impute(imputed, grouping = c("Year", "Period"), fun = sum)
