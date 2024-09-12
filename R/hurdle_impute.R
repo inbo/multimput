@@ -81,7 +81,7 @@ hurdle_impute <- function(presence, count) {
       ncol = ncol(count_resp)
     )
     ren_count <- count@Extra[, extra_count[extra_count %in% extra_presence]]
-    colnames(ren_count) <- sprintf("count_", colnames(ren_count))
+    colnames(ren_count) <- sprintf("count_%s", colnames(ren_count))
     cv_extra <- cbind(
       count@Extra[, common],
       count@Extra[, extra_count[!extra_count %in% extra_presence]], ren_count
