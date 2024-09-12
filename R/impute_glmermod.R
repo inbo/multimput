@@ -29,14 +29,14 @@ Convert the factor in the dataset and refit the model."
     missing_obs <- which(is.na(data[, response]))
     call <- as.character(model@call)
     mm <- call[grepl("~", call)] |>
-      gsub(pattern = "^.*~", replacement = "~") |>
-      gsub(pattern = "\\+ \\(.*\\|.*\\)", replacement = "") |>
+      gsub(pattern = "^.*~", replacement = "~", x = _) |>
+      gsub(pattern = "\\+ \\(.*\\|.*\\)", replacement = "", x = _) |>
       as.formula() |>
       model.matrix(data = data[missing_obs, ])
     fixed <- rmvnorm(
       n_imp, mean = lme4::fixef(model), sigma = as.matrix(vcov(model))
     ) |>
-      tcrossprod(x = mm)
+      tcrossprod(x = mm, y = _)
     rf <- lme4::ranef(model, condVar = TRUE)
     assert_that(
       max(map_int(rf, ncol)) == 1,
