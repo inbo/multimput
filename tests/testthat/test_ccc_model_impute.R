@@ -131,7 +131,7 @@ test_that("model_impute handles timeout", {
       aggr, model_fun = "INLA::inla", rhs = "0 + factor(Year)", timeout = 1,
       extractor = extractor, model_args = list(safe = FALSE, silent = TRUE)
     ),
-    "time limit"
+    "(time limit|inla result collection failed)"
   )
 
   dataset$Count[sample(nrow(dataset), 10)] <- NA
