@@ -109,7 +109,7 @@ Variables in dataset
 `Observed`
   ~ The `Count` variable with missing data
 
-```{r plot_data}
+```{r plot_data, fig.cap = "The dataset with missing observations."}
 library(ggplot2)
 ggplot(dataset, aes(x = Year, y = Mu, group = Site)) +
   geom_line() +
@@ -292,7 +292,7 @@ Note that we pass extra arguments to the `extractor` function through the `extra
 This has to be a list.
 We recommend to use a named list to avoid confusion.
 
-```{r model_aggregate_lm3}
+```{r model_aggregate_lm3, fig.cap = "The estimated trend for the years."}
 library(mgcv)
 new_set <- expand.grid(
   Year = pretty(dataset$Year, 20),
@@ -397,7 +397,7 @@ parameters <- rbind(
 # combine all results and add the Year
 parameters <- cbind(covar, model_glmm, Model = "glmm")
 ```
-```{r model_glmnb_plot}
+```{r model_glmnb_plot, fig.cap = "The estimated relative index for the years."}
 # convert estimate and confidence interval to the original scale
 parameters[, c("Estimate", "LCL", "UCL")] <- exp(
   parameters[, c("Estimate", "LCL", "UCL")]
@@ -415,7 +415,7 @@ The example below does something similar.
 Two things are different: 1) instead of `glm.nb` we use `inla` to model the imputed totals.
 2) we model the seasonal pattern as a random intercept instead of a fixed effect.
 
-```{r model_inla, eval = inla_available}
+```{r model_inla, eval = inla_available, fig.cap = "The estimated relative index for the years."}
 extractor_inla <- function(model) {
   fe <- model$summary.fixed[, c("mean", "sd")]
   log_index <- fe[grepl("fYear", rownames(fe)), ]
