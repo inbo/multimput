@@ -25,6 +25,7 @@ Imports:
     assertthat,
     digest,
     dplyr,
+    INLA (>= 22.01.19),
     lme4,
     methods,
     mvtnorm,
@@ -35,7 +36,6 @@ Imports:
     tidyselect
 Suggests:
     ggplot2,
-    INLA (>= 22.01.19),
     knitr,
     MASS,
     mgcv,

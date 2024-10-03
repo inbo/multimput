@@ -1,6 +1,7 @@
 #' @rdname impute
 #' @importFrom assertthat assert_that is.count
 #' @importFrom dplyr coalesce
+#' @importFrom INLA inla.hyperpar.sample inla.posterior.sample
 #' @importFrom methods new setMethod
 #' @importFrom purrr map map_dfr map2_dfr pmap_dfr
 #' @importFrom stats plogis qpois rgamma rnorm rpois setNames
@@ -59,16 +60,15 @@ setMethod(
 
     ifelse(is.null(model$model.spde2.blc), "Predictor:%i", "APredictor:%i") |>
       sprintf(missing_obs) -> missing_obs
-    assert_that(requireNamespace("INLA", quietly = TRUE))
     assert_that(requireNamespace("sn", quietly = TRUE))
-    samples <- INLA::inla.posterior.sample(
+    samples <- inla.posterior.sample(
       n = n_imp, result = model, seed = seed, num.threads = num_threads,
       parallel.configs = parallel_configs
     )
     map(samples, "latent") |>
       map(`[`, missing_obs, 1) |>
       setNames(paste0("sim_", seq_len(n_imp))) -> latent
-    INLA::inla.hyperpar.sample(n = n_imp, result = model) |>
+    inla.hyperpar.sample(n = n_imp, result = model) |>
       as.data.frame() -> hyperpar
     if (
       model$.args$family == "zeroinflatednbinomial0" &&
