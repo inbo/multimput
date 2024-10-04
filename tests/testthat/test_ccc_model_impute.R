@@ -85,3 +85,64 @@ test_that("model_impute checks the sanity of the arguments", {
     "model failed on all imputations"
   )
 })
+
+test_that("model_impute handles empty datasets", {
+  model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
+  imputed <- impute(data = dataset, model = model)
+  aggr <- aggregate_impute(imputed, grouping = c("Year", "Period"), fun = sum)
+  extractor <- function(model) {
+    summary(model)$coefficients[, c("Estimate", "Std. Error")]
+  }
+
+  empty <- aggr
+  empty@Covariate <- empty@Covariate[0, ]
+  model_aggr <- model_impute(
+    empty, model_fun = lm, rhs = "0 + factor(Year)", extractor = extractor
+  )
+  expect_s3_class(model_aggr, "data.frame")
+  expect_equal(nrow(model_aggr), 0)
+  expect_identical(
+    colnames(model_aggr), c("Parameter", "Estimate", "SE", "LCL", "UCL")
+  )
+
+  model_aggr <- model_impute(
+    aggr, model_fun = "stats::lm", rhs = "0 + factor(Year)",
+    extractor = extractor,
+    filter = function(x) {
+      return(x[0, ])
+    }
+  )
+  expect_s3_class(model_aggr, "data.frame")
+  expect_equal(nrow(model_aggr), 0)
+  expect_identical(
+    colnames(model_aggr), c("Parameter", "Estimate", "SE", "LCL", "UCL")
+  )
+})
+
+test_that("model_impute handles timeout", {
+  dataset <- generate_data(n_year = 1000, n_site = 10, n_run = 1)
+  model <- lm(Count ~ Year + factor(Period) + factor(Site), data = dataset)
+  imputed <- impute(data = dataset, model = model, n_imp = 2)
+  aggr <- aggregate_impute(imputed, grouping = c("Year", "Period"), fun = sum)
+  extractor <- function(model) {
+    model$summary.fixed[, c("mean", "sd")]
+  }
+  expect_error(
+    model_impute(
+      aggr, model_fun = "INLA::inla", rhs = "0 + factor(Year)", timeout = 1,
+      extractor = extractor, model_args = list(safe = FALSE, silent = TRUE)
+    ),
+    "(time limit|inla result collection failed)"
+  )
+
+  dataset$Count[sample(nrow(dataset), 10)] <- NA
+  imputed <- impute(data = dataset, model = model, n_imp = 2)
+  aggr <- aggregate_impute(imputed, grouping = c("Year", "Period"), fun = sum)
+  expect_error(
+    model_impute(
+      aggr, model_fun = "INLA::inla", rhs = "0 + factor(Year)",  timeout = 1,
+      extractor = extractor, model_args = list(safe = FALSE, silent = TRUE)
+    ),
+    "model failed on all imputations"
+  )
+})

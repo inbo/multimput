@@ -1,7 +1,7 @@
 Type: Package
 Package: multimput
 Title: Using Multiple Imputation to Address Missing Data
-Version: 0.2.13
+Version: 0.2.14
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8804-4216", affiliation = "Research Institute for Nature and Forest (INBO)")),
@@ -25,6 +25,7 @@ Imports:
     assertthat,
     digest,
     dplyr,
+    INLA (>= 22.01.19),
     lme4,
     methods,
     mvtnorm,
@@ -35,7 +36,6 @@ Imports:
     tidyselect
 Suggests:
     ggplot2,
-    INLA (>= 22.01.19),
     knitr,
     MASS,
     mgcv,
@@ -51,14 +51,13 @@ Encoding: UTF-8
 Language: en-GB
 LazyData: TRUE
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Collate: 
     'raw_imputed_class.R'
     'aggregated_imputed_class.R'
     'aggregate_impute.R'
     'check_old_names.R'
     'datasets.R'
-    'deprecated.R'
     'generate_data.R'
     'hurdle_impute.R'
     'import_s3_classes.R'

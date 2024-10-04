@@ -13,12 +13,21 @@
 #' the second the standard error of the estimate.
 #' @param extractor_args
 #' An optional list of arguments to pass to the `extractor` function.
-#' @inheritParams aggregate_impute
+#' @param filter An optional argument to filter the aggregated dataset.
+#' Either a function which takes the `Covariate` slot as an argument.
+#' Or a list which will be passed to the `.dots` argument of [dplyr::filter()].
+#' You can filter on the covariates in the aggregated dataset.
+#' Besides those you can also filter on `Imputation_min` and `Imputation_max`.
+#' These variables represent the lowest and highest value of the imputations per
+#' row in the data.
 #' @param mutate An optional argument to alter the aggregated dataset.
-#' Will be passed to the `.dots` argument of[dplyr::mutate()].
+#' Will be passed to the `.dots` argument of [dplyr::mutate()].
 #' This is mainly useful for simple conversions, e.g. factors to numbers and
 #' vice versa.
 #' @param ... currently ignored.
+#' @param timeout Maximum duration allowed for fitting a single imputation
+#' model in seconds.
+#' Defaults to `600` seconds (10 minutes).
 #' @name model_impute
 #' @rdname model_impute
 #' @exportMethod model_impute
@@ -28,7 +37,8 @@ setGeneric(
   name = "model_impute",
   def = function(
     object, model_fun, rhs, model_args = list(), extractor,
-    extractor_args = list(), filter = list(), mutate = list(), ...
+    extractor_args = list(), filter = list(), mutate = list(), ...,
+    timeout = 600
 ) {
     standard.generic("model_impute") # nocov
   }
@@ -41,7 +51,8 @@ setMethod(
   signature = signature(object = "ANY"),
   definition = function(
     object, model_fun, rhs, model_args = list(), extractor,
-    extractor_args = list(), filter = list(), mutate = list(), ...
+    extractor_args = list(), filter = list(), mutate = list(), ...,
+    timeout = 600
   ) {
     stop("model_impute() doesn't handle a '", class(object), "' object")
   }
@@ -78,8 +89,18 @@ setMethod(
   signature = signature(object = "aggregatedImputed"),
   definition = function(
     object, model_fun, rhs, model_args = list(), extractor,
-    extractor_args = list(), filter = list(), mutate = list(), ...
+    extractor_args = list(), filter = list(), mutate = list(), ...,
+    timeout = 600
   ) {
+    if (nrow(object@Covariate) == 0) {
+      return(
+        data.frame(
+          Parameter = character(0), Estimate = numeric(0), SE = numeric(0),
+          LCL = numeric(0), UCL = numeric(0)
+        )
+      )
+    }
+    assert_that(is.number(timeout), timeout > 0)
     check_old_names(
       ...,
       old_names = c(
@@ -98,14 +119,37 @@ setMethod(
       inherits(model_fun, "function"), inherits(extractor, "function"),
       is.character(rhs), inherits(model_args, "list"),
       inherits(extractor_args, "list"), inherits(mutate, "list"),
-      inherits(filter, "list")
+      inherits(filter, "list") | is.function(filter)
     )
     id_column <- paste0("ID", sha1(Sys.time()))
+    stopifnot(
+      "Covariate cannot have `Imputation_min` or `Imputation_max`" = !any(
+        c("Imputation_min", "Imputation_max") %in% colnames(object@Covariate)
+      )
+    )
     object@Covariate <- object@Covariate |>
-      dplyr::mutate(!!id_column := row_number())
-    map(filter, trans) |>
-      c(.data = list(object@Covariate)) |>
-      do.call(what = dplyr::filter) -> object@Covariate
+      dplyr::mutate(
+        !!id_column := row_number(),
+        Imputation_min = apply(object@Imputation, 1, min),
+        Imputation_max = apply(object@Imputation, 1, max)
+      )
+    if (is.function(filter)) {
+      object@Covariate <- filter(object@Covariate)
+    } else {
+      map(filter, trans) |>
+        c(.data = list(object@Covariate)) |>
+        do.call(what = dplyr::filter) -> object@Covariate
+    }
+    if (nrow(object@Covariate) == 0) {
+      data.frame(
+        Parameter = character(0), Estimate = numeric(0), SE = numeric(0),
+        LCL = numeric(0), UCL = numeric(0)
+      ) -> result
+      attr(result, "detail") <- data.frame(
+        Parameter = character(0), Estimate = character(0), SE = character(0)
+      )
+      return(result)
+    }
     map(mutate, trans) |>
       c(.data = list(object@Covariate)) |>
       do.call(what = dplyr::mutate) -> object@Covariate
@@ -114,14 +158,36 @@ setMethod(
     gsub("\\s*~", "", rhs) |>
       sprintf(fmt = "Imputed ~ %s") |>
       as.formula() -> form
+    if (
+      !any(apply(object@Imputation, 1, min) < apply(object@Imputation, 1, max))
+    ) {
+      data <- cbind(Imputed = object@Imputation[, 1], object@Covariate)
+      setTimeLimit(cpu = timeout, elapsed = timeout)
+      on.exit(setTimeLimit(cpu = Inf, elapsed = Inf))
+      model <- do.call(model_fun, c(form, list(data = data), model_args))
+      list(model) |>
+        c(extractor_args) |>
+        do.call(what = extractor) |>
+        as.data.frame() |>
+        rownames_to_column(var = "Parameter") |>
+        select(Parameter = 1, Estimate = 2, SE = 3) |>
+        transmute(
+          .data$Parameter, .data$Estimate, .data$SE,
+          LCL = qnorm(0.025, .data$Estimate, .data$SE),
+          UCL = qnorm(0.975, .data$Estimate, .data$SE)
+        ) -> result
+      return(result)
+    }
     m <- lapply(
       seq_len(ncol(object@Imputation)),
       function(i) {
         data <- cbind(Imputed = object@Imputation[, i], object@Covariate)
+        setTimeLimit(cpu = timeout, elapsed = timeout)
         model <- try(
           do.call(model_fun, c(form, list(data = data), model_args)),
           silent = TRUE
         )
+        setTimeLimit(cpu = Inf, elapsed = Inf)
         if (inherits(model, "try-error")) {
           return(NULL)
         }

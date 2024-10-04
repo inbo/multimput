@@ -25,5 +25,6 @@ CONTRIBUTING.md
 ^docs$
 ^man-roxygen$
 ^man\-roxygen$
+^organisation.yml$
 ^pkgdown$
 ^wercker\.yml$

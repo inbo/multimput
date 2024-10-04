@@ -32,4 +32,4 @@ identifiers:
   value: 10.5281/zenodo.598331
 - type: url
   value: https://inbo.github.io/multimput/
-version: 0.2.13
+version: 0.2.14

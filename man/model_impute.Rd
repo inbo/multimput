@@ -16,7 +16,8 @@ model_impute(
   extractor_args = list(),
   filter = list(),
   mutate = list(),
-  ...
+  ...,
+  timeout = 600
 )
 
 \S4method{model_impute}{ANY}(
@@ -28,7 +29,8 @@ model_impute(
   extractor_args = list(),
   filter = list(),
   mutate = list(),
-  ...
+  ...,
+  timeout = 600
 )
 
 \S4method{model_impute}{aggregatedImputed}(
@@ -40,7 +42,8 @@ model_impute(
   extractor_args = list(),
   filter = list(),
   mutate = list(),
-  ...
+  ...,
+  timeout = 600
 )
 }
 \arguments{
@@ -63,15 +66,24 @@ the second the standard error of the estimate.}
 
 \item{extractor_args}{An optional list of arguments to pass to the \code{extractor} function.}
 
-\item{filter}{An optional argument to filter the raw dataset before aggregation.
-Will be passed to \code{\link[dplyr:filter]{dplyr::filter()}}.}
+\item{filter}{An optional argument to filter the aggregated dataset.
+Either a function which takes the \code{Covariate} slot as an argument.
+Or a list which will be passed to the \code{.dots} argument of \code{\link[dplyr:filter]{dplyr::filter()}}.
+You can filter on the covariates in the aggregated dataset.
+Besides those you can also filter on \code{Imputation_min} and \code{Imputation_max}.
+These variables represent the lowest and highest value of the imputations per
+row in the data.}
 
 \item{mutate}{An optional argument to alter the aggregated dataset.
-Will be passed to the \code{.dots} argument of\code{\link[dplyr:mutate]{dplyr::mutate()}}.
+Will be passed to the \code{.dots} argument of \code{\link[dplyr:mutate]{dplyr::mutate()}}.
 This is mainly useful for simple conversions, e.g. factors to numbers and
 vice versa.}
 
 \item{...}{currently ignored.}
+
+\item{timeout}{Maximum duration allowed for fitting a single imputation
+model in seconds.
+Defaults to \code{600} seconds (10 minutes).}
 }
 \description{
 Model an imputed dataset

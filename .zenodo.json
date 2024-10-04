@@ -1,9 +1,9 @@
 {
   "title": "multimput: Using Multiple Imputation to Address Missing Data",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "license": "GPL-3.0",
   "upload_type": "software",
-  "description": "<p>Accompanying package for the paper: Working with population totals in\nthe presence of missing data comparing imputation methods in terms of\nbias and precision. Published in 2017 in the Journal of Ornithology\nvolume 158 page 603–615 (doi:10.1007/s10336-016-1404-9).<\/p>",
+  "description": "<p>Accompanying package for the paper: Working with population totals in the presence of missing data comparing imputation methods in terms of bias and precision. Published in 2017 in the Journal of Ornithology volume 158 page 603–615 (doi:10.1007/s10336-016-1404-9).<\/p>",
   "keywords": [
     "missing data, multiple imputation, Rubin"
   ],
@@ -14,11 +14,11 @@
       "name": "Onkelinx, Thierry",
       "affiliation": "Research Institute for Nature and Forest (INBO)",
       "orcid": "0000-0001-8804-4216",
-      "type": "ContactPerson"
+      "type": "contactperson"
     },
     {
       "name": "Research Institute for Nature and Forest (INBO)",
-      "type": "RightsHolder"
+      "type": "rightsholder"
     }
   ],
   "creators": [
