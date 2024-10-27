@@ -54,23 +54,31 @@ hurdle_impute <- function(presence, count) {
 
   # prepare covariates
   cv_count <- count@Data[
-    , !colnames(count@Data) %in% c(count@Response, count@Minimum)
+    , !colnames(count@Data) %in% c(count@Response, count@Minimum), drop = FALSE
   ]
   cv_presence <- presence@Data[
-    , !colnames(presence@Data) %in% c(presence@Response, presence@Minimum)
+    , !colnames(presence@Data) %in% c(presence@Response, presence@Minimum),
+    drop = FALSE
   ]
   common <- colnames(cv_count)[colnames(cv_count) %in% colnames(cv_presence)]
   common <- common[apply(cv_count[, common] == cv_presence[, common], 2, all)]
   extra_count <- colnames(cv_count)[!colnames(cv_count) %in% common]
   extra_presence <- colnames(cv_presence)[!colnames(cv_presence) %in% common]
-  ren_count <- cv_count[, extra_count[extra_count %in% extra_presence]]
+  ren_count <- cv_count[
+    , extra_count[extra_count %in% extra_presence], drop = FALSE
+  ]
   colnames(ren_count) <- sprintf("count_%s", colnames(ren_count))
-  ren_presence <- cv_presence[, extra_presence[extra_presence %in% extra_count]]
+  ren_presence <- cv_presence[
+    , extra_presence[extra_presence %in% extra_count], drop = FALSE
+  ]
   colnames(ren_presence) <- sprintf("presence_%s", colnames(ren_presence))
   cv <- cbind(
-    cv_count[, common],
-    cv_count[, extra_count[!extra_count %in% extra_presence]], ren_count,
-    cv_presence[, extra_presence[!extra_presence %in% extra_count]],
+    cv_count[, common, drop = FALSE],
+    cv_count[, extra_count[!extra_count %in% extra_presence], drop = FALSE],
+    ren_count,
+    cv_presence[
+      , extra_presence[!extra_presence %in% extra_count], drop = FALSE
+    ],
     ren_presence
   )
   if (nrow(count@Extra) == 0) {
@@ -80,11 +88,16 @@ hurdle_impute <- function(presence, count) {
       count@Extra[[count@Response]], nrow = nrow(count@Extra),
       ncol = ncol(count_resp)
     )
-    ren_count <- count@Extra[, extra_count[extra_count %in% extra_presence]]
+    ren_count <- count@Extra[
+      , extra_count[extra_count %in% extra_presence], drop = FALSE
+    ]
     colnames(ren_count) <- sprintf("count_%s", colnames(ren_count))
     cv_extra <- cbind(
-      count@Extra[, common],
-      count@Extra[, extra_count[!extra_count %in% extra_presence]], ren_count
+      count@Extra[, common, drop = FALSE],
+      count@Extra[
+        , extra_count[!extra_count %in% extra_presence], drop = FALSE
+      ],
+      ren_count
     )
     c(
       extra_presence[!extra_presence %in% extra_count],
