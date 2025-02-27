@@ -108,10 +108,8 @@ setMethod(
           prob = hyperpar[[grep("zero-probability", colnames(hyperpar))]],
           size = hyperpar[[grep("size for nbinomial", colnames(hyperpar))]]
         ),
-        .f = function(n, eta, prob, size) {
-          rzinb0(
-            n = length(missing_obs), mu = exp(eta), prob = prob, size = size
-          )
+        .f = function(eta, prob, size, n = length(missing_obs)) {
+          rzinb0(mu = exp(pmin(eta, 20)), prob = prob, size = size, n = n)
         }
       ),
       zeroinflatednbinomial1 = pmap_dfr(
@@ -120,10 +118,8 @@ setMethod(
           prob = hyperpar[[grep("zero-probability", colnames(hyperpar))]],
           size = hyperpar[[grep("size for nbinomial", colnames(hyperpar))]]
         ),
-        .f = function(n, eta, prob, size) {
-          rzinb1(
-            n = length(missing_obs), mu = exp(eta), prob = prob, size = size
-          )
+        .f = function(eta, prob, size, n = length(missing_obs)) {
+          rzinb1(mu = exp(eta), prob = prob, size = size, n = n)
         }
       ),
       zeroinflatedpoisson0 = map2_dfr(

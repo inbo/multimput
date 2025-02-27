@@ -1,3 +1,7 @@
+# multimput 0.2.15
+
+* Bugfix in `hurdle_impute()` when selecting single covariates.
+
 # multimput 0.2.14
 
 * In case all imputed values are identical, `model_impute()` only runs a single
