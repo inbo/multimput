@@ -1,0 +1,9 @@
+pandoc: 3.6.3
+pkgdown: 2.1.1
+pkgdown_sha: ~
+articles:
+  impute: impute.html
+last_built: 2025-02-27T21:12Z
+urls:
+  reference: https://inbo.github.io/multimput/reference
+  article: https://inbo.github.io/multimput/articles
