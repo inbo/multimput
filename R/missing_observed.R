@@ -10,10 +10,13 @@
 #' @importFrom utils data
 #' @export
 missing_observed <- function(
-  dataset, count_variable = "Count", observed_variable = "Observed",
-  site_variable = "Site", year_variable = "Year", period_variable = "Period"
+  dataset,
+  count_variable = "Count",
+  observed_variable = "Observed",
+  site_variable = "Site",
+  year_variable = "Year",
+  period_variable = "Period"
 ) {
-
   sites <- dataset[, site_variable]
   if (!inherits(sites, "factor")) {
     sites <- factor(sites)

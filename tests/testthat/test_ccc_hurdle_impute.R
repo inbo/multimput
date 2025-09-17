@@ -12,11 +12,14 @@ test_that("hurdle_impute", {
     mutate(
       Minimum = as.integer(.data$Count > 0),
       Present = map_int(
-        .data$Count, ~ifelse(.x > 0, 1, sample(c(0, NA), size = 1))
+        .data$Count,
+        ~ ifelse(.x > 0, 1, sample(c(0, NA), size = 1))
       )
     ) -> present
   model <- lme4::glmer(
-    Present ~ 1 + (1 | Year), data = present, family = binomial
+    Present ~ 1 + (1 | Year),
+    data = present,
+    family = binomial
   )
   impute_present <- impute(model, data = present, minimum = "Minimum")
   expect_is(

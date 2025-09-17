@@ -181,8 +181,8 @@ dataset$YearCopy <- dataset$Year
 imp_better <- inla(
   Observed ~
     f(Year, model = "rw1") +
-    f(YearCopy, model = "ar1", replicate = Site) +
-    fPeriod,
+      f(YearCopy, model = "ar1", replicate = Site) +
+      fPeriod,
   data = dataset,
   family = "nbinomial",
   control.compute = list(config = TRUE),

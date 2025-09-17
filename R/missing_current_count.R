@@ -6,7 +6,9 @@
 #' @inheritParams missing_at_random
 #' @export
 missing_current_count <- function(
-  dataset, proportion = 0.25, count_variable = "Count",
+  dataset,
+  proportion = 0.25,
+  count_variable = "Count",
   observed_variable = "Observed"
 ) {
   dataset[, observed_variable] <- dataset[, count_variable]

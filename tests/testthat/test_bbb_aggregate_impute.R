@@ -34,7 +34,8 @@ test_that("aggregate_impute", {
   aggr <- aggregate_impute(imputed, grouping = grouping, fun = fun)
   expect_is(aggr, "aggregatedImputed")
   apply(
-    aggr@Imputation[, -1], 2,
+    aggr@Imputation[, -1],
+    2,
     function(x) {
       expect_identical(
         x,
@@ -45,15 +46,23 @@ test_that("aggregate_impute", {
 
   # subsets the dataset
   aggr <- aggregate_impute(
-    imputed, grouping = grouping, fun = fun, filter = list(~Year <= 5)
+    imputed,
+    grouping = grouping,
+    fun = fun,
+    filter = list(~ Year <= 5)
   )
   expect_lte(max(aggr@Covariate$Year), 5)
   aggr <- aggregate_impute(
-    imputed, grouping = grouping, fun = fun, filter = list(~Year > 5)
+    imputed,
+    grouping = grouping,
+    fun = fun,
+    filter = list(~ Year > 5)
   )
   expect_gt(min(aggr@Covariate$Year), 5)
   aggr <- aggregate_impute(
-    imputed, grouping = grouping, fun = fun,
+    imputed,
+    grouping = grouping,
+    fun = fun,
     join = data.frame(Year = seq(2L, 10L, by = 2L))
   )
   expect_identical(unique(aggr@Covariate$Year), seq(2L, 10L, by = 2L))
@@ -92,7 +101,10 @@ test_that("aggregate_impute", {
   )
   expect_is(
     aggr2 <- aggregate_impute(
-      aggr, grouping = "Year", fun = mean, filter = list("Period <= 3")
+      aggr,
+      grouping = "Year",
+      fun = mean,
+      filter = list("Period <= 3")
     ),
     "aggregatedImputed"
   )

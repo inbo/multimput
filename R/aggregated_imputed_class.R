@@ -26,12 +26,17 @@ setValidity(
   function(object) {
     stopifnot(
       "`Imputation` must be numeric" = is.numeric(object@Imputation),
-      "`Imputation` must contain at least two columns" =
-        ncol(object@Imputation) > 1,
-      "`Covariate` must have the same number of rows as `Imputation`" =
-        nrow(object@Imputation) == nrow(object@Covariate),
-      "colnames(`Imputation`) must have the format 'Imputation0000'" =
-        all(grepl("^Imputation\\d{4}$", colnames(object@Imputation)))
+      "`Imputation` must contain at least two columns" = ncol(
+        object@Imputation
+      ) >
+        1,
+      "`Covariate` must have the same number of rows as `Imputation`" = nrow(
+        object@Imputation
+      ) ==
+        nrow(object@Covariate),
+      "colnames(`Imputation`) must have the format 'Imputation0000'" = all(
+        grepl("^Imputation\\d{4}$", colnames(object@Imputation))
+      )
     )
   }
 )

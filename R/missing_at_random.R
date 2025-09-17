@@ -10,11 +10,14 @@
 #' = either count or missing.
 #' @export
 missing_at_random <- function(
-  dataset, proportion = 0.25, count_variable = "Count",
+  dataset,
+  proportion = 0.25,
+  count_variable = "Count",
   observed_variable = "Observed"
 ) {
   n <- sample(
-    nrow(dataset), size = ceiling((1 - proportion) * nrow(dataset)),
+    nrow(dataset),
+    size = ceiling((1 - proportion) * nrow(dataset)),
     replace = FALSE
   )
   dataset[-n, observed_variable] <- NA

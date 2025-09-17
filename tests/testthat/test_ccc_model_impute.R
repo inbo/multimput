@@ -7,12 +7,16 @@ test_that("model_impute has no effect when there are no missing values", {
     summary(model)$coefficients[, c("Estimate", "Std. Error")]
   }
   model_aggr <- model_impute(
-    aggr, model_fun = lm, rhs = "0 + factor(Year)", extractor = extractor
+    aggr,
+    model_fun = lm,
+    rhs = "0 + factor(Year)",
+    extractor = extractor
   )
   aggr_base <- aggregate(Count ~ Year + Period, data = dataset, FUN = sum)
   model_base <- lm(Count ~ 0 + factor(Year), data = aggr_base)
   expect_equal(
-    unname(as.matrix(model_aggr[, 2:3])), unname(extractor(model_base))
+    unname(as.matrix(model_aggr[, 2:3])),
+    unname(extractor(model_base))
   )
 })
 
@@ -26,17 +30,22 @@ test_that("model_impute, handles rawImputed", {
   }
   expect_is(
     model_imp <- model_impute(
-      aggr, model_fun = lm, rhs = "0 + factor(Year)", extractor = extractor
+      aggr,
+      model_fun = lm,
+      rhs = "0 + factor(Year)",
+      extractor = extractor
     ),
     "data.frame"
   )
   expect_identical(
-    colnames(model_imp), c("Parameter", "Estimate", "SE", "LCL", "UCL")
+    colnames(model_imp),
+    c("Parameter", "Estimate", "SE", "LCL", "UCL")
   )
 })
 test_that("model_impute checks the sanity of the arguments", {
   expect_error(
-    model_impute(object = "junk"), "doesn't handle a 'character' object"
+    model_impute(object = "junk"),
+    "doesn't handle a 'character' object"
   )
   dataset <- generate_data(n_year = 10, n_site = 10, n_run = 1)
   dataset$Count[sample(nrow(dataset), 10)] <- NA
@@ -49,7 +58,10 @@ test_that("model_impute checks the sanity of the arguments", {
   )
   expect_error(
     model_impute(
-      aggr, model_fun = lm, rhs = "0 + factor(Year)", extractor = "junk"
+      aggr,
+      model_fun = lm,
+      rhs = "0 + factor(Year)",
+      extractor = "junk"
     ),
     "extractor does not inherit from class function"
   )
@@ -58,14 +70,20 @@ test_that("model_impute checks the sanity of the arguments", {
   }
   expect_error(
     model_impute(
-      aggr, model_fun = lm, rhs = "0 + factor(Year)", model_args = "junk",
+      aggr,
+      model_fun = lm,
+      rhs = "0 + factor(Year)",
+      model_args = "junk",
       extractor = extractor
     ),
     "model_args does not inherit from class list"
   )
   expect_error(
     model_impute(
-      aggr, model_fun = lm, rhs = "0 + factor(Year)", extractor_args = "junk",
+      aggr,
+      model_fun = lm,
+      rhs = "0 + factor(Year)",
+      extractor_args = "junk",
       extractor = extractor
     ),
     "extractor_args does not inherit from class list"
@@ -76,7 +94,10 @@ test_that("model_impute checks the sanity of the arguments", {
   )
   expect_error(
     model_impute(
-      aggr, model_fun = lm, rhs = ~factor(Year), extractor = extractor
+      aggr,
+      model_fun = lm,
+      rhs = ~ factor(Year),
+      extractor = extractor
     ),
     "rhs is not a character vector"
   )
@@ -97,16 +118,22 @@ test_that("model_impute handles empty datasets", {
   empty <- aggr
   empty@Covariate <- empty@Covariate[0, ]
   model_aggr <- model_impute(
-    empty, model_fun = lm, rhs = "0 + factor(Year)", extractor = extractor
+    empty,
+    model_fun = lm,
+    rhs = "0 + factor(Year)",
+    extractor = extractor
   )
   expect_s3_class(model_aggr, "data.frame")
   expect_equal(nrow(model_aggr), 0)
   expect_identical(
-    colnames(model_aggr), c("Parameter", "Estimate", "SE", "LCL", "UCL")
+    colnames(model_aggr),
+    c("Parameter", "Estimate", "SE", "LCL", "UCL")
   )
 
   model_aggr <- model_impute(
-    aggr, model_fun = "stats::lm", rhs = "0 + factor(Year)",
+    aggr,
+    model_fun = "stats::lm",
+    rhs = "0 + factor(Year)",
     extractor = extractor,
     filter = function(x) {
       return(x[0, ])
@@ -115,7 +142,8 @@ test_that("model_impute handles empty datasets", {
   expect_s3_class(model_aggr, "data.frame")
   expect_equal(nrow(model_aggr), 0)
   expect_identical(
-    colnames(model_aggr), c("Parameter", "Estimate", "SE", "LCL", "UCL")
+    colnames(model_aggr),
+    c("Parameter", "Estimate", "SE", "LCL", "UCL")
   )
 })
 
@@ -129,8 +157,12 @@ test_that("model_impute handles timeout", {
   }
   expect_error(
     model_impute(
-      aggr, model_fun = "INLA::inla", rhs = "0 + factor(Year)", timeout = 1,
-      extractor = extractor, model_args = list(safe = FALSE, silent = TRUE)
+      aggr,
+      model_fun = "INLA::inla",
+      rhs = "0 + factor(Year)",
+      timeout = 1,
+      extractor = extractor,
+      model_args = list(safe = FALSE, silent = TRUE)
     ),
     "(time limit|inla result collection failed)"
   )
@@ -140,8 +172,12 @@ test_that("model_impute handles timeout", {
   aggr <- aggregate_impute(imputed, grouping = c("Year", "Period"), fun = sum)
   expect_error(
     model_impute(
-      aggr, model_fun = "INLA::inla", rhs = "0 + factor(Year)",  timeout = 1,
-      extractor = extractor, model_args = list(safe = FALSE, silent = TRUE)
+      aggr,
+      model_fun = "INLA::inla",
+      rhs = "0 + factor(Year)",
+      timeout = 1,
+      extractor = extractor,
+      model_args = list(safe = FALSE, silent = TRUE)
     ),
     "model failed on all imputations"
   )

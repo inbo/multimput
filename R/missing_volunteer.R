@@ -9,9 +9,13 @@
 #' @importFrom stats aggregate as.formula runif
 #' @export
 missing_volunteer <- function(
-  dataset, proportion = 0.25, count_variable = "Count",
-  observed_variable = "Observed", year_variable = "Year",
-  site_variable = "Site", max_count = 100
+  dataset,
+  proportion = 0.25,
+  count_variable = "Count",
+  observed_variable = "Observed",
+  year_variable = "Year",
+  site_variable = "Site",
+  max_count = 100
 ) {
   sites <- factor(dataset[, site_variable])
   years <- sort(unique(dataset[, year_variable]))

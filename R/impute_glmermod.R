@@ -34,7 +34,9 @@ Convert the factor in the dataset and refit the model."
       as.formula() |>
       model.matrix(data = data[missing_obs, ])
     fixed <- rmvnorm(
-      n_imp, mean = lme4::fixef(model), sigma = as.matrix(vcov(model))
+      n_imp,
+      mean = lme4::fixef(model),
+      sigma = as.matrix(vcov(model))
     ) |>
       tcrossprod(x = mm, y = _)
     rf <- lme4::ranef(model, condVar = TRUE)
@@ -46,8 +48,10 @@ Convert the factor in the dataset and refit the model."
       map(as.vector) |>
       map(sqrt) -> rf_sd
     map2(
-      .x = rf, .y = rf_sd, n_imp = n_imp,
-      ~rnorm(n = n_imp * nrow(.x), mean = .x[[1]], sd = .y)
+      .x = rf,
+      .y = rf_sd,
+      n_imp = n_imp,
+      ~ rnorm(n = n_imp * nrow(.x), mean = .x[[1]], sd = .y)
     ) |>
       map(matrix, ncol = n_imp) -> random
     eta <- lapply(
@@ -60,9 +64,9 @@ Convert the factor in the dataset and refit the model."
           hash <- x
         }
         paste("~0 + ", hash) |>
-            as.formula() |>
-            model.matrix(data = data[missing_obs, ]) |>
-            tcrossprod(t(random[[x]]))
+          as.formula() |>
+          model.matrix(data = data[missing_obs, ]) |>
+          tcrossprod(t(random[[x]]))
       }
     ) |>
       c(list(fixed)) |>
@@ -80,12 +84,17 @@ Convert the factor in the dataset and refit the model."
       extra <- data[0, ]
     } else {
       assert_that(
-        class(extra) == "data.frame", msg = "`extra` is not a `data.frame`"
+        class(extra) == "data.frame",
+        msg = "`extra` is not a `data.frame`"
       )
     }
     new(
-      "rawImputed", Data = data, Response = response, Imputation = y,
-      Minimum = coalesce(dots$minimum, ""), Extra = extra
+      "rawImputed",
+      Data = data,
+      Response = response,
+      Imputation = y,
+      Minimum = coalesce(dots$minimum, ""),
+      Extra = extra
     )
   }
 )

@@ -36,10 +36,17 @@
 setGeneric(
   name = "model_impute",
   def = function(
-    object, model_fun, rhs, model_args = list(), extractor,
-    extractor_args = list(), filter = list(), mutate = list(), ...,
+    object,
+    model_fun,
+    rhs,
+    model_args = list(),
+    extractor,
+    extractor_args = list(),
+    filter = list(),
+    mutate = list(),
+    ...,
     timeout = 600
-) {
+  ) {
     standard.generic("model_impute") # nocov
   }
 )
@@ -50,8 +57,15 @@ setMethod(
   f = "model_impute",
   signature = signature(object = "ANY"),
   definition = function(
-    object, model_fun, rhs, model_args = list(), extractor,
-    extractor_args = list(), filter = list(), mutate = list(), ...,
+    object,
+    model_fun,
+    rhs,
+    model_args = list(),
+    extractor,
+    extractor_args = list(),
+    filter = list(),
+    mutate = list(),
+    ...,
     timeout = 600
   ) {
     stop("model_impute() doesn't handle a '", class(object), "' object")
@@ -88,15 +102,25 @@ setMethod(
   f = "model_impute",
   signature = signature(object = "aggregatedImputed"),
   definition = function(
-    object, model_fun, rhs, model_args = list(), extractor,
-    extractor_args = list(), filter = list(), mutate = list(), ...,
+    object,
+    model_fun,
+    rhs,
+    model_args = list(),
+    extractor,
+    extractor_args = list(),
+    filter = list(),
+    mutate = list(),
+    ...,
     timeout = 600
   ) {
     if (nrow(object@Covariate) == 0) {
       return(
         data.frame(
-          Parameter = character(0), Estimate = numeric(0), SE = numeric(0),
-          LCL = numeric(0), UCL = numeric(0)
+          Parameter = character(0),
+          Estimate = numeric(0),
+          SE = numeric(0),
+          LCL = numeric(0),
+          UCL = numeric(0)
         )
       )
     }
@@ -104,7 +128,8 @@ setMethod(
     check_old_names(
       ...,
       old_names = c(
-        model_fun = "model.fun", model_args = "model.args",
+        model_fun = "model.fun",
+        model_args = "model.args",
         extractor_args = "extractor.args"
       )
     )
@@ -116,9 +141,12 @@ setMethod(
       model_fun <- eval(parse_expr(model_fun))
     }
     assert_that(
-      inherits(model_fun, "function"), inherits(extractor, "function"),
-      is.character(rhs), inherits(model_args, "list"),
-      inherits(extractor_args, "list"), inherits(mutate, "list"),
+      inherits(model_fun, "function"),
+      inherits(extractor, "function"),
+      is.character(rhs),
+      inherits(model_args, "list"),
+      inherits(extractor_args, "list"),
+      inherits(mutate, "list"),
       inherits(filter, "list") | is.function(filter)
     )
     id_column <- paste0("ID", sha1(Sys.time()))
@@ -142,11 +170,16 @@ setMethod(
     }
     if (nrow(object@Covariate) == 0) {
       data.frame(
-        Parameter = character(0), Estimate = numeric(0), SE = numeric(0),
-        LCL = numeric(0), UCL = numeric(0)
+        Parameter = character(0),
+        Estimate = numeric(0),
+        SE = numeric(0),
+        LCL = numeric(0),
+        UCL = numeric(0)
       ) -> result
       attr(result, "detail") <- data.frame(
-        Parameter = character(0), Estimate = character(0), SE = character(0)
+        Parameter = character(0),
+        Estimate = character(0),
+        SE = character(0)
       )
       return(result)
     }
@@ -172,7 +205,9 @@ setMethod(
         rownames_to_column(var = "Parameter") |>
         select(Parameter = 1, Estimate = 2, SE = 3) |>
         transmute(
-          .data$Parameter, .data$Estimate, .data$SE,
+          .data$Parameter,
+          .data$Estimate,
+          .data$SE,
           LCL = qnorm(0.025, .data$Estimate, .data$SE),
           UCL = qnorm(0.975, .data$Estimate, .data$SE)
         ) -> result
@@ -209,12 +244,14 @@ setMethod(
     m |>
       group_by(.data$Parameter) |>
       summarise(
-        SE = sqrt(mean(.data$SE ^ 2) + var(.data$Estimate) * (n() + 1) / n()),
+        SE = sqrt(mean(.data$SE^2) + var(.data$Estimate) * (n() + 1) / n()),
         Estimate = mean(.data$Estimate)
       ) |>
       ungroup() |>
       transmute(
-        .data$Parameter, .data$Estimate, .data$SE,
+        .data$Parameter,
+        .data$Estimate,
+        .data$SE,
         LCL = qnorm(0.025, .data$Estimate, .data$SE),
         UCL = qnorm(0.975, .data$Estimate, .data$SE)
       ) -> result

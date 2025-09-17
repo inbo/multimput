@@ -13,17 +13,21 @@
 #' @importFrom methods new validObject
 hurdle_impute <- function(presence, count) {
   stopifnot(
-    "`presence` is not a `rawImputed` object" =
-      inherits(presence, "rawImputed"),
-    "`count` is not a `rawImputed` object" =
-      inherits(count, "rawImputed"),
-    validObject(presence), validObject(count),
-    "unequal number of rows in count and presence" =
-      nrow(count@Data) == nrow(presence@Data),
-    "unequal number of imputations in count and presence" =
-      ncol(count@Imputation) == ncol(presence@Imputation),
-    "Only add extra observations to the `count` model" =
-      nrow(presence@Extra) == 0
+    "`presence` is not a `rawImputed` object" = inherits(
+      presence,
+      "rawImputed"
+    ),
+    "`count` is not a `rawImputed` object" = inherits(count, "rawImputed"),
+    validObject(presence),
+    validObject(count),
+    "unequal number of rows in count and presence" = nrow(count@Data) ==
+      nrow(presence@Data),
+    "unequal number of imputations in count and presence" = ncol(
+      count@Imputation
+    ) ==
+      ncol(presence@Imputation),
+    "Only add extra observations to the `count` model" = nrow(presence@Extra) ==
+      0
   )
 
   # prepare imputations
@@ -39,7 +43,8 @@ hurdle_impute <- function(presence, count) {
   }
   presence@Data[[presence@Response]] |>
     matrix(
-      nrow = nrow(presence@Data), ncol = ncol(presence@Imputation)
+      nrow = nrow(presence@Data),
+      ncol = ncol(presence@Imputation)
     ) -> presence_resp
   presence_resp[
     is.na(presence@Data[[presence@Response]]),
@@ -53,30 +58,34 @@ hurdle_impute <- function(presence, count) {
   }
 
   # prepare covariates
-  cv_count <- count@Data[
-    , !colnames(count@Data) %in% c(count@Response, count@Minimum), drop = FALSE
+  cv_count <- count@Data[,
+    !colnames(count@Data) %in% c(count@Response, count@Minimum),
+    drop = FALSE
   ]
-  cv_presence <- presence@Data[
-    , !colnames(presence@Data) %in% c(presence@Response, presence@Minimum),
+  cv_presence <- presence@Data[,
+    !colnames(presence@Data) %in% c(presence@Response, presence@Minimum),
     drop = FALSE
   ]
   common <- return_common(cv_count, cv_presence)
   extra_count <- colnames(cv_count)[!colnames(cv_count) %in% common]
   extra_presence <- colnames(cv_presence)[!colnames(cv_presence) %in% common]
-  ren_count <- cv_count[
-    , extra_count[extra_count %in% extra_presence], drop = FALSE
+  ren_count <- cv_count[,
+    extra_count[extra_count %in% extra_presence],
+    drop = FALSE
   ]
   colnames(ren_count) <- sprintf("count_%s", colnames(ren_count))
-  ren_presence <- cv_presence[
-    , extra_presence[extra_presence %in% extra_count], drop = FALSE
+  ren_presence <- cv_presence[,
+    extra_presence[extra_presence %in% extra_count],
+    drop = FALSE
   ]
   colnames(ren_presence) <- sprintf("presence_%s", colnames(ren_presence))
   cv <- cbind(
     cv_count[, common, drop = FALSE],
     cv_count[, extra_count[!extra_count %in% extra_presence], drop = FALSE],
     ren_count,
-    cv_presence[
-      , extra_presence[!extra_presence %in% extra_count], drop = FALSE
+    cv_presence[,
+      extra_presence[!extra_presence %in% extra_count],
+      drop = FALSE
     ],
     ren_presence
   )
@@ -84,17 +93,20 @@ hurdle_impute <- function(presence, count) {
     extra <- matrix(nrow = 0, ncol = ncol(count_resp))
   } else {
     extra <- matrix(
-      count@Extra[[count@Response]], nrow = nrow(count@Extra),
+      count@Extra[[count@Response]],
+      nrow = nrow(count@Extra),
       ncol = ncol(count_resp)
     )
-    ren_count <- count@Extra[
-      , extra_count[extra_count %in% extra_presence], drop = FALSE
+    ren_count <- count@Extra[,
+      extra_count[extra_count %in% extra_presence],
+      drop = FALSE
     ]
     colnames(ren_count) <- sprintf("count_%s", colnames(ren_count))
     cv_extra <- cbind(
       count@Extra[, common, drop = FALSE],
-      count@Extra[
-        , extra_count[!extra_count %in% extra_presence], drop = FALSE
+      count@Extra[,
+        extra_count[!extra_count %in% extra_presence],
+        drop = FALSE
       ],
       ren_count
     )
@@ -110,7 +122,8 @@ hurdle_impute <- function(presence, count) {
   }
 
   new(
-    "aggregatedImputed", Covariate = cv,
+    "aggregatedImputed",
+    Covariate = cv,
     Imputation = rbind(presence_resp * count_resp, extra) |>
       `colnames<-`(sprintf("Imputation%04i", seq_len(ncol(count_resp))))
   )
