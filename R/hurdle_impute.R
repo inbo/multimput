@@ -60,8 +60,7 @@ hurdle_impute <- function(presence, count) {
     , !colnames(presence@Data) %in% c(presence@Response, presence@Minimum),
     drop = FALSE
   ]
-  common <- colnames(cv_count)[colnames(cv_count) %in% colnames(cv_presence)]
-  common <- common[apply(cv_count[, common] == cv_presence[, common], 2, all)]
+  common <- return_common(cv_count, cv_presence)
   extra_count <- colnames(cv_count)[!colnames(cv_count) %in% common]
   extra_presence <- colnames(cv_presence)[!colnames(cv_presence) %in% common]
   ren_count <- cv_count[
@@ -115,4 +114,17 @@ hurdle_impute <- function(presence, count) {
     Imputation = rbind(presence_resp * count_resp, extra) |>
       `colnames<-`(sprintf("Imputation%04i", seq_len(ncol(count_resp))))
   )
+}
+
+return_common <- function(a, b) {
+  stopifnot(inherits(a, "data.frame"), inherits(b, "data.frame"))
+  candidate <- colnames(a)[colnames(a) %in% colnames(b)]
+  a <- a[, candidate, drop = FALSE]
+  b <- b[, candidate, drop = FALSE]
+  candidate <- !apply(is.na(a) != is.na(b), 2, any)
+  candidate <- names(candidate)[candidate]
+  a <- a[, candidate, drop = FALSE]
+  b <- b[, candidate, drop = FALSE]
+  candidate <- apply((is.na(a) & is.na(b)) | (a == b), 2, all)
+  names(candidate)[candidate]
 }
