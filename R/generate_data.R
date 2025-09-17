@@ -46,15 +46,31 @@
 #' @importFrom dplyr group_by group_map mutate select
 #' @importFrom rlang .data !!!
 generate_data <- function(
-  intercept = 2, n_year = 24, n_period = 6, n_site = 20, year_factor = FALSE,
-  period_factor = FALSE, site_factor = FALSE, trend = 0.01, sd_rw_year = 0.1,
-  amplitude_period = 1, mean_phase_period = 0, sd_phase_period = 0.2,
-  sd_site = 1, sd_rw_site = 0.02, sd_noise = 0.01, size = 2, n_run = 10,
-  as_list = FALSE, details = FALSE
+  intercept = 2,
+  n_year = 24,
+  n_period = 6,
+  n_site = 20,
+  year_factor = FALSE,
+  period_factor = FALSE,
+  site_factor = FALSE,
+  trend = 0.01,
+  sd_rw_year = 0.1,
+  amplitude_period = 1,
+  mean_phase_period = 0,
+  sd_phase_period = 0.2,
+  sd_site = 1,
+  sd_rw_site = 0.02,
+  sd_noise = 0.01,
+  size = 2,
+  n_run = 10,
+  as_list = FALSE,
+  details = FALSE
 ) {
   #generate the design
   dataset <- expand.grid(
-    Year = seq_len(n_year), Period = seq_len(n_period), Site = seq_len(n_site)
+    Year = seq_len(n_year),
+    Period = seq_len(n_period),
+    Site = seq_len(n_site)
   )
   year_rw_effect <- cumsum(rnorm(n_year, mean = 0, sd = sd_rw_year))
   phase <- rnorm(n_year + 1, mean = mean_phase_period, sd = sd_phase_period)
@@ -71,7 +87,8 @@ generate_data <- function(
   #generate the true mean
   dataset$Mu <- exp(
     intercept +
-      year_rw_effect[dataset$Year] + trend * dataset$Year +
+      year_rw_effect[dataset$Year] +
+      trend * dataset$Year +
       amplitude_period *
         sin(
           dataset$Period * pi / n_period + phase[dataset$Year]
@@ -116,7 +133,7 @@ generate_data <- function(
 
   dataset |>
     group_by(.data$Run) |>
-    group_map(~relevant(.x, details = details, run = .y))
+    group_map(~ relevant(.x, details = details, run = .y))
 }
 
 # internal function for generate_data()
@@ -124,8 +141,16 @@ generate_data <- function(
 #' @importFrom rlang !!!
 relevant <- function(x, details, run) {
   if (details) {
-    dots <- c("Year", "Period", "Site", "Mu", "YearEffect", "PeriodEffect",
-              "SiteEffect", "Count")
+    dots <- c(
+      "Year",
+      "Period",
+      "Site",
+      "Mu",
+      "YearEffect",
+      "PeriodEffect",
+      "SiteEffect",
+      "Count"
+    )
   } else {
     dots <- c("Year", "Period", "Site", "Mu", "Count")
   }

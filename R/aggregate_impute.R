@@ -28,7 +28,7 @@ setMethod(
   signature = signature(object = "ANY"),
   definition = function(object, grouping, fun, filter = list(), join) {
     stop(
-"aggregate_impute() requires a 'rawImputed' or 'aggregatedImputed' object.
+      "aggregate_impute() requires a 'rawImputed' or 'aggregatedImputed' object.
 See ?impute or ?aggregate_impute"
     )
   }
@@ -58,7 +58,8 @@ setMethod(
   signature = signature(object = "rawImputed"),
   definition = function(object, grouping, fun, filter = list(), join) {
     assert_that(
-      is.character(grouping), inherits(fun, "function"),
+      is.character(grouping),
+      inherits(fun, "function"),
       inherits(filter, "list")
     )
     grouping <- syms(grouping)
@@ -119,7 +120,9 @@ setMethod(
             c(list(character(0))) |>
             rev() |>
             matrix(
-              data = NA_real_, nrow = 0, ncol = ncol(imputation),
+              data = NA_real_,
+              nrow = 0,
+              ncol = ncol(imputation),
               byrow = FALSE
             )
         )
@@ -133,14 +136,19 @@ setMethod(
       seq_len(ncol(imputation)),
       function(i) {
         data[missing_obs, response] <- pmax(
-          imputation[, i], data[[minimum_column]][missing_obs], na.rm = TRUE
+          imputation[, i],
+          data[[minimum_column]][missing_obs],
+          na.rm = TRUE
         )
         data |>
           group_by(!!!grouping) |>
           summarise(
             across(
-              .cols = all_of(response), .fns = list(fun), .names = "{.col}"
-            ), .groups = "drop"
+              .cols = all_of(response),
+              .fns = list(fun),
+              .names = "{.col}"
+            ),
+            .groups = "drop"
           ) |>
           mutate(Imputation = !!sprintf("Imputation%04i", i))
       }
@@ -174,7 +182,8 @@ setMethod(
   signature = signature(object = "aggregatedImputed"),
   definition = function(object, grouping, fun, filter = list(), join) {
     assert_that(
-      is.character(grouping), inherits(fun, "function"),
+      is.character(grouping),
+      inherits(fun, "function"),
       inherits(filter, "list")
     )
 
@@ -223,7 +232,9 @@ setMethod(
             c(list(character(0))) |>
             rev() |>
             matrix(
-              data = NA_real_, nrow = 0, ncol = ncol(imputation) - 1,
+              data = NA_real_,
+              nrow = 0,
+              ncol = ncol(imputation) - 1,
               byrow = FALSE
             )
         )
@@ -235,7 +246,8 @@ setMethod(
       group_by(!!!grouping) |>
       summarise(
         across(
-          .cols = all_of(colnames(object@Imputation)), .fns = list(fun),
+          .cols = all_of(colnames(object@Imputation)),
+          .fns = list(fun),
           .names = "{.col}"
         ),
         .groups = "drop"

@@ -25,7 +25,10 @@ test_that("handles lm", {
 
   expect_is(
     imputed <- impute(
-      model, dataset, minimum = "Bottom", extra = na.omit(dataset)[1, ]
+      model,
+      dataset,
+      minimum = "Bottom",
+      extra = na.omit(dataset)[1, ]
     ),
     "rawImputed"
   )
@@ -37,11 +40,6 @@ test_that("handles lm", {
     "object@Data does not have .*name.*Junk"
   )
 })
-
-
-
-
-
 
 
 test_that("handles inla with gaussian distribution", {
@@ -76,7 +74,10 @@ test_that("handles inla with gaussian distribution", {
 
   expect_is(
     imputed <- impute(
-      model, dataset, minimum = "Bottom", parallel_configs = FALSE,
+      model,
+      dataset,
+      minimum = "Bottom",
+      parallel_configs = FALSE,
       extra = na.omit(dataset)[1, ]
     ),
     "rawImputed"
@@ -89,9 +90,6 @@ test_that("handles inla with gaussian distribution", {
     "object@Data does not have .*name.*Junk"
   )
 })
-
-
-
 
 
 test_that("handles inla with negative binomial distribution", {
@@ -127,7 +125,10 @@ test_that("handles inla with negative binomial distribution", {
 
   expect_is(
     imputed <- impute(
-      model, dataset, minimum = "Bottom", parallel_configs = FALSE,
+      model,
+      dataset,
+      minimum = "Bottom",
+      parallel_configs = FALSE,
       extra = na.omit(dataset)[1, ]
     ),
     "rawImputed"
@@ -140,9 +141,6 @@ test_that("handles inla with negative binomial distribution", {
     "object@Data does not have.*name.*Junk"
   )
 })
-
-
-
 
 
 test_that("handles inla with poisson distribution", {
@@ -159,7 +157,8 @@ test_that("handles inla with poisson distribution", {
   n_imp <- 10L
   model <- INLA::inla(
     Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
-    data = dataset, family = "poisson",
+    data = dataset,
+    family = "poisson",
     control.compute = list(config = TRUE),
     control.predictor = list(compute = TRUE, link = 1)
   )
@@ -177,7 +176,10 @@ test_that("handles inla with poisson distribution", {
 
   expect_is(
     imputed <- impute(
-      model, dataset, minimum = "Bottom", parallel_configs = FALSE,
+      model,
+      dataset,
+      minimum = "Bottom",
+      parallel_configs = FALSE,
       extra = na.omit(dataset)[1, ]
     ),
     "rawImputed"
@@ -190,22 +192,6 @@ test_that("handles inla with poisson distribution", {
     "object@Data does not have.*name.*Junk"
   )
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 test_that("handles inla with zeroinflatednbinomial1 distribution", {
@@ -222,7 +208,8 @@ test_that("handles inla with zeroinflatednbinomial1 distribution", {
   n_imp <- 10L
   model <- INLA::inla(
     Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
-    data = dataset, family = "zeroinflatednbinomial1",
+    data = dataset,
+    family = "zeroinflatednbinomial1",
     control.compute = list(config = TRUE),
     control.predictor = list(compute = TRUE, link = 1)
   )
@@ -240,7 +227,10 @@ test_that("handles inla with zeroinflatednbinomial1 distribution", {
 
   expect_is(
     imputed <- impute(
-      model, dataset, minimum = "Bottom", parallel_configs = FALSE,
+      model,
+      dataset,
+      minimum = "Bottom",
+      parallel_configs = FALSE,
       extra = na.omit(dataset)[1, ]
     ),
     "rawImputed"
@@ -269,7 +259,8 @@ test_that("handles inla with zeroinflatedpoisson0 distribution", {
   n_imp <- 10L
   model <- INLA::inla(
     Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
-    data = dataset, family = "zeroinflatedpoisson0",
+    data = dataset,
+    family = "zeroinflatedpoisson0",
     control.compute = list(config = TRUE),
     control.predictor = list(compute = TRUE, link = 1)
   )
@@ -287,7 +278,10 @@ test_that("handles inla with zeroinflatedpoisson0 distribution", {
 
   expect_is(
     imputed <- impute(
-      model, dataset, minimum = "Bottom", parallel_configs = FALSE,
+      model,
+      dataset,
+      minimum = "Bottom",
+      parallel_configs = FALSE,
       extra = na.omit(dataset)[1, ]
     ),
     "rawImputed"
@@ -300,13 +294,6 @@ test_that("handles inla with zeroinflatedpoisson0 distribution", {
     "object@Data does not have.*name.*Junk"
   )
 })
-
-
-
-
-
-
-
 
 
 test_that("handles inla with zeroinflatedpoisson1 distribution", {
@@ -323,7 +310,8 @@ test_that("handles inla with zeroinflatedpoisson1 distribution", {
   n_imp <- 10L
   model <- INLA::inla(
     Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
-    data = dataset, family = "zeroinflatedpoisson1",
+    data = dataset,
+    family = "zeroinflatedpoisson1",
     control.compute = list(config = TRUE),
     control.predictor = list(compute = TRUE, link = 1)
   )
@@ -341,7 +329,10 @@ test_that("handles inla with zeroinflatedpoisson1 distribution", {
 
   expect_is(
     imputed <- impute(
-      model, dataset, minimum = "Bottom", parallel_configs = FALSE,
+      model,
+      dataset,
+      minimum = "Bottom",
+      parallel_configs = FALSE,
       extra = na.omit(dataset)[1, ]
     ),
     "rawImputed"
@@ -384,7 +375,10 @@ test_that("handles datasets without missing observations", {
 
   expect_is(
     imputed <- impute(
-      model, dataset, minimum = "Bottom", extra = na.omit(dataset)[1, ]
+      model,
+      dataset,
+      minimum = "Bottom",
+      extra = na.omit(dataset)[1, ]
     ),
     "rawImputed"
   )
@@ -407,15 +401,15 @@ test_that("handles datasets without missing observations", {
   )
   expect_is(
     imputed <- impute(
-      model, dataset, minimum = "Bottom", parallel_configs = FALSE,
+      model,
+      dataset,
+      minimum = "Bottom",
+      parallel_configs = FALSE,
       extra = na.omit(dataset)[1, ]
     ),
     "rawImputed"
   )
 })
-
-
-
 
 
 test_that("is robust for wrong imput", {
@@ -517,17 +511,18 @@ test_that("is robust for wrong imput", {
     family = poisson
   )
 
-
   if (!require(INLA)) {
     skip("INLA package not available")
   }
   model <- INLA::inla(
     Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),
-    data = dataset, family = "nbinomial", control.predictor = list(link = 1)
+    data = dataset,
+    family = "nbinomial",
+    control.predictor = list(link = 1)
   )
   expect_error(
     impute(model),
-"model must be fit with the 'config = TRUE' argument of control.compute"
+    "model must be fit with the 'config = TRUE' argument of control.compute"
   )
   model <- INLA::inla(
     Count ~ factor(Year) + factor(Period) + f(Site, model = "iid"),

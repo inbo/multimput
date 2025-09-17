@@ -17,8 +17,11 @@
 setClass(
   Class = "rawImputed",
   representation = representation(
-    Data = "data.frame", Response = "character", Minimum = "character",
-    Imputation = "matrix", Extra = "data.frame"
+    Data = "data.frame",
+    Response = "character",
+    Minimum = "character",
+    Imputation = "matrix",
+    Extra = "data.frame"
   )
 )
 
@@ -35,7 +38,9 @@ setValidity(
       msg = "All colnames in `Extra` must be contain all variables in `Data`"
     )
     compatible_class <- vapply(
-      colnames(object@Data), FUN.VALUE = logical(1), od = object@Data,
+      colnames(object@Data),
+      FUN.VALUE = logical(1),
+      od = object@Data,
       ox = object@Extra,
       FUN = function(x, od, ox) {
         inherits(ox[[x]], class(od[[x]]))
@@ -47,12 +52,17 @@ setValidity(
         names() |>
         paste(collapse = "; ") |>
         sprintf(
-fmt = "following variables have a different class in `Data` and in `Extra`: %s"
+          fmt = paste(
+            "following variables have a different class in `Data` and in",
+            "`Extra`: %s"
+          )
         )
     )
     fd <- vapply(object@Data, is.factor, logical(1))
     levels_ok <- vapply(
-      names(fd)[fd], FUN.VALUE = logical(1), od = object@Data,
+      names(fd)[fd],
+      FUN.VALUE = logical(1),
+      od = object@Data,
       ox = object@Extra,
       FUN = function(x, od, ox) {
         identical(levels(ox[[x]]), levels(od[[x]]))
@@ -64,7 +74,10 @@ fmt = "following variables have a different class in `Data` and in `Extra`: %s"
         names() |>
         paste(collapse = "; ") |>
         sprintf(
-fmt = "following variables have different levels in `Data` and in `Extra`: %s"
+          fmt = paste(
+            "following variables have different levels in `Data` and in",
+            "`Extra`: %s"
+          )
         )
     )
     assert_that(

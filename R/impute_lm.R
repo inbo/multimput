@@ -24,7 +24,7 @@ setMethod(
     missing_obs <- which(is.na(data[, response]))
     prediction <- predict(model, newdata = data[missing_obs, ], se.fit = TRUE)
     prediction$se.pred <- sqrt(
-      prediction$residual.scale ^ 2 + prediction$se.fit ^ 2
+      prediction$residual.scale^2 + prediction$se.fit^2
     )
     rt_value <- matrix(
       rt(length(missing_obs) * n_imp, df = prediction$df),
@@ -35,13 +35,17 @@ setMethod(
       extra <- data[0, ]
     } else {
       assert_that(
-        class(extra) == "data.frame", msg = "`extra` is not a `data.frame`"
+        class(extra) == "data.frame",
+        msg = "`extra` is not a `data.frame`"
       )
     }
     new(
-      "rawImputed", Data = data, Response = response,
+      "rawImputed",
+      Data = data,
+      Response = response,
       Minimum = coalesce(dots$minimum, ""),
-      Imputation = prediction$fit + rt_value * prediction$se.pred, Extra = extra
+      Imputation = prediction$fit + rt_value * prediction$se.pred,
+      Extra = extra
     )
   }
 )

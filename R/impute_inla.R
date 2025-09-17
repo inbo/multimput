@@ -27,7 +27,12 @@ setMethod(
   f = "impute",
   signature = signature(model = "maybeInla"),
   definition = function(
-    model, ..., seed = 0L, num_threads = NULL, parallel_configs = TRUE, extra,
+    model,
+    ...,
+    seed = 0L,
+    num_threads = NULL,
+    parallel_configs = TRUE,
+    extra,
     n_imp = 19
   ) {
     assert_that(!is.null(model), msg = "model should be an inla object")
@@ -35,8 +40,9 @@ setMethod(
     assert_that(is.count(n_imp))
     assert_that(
       model$.args$control.compute$config,
-      msg =
-"model must be fit with the 'config = TRUE' argument of control.compute"
+      msg = paste(
+        "model must be fit with the 'config = TRUE' argument of control.compute"
+      )
     )
 
     dots <- list(...)
@@ -51,9 +57,12 @@ setMethod(
     if (length(missing_obs) == 0) {
       return(
         new(
-          "rawImputed", Data = covariates, Response = response,
+          "rawImputed",
+          Data = covariates,
+          Response = response,
           Imputation = matrix(integer(0), ncol = n_imp),
-          Minimum = coalesce(dots$minimum, ""), Extra = extra
+          Minimum = coalesce(dots$minimum, ""),
+          Extra = extra
         )
       )
     }
@@ -62,7 +71,10 @@ setMethod(
       sprintf(missing_obs) -> missing_obs
     assert_that(requireNamespace("sn", quietly = TRUE))
     samples <- inla.posterior.sample(
-      n = n_imp, result = model, seed = seed, num.threads = num_threads,
+      n = n_imp,
+      result = model,
+      seed = seed,
+      num.threads = num_threads,
       parallel.configs = parallel_configs
     )
     map(samples, "latent") |>
@@ -72,8 +84,8 @@ setMethod(
       as.data.frame() -> hyperpar
     if (
       model$.args$family == "zeroinflatednbinomial0" &&
-      !"zero-probability parameter for zero-inflated nbinomial_0" %in%
-        colnames(hyperpar)
+        !"zero-probability parameter for zero-inflated nbinomial_0" %in%
+          colnames(hyperpar)
     ) {
       hyperpar[["zero-probability parameter for zero-inflated nbinomial_0"]] <-
         plogis(model$.args$control.family[[1]]$hyper$theta2$initial)
@@ -83,24 +95,28 @@ setMethod(
       model$.args$family,
       binomial = map_dfr(
         .x = latent,
-        .f = ~rbinom(n = length(missing_obs), size = 1, prob = plogis(.x))
+        .f = ~ rbinom(n = length(missing_obs), size = 1, prob = plogis(.x))
       ),
       gamma = map2_dfr(
-        .x = latent, .f = ~rgamma(n = n, shape = .y * .x ^ 2, rate = .y * .x),
+        .x = latent,
+        .f = ~ rgamma(n = n, shape = .y * .x^2, rate = .y * .x),
         n = length(missing_obs),
         .y = hyperpar[[grep("Gamma observations", colnames(hyperpar))]]
       ),
       gaussian = map2_dfr(
-        .x = latent, .f = rnorm, n = length(missing_obs),
+        .x = latent,
+        .f = rnorm,
+        n = length(missing_obs),
         .y = hyperpar[[grep("Gaussian observations", colnames(hyperpar))]]
       ),
       nbinomial = map2_dfr(
         .x = latent,
-        .f = ~rnbinom(size = .y, mu = exp(.x), n = length(missing_obs)),
+        .f = ~ rnbinom(size = .y, mu = exp(.x), n = length(missing_obs)),
         .y = hyperpar[[grep("size for the nbinomial", colnames(hyperpar))]]
       ),
       poisson = map_dfr(
-        .x = latent, .f = ~rpois(n = length(missing_obs), lambda = exp(.x))
+        .x = latent,
+        .f = ~ rpois(n = length(missing_obs), lambda = exp(.x))
       ),
       zeroinflatednbinomial0 = pmap_dfr(
         list(
@@ -125,23 +141,29 @@ setMethod(
       zeroinflatedpoisson0 = map2_dfr(
         .x = latent,
         .y = hyperpar[[grep("zero-probability", colnames(hyperpar))]],
-        .f = ~rzip0(n = length(missing_obs), lambda = exp(.x), prob = .y)
+        .f = ~ rzip0(n = length(missing_obs), lambda = exp(.x), prob = .y)
       ),
       zeroinflatedpoisson1 = map2_dfr(
         .x = latent,
         .y = hyperpar[[grep("zero-probability", colnames(hyperpar))]],
-        .f = ~rzip1(n = length(missing_obs), lambda = exp(.x), prob = .y)
+        .f = ~ rzip1(n = length(missing_obs), lambda = exp(.x), prob = .y)
       ),
       stop(
-        "Imputations from the '", model$.args$family, "' family not yet defined.
+        "Imputations from the '",
+        model$.args$family,
+        "' family not yet defined.
 We will consider adding support for other families. Please create an issue with
 a reproducible example at https://github.com/inbo/multimput/issues"
       )
     )
 
     new(
-      "rawImputed", Data = covariates, Response = response, Extra = extra,
-      Imputation = as.matrix(imputation), Minimum = coalesce(dots$minimum, "")
+      "rawImputed",
+      Data = covariates,
+      Response = response,
+      Extra = extra,
+      Imputation = as.matrix(imputation),
+      Minimum = coalesce(dots$minimum, "")
     )
   }
 )
@@ -150,12 +172,25 @@ a reproducible example at https://github.com/inbo/multimput/issues"
 #' @importFrom stats dnbinom qnbinom rbinom rnbinom runif
 rzinb0 <- function(n, mu, size, prob, tol = 2e-10) {
   assert_that(
-    is.count(n), noNA(n), is.numeric(mu), noNA(mu), is.numeric(size),
-    noNA(size), is.numeric(prob), noNA(prob), is.number(tol)
+    is.count(n),
+    noNA(n),
+    is.numeric(mu),
+    noNA(mu),
+    is.numeric(size),
+    noNA(size),
+    is.numeric(prob),
+    noNA(prob),
+    is.number(tol)
   )
   assert_that(
-    tol > 0, tol < 1e-5, length(mu) %in% c(1, n), length(size) %in% c(1, n),
-    length(prob) %in% c(1, n), all(prob >= 0), all(prob <= 1), all(size > 0)
+    tol > 0,
+    tol < 1e-5,
+    length(mu) %in% c(1, n),
+    length(size) %in% c(1, n),
+    length(prob) %in% c(1, n),
+    all(prob >= 0),
+    all(prob <= 1),
+    all(size > 0)
   )
   count <- rbinom(n = n, size = 1, prob = 1 - prob)
   non_zero <- which(count == 1)

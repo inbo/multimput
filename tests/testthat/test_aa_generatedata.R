@@ -36,8 +36,15 @@ describe("generate_data", {
     expect_named(
       dataset,
       c(
-        "Year", "Period", "Site", "Mu", "YearEffect", "PeriodEffect",
-        "SiteEffect", "Run", "Count"
+        "Year",
+        "Period",
+        "Site",
+        "Mu",
+        "YearEffect",
+        "PeriodEffect",
+        "SiteEffect",
+        "Run",
+        "Count"
       )
     )
   })
@@ -70,8 +77,15 @@ describe("generate_data", {
     expect_named(
       dataset[[1]],
       c(
-        "Year", "Period", "Site", "Mu", "YearEffect",
-        "PeriodEffect", "SiteEffect", "Count", "Run"
+        "Year",
+        "Period",
+        "Site",
+        "Mu",
+        "YearEffect",
+        "PeriodEffect",
+        "SiteEffect",
+        "Count",
+        "Run"
       )
     )
   })
