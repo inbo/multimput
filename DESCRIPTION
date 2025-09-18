@@ -57,6 +57,7 @@ Collate:
     'aggregated_imputed_class.R'
     'aggregate_impute.R'
     'check_old_names.R'
+    'compare_generic.R'
     'datasets.R'
     'generate_data.R'
     'hurdle_impute.R'
