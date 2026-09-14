@@ -282,3 +282,63 @@ get_covariates <- function(model) {
   model$.args$data[as.character(model$.args$formula)[2]] |>
     cbind(covariates)
 }
+
+dzinb0 <- function(x, mu, size, prob) {
+  assert_that(
+    is.numeric(x),
+    all(abs(round(x) - x) < .Machine$double.eps^0.5),
+    noNA(x),
+    all(x >= 0),
+    is.number(mu),
+    noNA(mu),
+    mu >= 0,
+    is.number(size),
+    noNA(size),
+    size > 0,
+    is.number(prob),
+    noNA(prob),
+    prob >= 0,
+    prob <= 1
+  )
+  dens <- rep(NA_real_, length(x))
+  dens[x == 0] <- prob
+  dens[x > 0] <- (1 - prob) *
+    dnbinom(x[x > 0], mu = mu, size = size) /
+    (1 - dnbinom(0, mu = mu, size = size))
+  return(dens)
+}
+
+qzinb0 <- function(p, mu, size, prob) {
+  assert_that(
+    is.number(mu),
+    noNA(mu),
+    mu >= 0,
+    is.number(size),
+    noNA(size),
+    size > 0,
+    is.number(p),
+    noNA(p),
+    p > 0,
+    p < 1,
+    is.number(prob),
+    noNA(prob),
+    prob >= 0,
+    prob <= 1
+  )
+  current_max <- ceiling(mu)
+  dens <- dzinb0(x = 0:current_max, mu = mu, size = size, prob = prob)
+  while (sum(dens) < max(p)) {
+    c(
+      dens,
+      dzinb0(
+        x = current_max + seq_len(current_max),
+        mu = mu,
+        size = size,
+        prob = prob
+      )
+    ) -> dens
+    current_max <- current_max + ceiling(mu)
+  }
+  cum_pos <- cumsum(dens)
+  vapply(p, function(p) min(which(cum_pos >= p)) - 1L, integer(1))
+}
