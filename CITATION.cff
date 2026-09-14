@@ -14,14 +14,17 @@ authors:
   family-names: Quataert
   orcid: 0000-0002-6894-9402
 keywords:
-- missing data, multiple imputation, Rubin
+- missing data
+- multiple imputation
+- Rubin
+- inbo_version
 contact:
 - given-names: Thierry
   family-names: Onkelinx
   affiliation: Research Institute for Nature and Forest (INBO)
   orcid: 0000-0001-8804-4216
 doi: 10.5281/zenodo.598331
-license: GPL-3.0
+license: GPL-3.0-only
 repository-code: https://github.com/inbo/multimput/
 type: software
 abstract: "Accompanying package for the paper: Working with population totals in the

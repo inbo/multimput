@@ -9,7 +9,8 @@ Authors@R: c(
            comment = c(ORCID = "0000-0001-7265-6349", affiliation = "Research Institute for Nature and Forest (INBO)")),
     person("Paul", "Quataert", role = "aut",
            comment = c(ORCID = "0000-0002-6894-9402")),
-    person("Research Institute for Nature and Forest (INBO)", , , "info@inbo.be", role = c("cph", "fnd"))
+    person("Research Institute for Nature and Forest (INBO)", , , "info@inbo.be", role = c("cph", "fnd", "pbl"),
+           comment = c(ROR = "00j54wy13"))
   )
 Description: Accompanying package for the paper: Working with population
     totals in the presence of missing data comparing imputation methods in
@@ -20,7 +21,7 @@ URL: https://doi.org/10.5281/zenodo.598331,
     https://github.com/inbo/multimput, https://inbo.github.io/multimput/
 BugReports: https://github.com/inbo/multimput/issues
 Depends:
-    R (>= 3.0.0)
+    R (>= 4.2.0)
 Imports:
     assertthat,
     digest,
@@ -42,17 +43,17 @@ Suggests:
     rmarkdown,
     sn,
     testthat
-VignetteBuilder: 
+VignetteBuilder:
     knitr
 Additional_repositories: https://inla.r-inla-download.org/R/stable
-Config/checklist/communities: inbo
-Config/checklist/keywords: missing data, multiple imputation, Rubin
+Config/citeme/communities: inbo
+Config/citeme/keywords: missing data; multiple imputation; Rubin; inbo_version
 Encoding: UTF-8
 Language: en-GB
 LazyData: TRUE
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
-Collate: 
+RoxygenNote: 7.3.3
+Collate:
     'raw_imputed_class.R'
     'aggregated_imputed_class.R'
     'aggregate_impute.R'
