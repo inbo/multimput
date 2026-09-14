@@ -15,78 +15,94 @@ exportMethods(impute)
 exportMethods(model_impute)
 importClassesFrom(INLA,inla)
 importClassesFrom(lme4,glmerMod)
-importFrom(INLA,inla.hyperpar.sample)
-importFrom(INLA,inla.posterior.sample)
-importFrom(assertthat,assert_that)
-importFrom(assertthat,has_name)
-importFrom(assertthat,is.count)
-importFrom(assertthat,is.number)
-importFrom(assertthat,is.string)
-importFrom(assertthat,noNA)
+importFrom(INLA,
+  inla.hyperpar.sample,
+  inla.posterior.sample
+)
+importFrom(assertthat,
+  assert_that,
+  has_name,
+  is.count,
+  is.number,
+  is.string,
+  noNA
+)
 importFrom(digest,sha1)
-importFrom(dplyr,across)
-importFrom(dplyr,bind_rows)
-importFrom(dplyr,coalesce)
-importFrom(dplyr,filter)
-importFrom(dplyr,group_by)
-importFrom(dplyr,group_map)
-importFrom(dplyr,inner_join)
-importFrom(dplyr,mutate)
-importFrom(dplyr,n)
-importFrom(dplyr,row_number)
-importFrom(dplyr,select)
-importFrom(dplyr,semi_join)
-importFrom(dplyr,starts_with)
-importFrom(dplyr,summarise)
-importFrom(dplyr,transmute)
-importFrom(dplyr,ungroup)
-importFrom(methods,getClassDef)
-importFrom(methods,new)
-importFrom(methods,setClass)
-importFrom(methods,setClassUnion)
-importFrom(methods,setGeneric)
-importFrom(methods,setIs)
-importFrom(methods,setMethod)
-importFrom(methods,setValidity)
-importFrom(methods,validObject)
+importFrom(dplyr,
+  across,
+  bind_rows,
+  coalesce,
+  filter,
+  group_by,
+  group_map,
+  inner_join,
+  mutate,
+  n,
+  row_number,
+  select,
+  semi_join,
+  starts_with,
+  summarise,
+  transmute,
+  ungroup
+)
+importFrom(methods,
+  getClassDef,
+  new,
+  setClass,
+  setClassUnion,
+  setGeneric,
+  setIs,
+  setMethod,
+  setValidity,
+  validObject
+)
 importFrom(mvtnorm,rmvnorm)
-importFrom(purrr,map)
-importFrom(purrr,map2)
-importFrom(purrr,map2_dfr)
-importFrom(purrr,map_dfr)
-importFrom(purrr,map_int)
-importFrom(purrr,pmap_dfr)
-importFrom(rlang,"!!!")
-importFrom(rlang,"!!")
-importFrom(rlang,":=")
-importFrom(rlang,.data)
-importFrom(rlang,expr)
-importFrom(rlang,parse_expr)
-importFrom(rlang,syms)
-importFrom(stats,aggregate)
-importFrom(stats,as.formula)
-importFrom(stats,dnbinom)
-importFrom(stats,dpois)
-importFrom(stats,model.matrix)
-importFrom(stats,na.omit)
-importFrom(stats,plogis)
-importFrom(stats,predict)
-importFrom(stats,qnbinom)
-importFrom(stats,qnorm)
-importFrom(stats,qpois)
-importFrom(stats,rbinom)
-importFrom(stats,rgamma)
-importFrom(stats,rnbinom)
-importFrom(stats,rnorm)
-importFrom(stats,rpois)
-importFrom(stats,rt)
-importFrom(stats,runif)
-importFrom(stats,setNames)
-importFrom(stats,terms)
-importFrom(stats,var)
-importFrom(stats,vcov)
+importFrom(purrr,
+  map,
+  map2,
+  map2_dfr,
+  map_dfr,
+  map_int,
+  pmap_dfr
+)
+importFrom(rlang,
+  "!!!",
+  "!!",
+  ":=",
+  .data,
+  expr,
+  parse_expr,
+  syms
+)
+importFrom(stats,
+  aggregate,
+  as.formula,
+  dnbinom,
+  dpois,
+  model.matrix,
+  na.omit,
+  plogis,
+  predict,
+  qnbinom,
+  qnorm,
+  qpois,
+  rbinom,
+  rgamma,
+  rnbinom,
+  rnorm,
+  rpois,
+  rt,
+  runif,
+  setNames,
+  terms,
+  var,
+  vcov
+)
 importFrom(tibble,rownames_to_column)
-importFrom(tidyr,pivot_longer)
-importFrom(tidyr,pivot_wider)
+importFrom(tidyr,
+  pivot_longer,
+  pivot_wider
+)
 importFrom(tidyselect,all_of)
 importFrom(utils,data)

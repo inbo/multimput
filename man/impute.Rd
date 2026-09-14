@@ -42,11 +42,11 @@ Defaults to \code{19}.}
 
 \item{data}{The dataset holding both the observed and the missing values}
 
-\item{seed}{See the same argument in \code{\link[INLA:qsample]{INLA::inla.qsample()}} for further
+\item{seed}{See the same argument in \code{\link[INLA:inla.qsample]{INLA::inla.qsample()}} for further
 information.
 In order to produce reproducible results, you ALSO need to make sure the RNG
 in R is in the same state, see the example in
-\code{\link[INLA:posterior.sample]{INLA::inla.posterior.sample()}}.
+\code{\link[INLA:inla.posterior.sample]{INLA::inla.posterior.sample()}}.
 When seed is non-zero, \code{num_threads} is forced to \code{"1:1"} and
 \code{parallel_configs} is set to \code{FALSE}, since parallel sampling would not
 produce a reproducible sequence of pseudo-random numbers.}

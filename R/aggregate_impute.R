@@ -39,7 +39,7 @@ See ?impute or ?aggregate_impute"
 #' @importFrom assertthat assert_that
 #' @importFrom digest sha1
 #' @importFrom dplyr across bind_rows filter group_by mutate n select
-#' semi_join starts_with summarise ungroup
+#' @importFrom dplyr semi_join starts_with summarise ungroup
 #' @importFrom purrr map
 #' @importFrom methods new
 #' @importFrom rlang expr parse_expr syms !! !!! :=
@@ -172,7 +172,7 @@ setMethod(
 #' @importFrom assertthat assert_that
 #' @importFrom digest sha1
 #' @importFrom dplyr across filter group_by inner_join mutate n row_number
-#' select semi_join starts_with
+#' @importFrom dplyr select semi_join starts_with
 #' @importFrom methods new setMethod
 #' @importFrom rlang !! !!! :=
 #' @importFrom tidyselect all_of

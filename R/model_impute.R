@@ -77,7 +77,7 @@ setMethod(
 #' @importFrom assertthat assert_that
 #' @importFrom digest sha1
 #' @importFrom dplyr bind_rows filter group_by mutate n row_number select
-#' summarise transmute ungroup
+#' @importFrom dplyr summarise transmute ungroup
 #' @importFrom purrr map
 #' @importFrom rlang .data !! !!! := parse_expr
 #' @importFrom tibble rownames_to_column

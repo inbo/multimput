@@ -52,7 +52,6 @@ Encoding: UTF-8
 Language: en-GB
 LazyData: TRUE
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Collate:
     'raw_imputed_class.R'
     'aggregated_imputed_class.R'
@@ -72,3 +71,4 @@ Collate:
     'missing_observed.R'
     'missing_volunteer.R'
     'model_impute.R'
+Config/roxygen2/version: 8.1.0
