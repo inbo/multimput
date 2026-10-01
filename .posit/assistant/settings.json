@@ -1,0 +1,22 @@
+{
+  "permission": {
+    "skill": {
+      "r-pkg-code": "allow"
+    },
+    "edit": {
+      "*.md": "allow",
+      "*.R": "allow",
+      "*/DESCRIPTION": "allow"
+    },
+    "bash": {
+      "air *": "allow",
+      "tail *": "allow",
+      "Rscript *": "allow",
+      "git stash *": "allow",
+      "git stash pop *": "allow"
+    },
+    "executeCode": {
+      "*": "allow"
+    }
+  }
+}

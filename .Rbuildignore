@@ -12,6 +12,7 @@ CONTRIBUTING.md
 ^\.github$
 ^\.httr-oauth$
 ^\.lintr$
+^\.posit$
 ^\.travis\.yml$
 ^\.zenodo\.json$
 ^_builds$

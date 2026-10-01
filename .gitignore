@@ -17,6 +17,7 @@
 .Rproj.user
 .Ruserdata
 .httr-oauth
+.posit/assistant/plans
 _builds
 _projects
 _steps
