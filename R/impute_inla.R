@@ -61,14 +61,13 @@ setMethod(
           Data = covariates,
           Response = response,
           Imputation = matrix(integer(0), ncol = n_imp),
-          Minimum = coalesce(dots$minimum, ""),
           Extra = extra
         )
       )
     }
 
     ifelse(is.null(model$model.spde2.blc), "Predictor:%i", "APredictor:%i") |>
-      sprintf(missing_obs) -> missing_obs
+      sprintf(missing_obs) -> missing_obs_name
     assert_that(requireNamespace("sn", quietly = TRUE))
     samples <- inla.posterior.sample(
       n = n_imp,
@@ -78,7 +77,7 @@ setMethod(
       parallel.configs = parallel_configs
     )
     map(samples, "latent") |>
-      map(`[`, missing_obs, 1) |>
+      map(`[`, missing_obs_name, 1) |>
       setNames(paste0("sim_", seq_len(n_imp))) -> latent
     inla.hyperpar.sample(n = n_imp, result = model) |>
       as.data.frame() -> hyperpar
@@ -163,7 +162,11 @@ a reproducible example at https://github.com/inbo/multimput/issues"
       Response = response,
       Extra = extra,
       Imputation = as.matrix(imputation) |>
-        raw_clamp(data = data, dots = dots, missing_obs = missing_obs)
+        raw_clamp(
+          data = model$.args$data,
+          dots = dots,
+          missing_obs = missing_obs
+        )
     )
   }
 )

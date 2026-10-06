@@ -7,7 +7,11 @@ test_that("hurdle_impute", {
       Count = ifelse(.data$Count > 0, .data$Count, NA)
     ) -> count
   model <- lme4::glmer(Count ~ 1 + (1 | Year), data = count, family = poisson)
+  # `minimum` now clamps the imputations directly in `impute()`
   impute_count <- impute(model, data = count, minimum = "Minimum")
+  expect_true(
+    all(impute_count@Imputation >= count$Minimum[is.na(count$Count)])
+  )
   dataset |>
     mutate(
       Minimum = as.integer(.data$Count > 0),

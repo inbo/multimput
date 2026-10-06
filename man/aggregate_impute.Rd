@@ -12,9 +12,9 @@ aggregate_impute(object, grouping, fun, filter = list(), join, ...)
 
 \S4method{aggregate_impute}{ANY}(object, grouping, fun, filter = list(), join, ...)
 
-\S4method{aggregate_impute}{rawImputed}(object, grouping, fun, filter = list(), join, minimum)
+\S4method{aggregate_impute}{rawImputed}(object, grouping, fun, filter = list(), join, ...)
 
-\S4method{aggregate_impute}{aggregatedImputed}(object, grouping, fun, filter = list(), join, minimum)
+\S4method{aggregate_impute}{aggregatedImputed}(object, grouping, fun, filter = list(), join, ...)
 }
 \arguments{
 \item{object}{A \code{rawImputed} object.}

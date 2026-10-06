@@ -14,7 +14,6 @@ test_that("handles lm", {
   )
   expect_identical(ncol(imputed@Imputation), 19L)
   expect_identical(nrow(imputed@Imputation), sum(is.na(dataset$Count)))
-  expect_identical(imputed@Minimum, "")
 
   expect_is(
     imputed <- impute(model, dataset, n_imp = n_imp),
@@ -32,12 +31,13 @@ test_that("handles lm", {
     ),
     "rawImputed"
   )
-  expect_identical(imputed@Minimum, "Bottom")
+  # imputations are clamped to the minimum stored in `Bottom`
+  expect_true(all(imputed@Imputation >= dataset$Bottom[1]))
   expect_identical(imputed@Extra, na.omit(dataset)[1, ])
 
   expect_error(
     impute(model, dataset, minimum = "Junk"),
-    "object@Data does not have .*name.*Junk"
+    "`minimum` must contain a column in `data`"
   )
 })
 
@@ -63,7 +63,6 @@ test_that("handles inla with gaussian distribution", {
   expect_is(imputed <- impute(model, parallel_configs = FALSE), "rawImputed")
   expect_identical(ncol(imputed@Imputation), 19L)
   expect_identical(nrow(imputed@Imputation), sum(is.na(dataset$Count)))
-  expect_identical(imputed@Minimum, "")
 
   expect_is(
     imputed <- impute(model, dataset, n_imp = n_imp, parallel_configs = FALSE),
@@ -82,12 +81,13 @@ test_that("handles inla with gaussian distribution", {
     ),
     "rawImputed"
   )
-  expect_identical(imputed@Minimum, "Bottom")
+  # imputations are clamped to the minimum stored in `Bottom`
+  expect_true(all(imputed@Imputation >= dataset$Bottom[1]))
   expect_identical(imputed@Extra, na.omit(dataset)[1, ])
 
   expect_error(
     impute(model, dataset, minimum = "Junk", parallel_configs = FALSE),
-    "object@Data does not have .*name.*Junk"
+    "`minimum` must contain a column in `data`"
   )
 })
 
@@ -114,7 +114,6 @@ test_that("handles inla with negative binomial distribution", {
   expect_is(imputed <- impute(model, parallel_configs = FALSE), "rawImputed")
   expect_identical(ncol(imputed@Imputation), 19L)
   expect_identical(nrow(imputed@Imputation), sum(is.na(dataset$Count)))
-  expect_identical(imputed@Minimum, "")
 
   expect_is(
     imputed <- impute(model, dataset, n_imp = n_imp, parallel_configs = FALSE),
@@ -133,12 +132,13 @@ test_that("handles inla with negative binomial distribution", {
     ),
     "rawImputed"
   )
-  expect_identical(imputed@Minimum, "Bottom")
+  # imputations are clamped to the minimum stored in `Bottom`
+  expect_true(all(imputed@Imputation >= dataset$Bottom[1]))
   expect_identical(imputed@Extra, na.omit(dataset)[1, ])
 
   expect_error(
     impute(model, dataset, minimum = "Junk", parallel_configs = FALSE),
-    "object@Data does not have.*name.*Junk"
+    "`minimum` must contain a column in `data`"
   )
 })
 
@@ -165,7 +165,6 @@ test_that("handles inla with poisson distribution", {
   expect_is(imputed <- impute(model, parallel_configs = FALSE), "rawImputed")
   expect_identical(ncol(imputed@Imputation), 19L)
   expect_identical(nrow(imputed@Imputation), sum(is.na(dataset$Count)))
-  expect_identical(imputed@Minimum, "")
 
   expect_is(
     imputed <- impute(model, dataset, n_imp = n_imp, parallel_configs = FALSE),
@@ -184,12 +183,13 @@ test_that("handles inla with poisson distribution", {
     ),
     "rawImputed"
   )
-  expect_identical(imputed@Minimum, "Bottom")
+  # imputations are clamped to the minimum stored in `Bottom`
+  expect_true(all(imputed@Imputation >= dataset$Bottom[1]))
   expect_identical(imputed@Extra, na.omit(dataset)[1, ])
 
   expect_error(
     impute(model, dataset, minimum = "Junk", parallel_configs = FALSE),
-    "object@Data does not have.*name.*Junk"
+    "`minimum` must contain a column in `data`"
   )
 })
 
@@ -216,7 +216,6 @@ test_that("handles inla with zeroinflatednbinomial1 distribution", {
   expect_is(imputed <- impute(model, parallel_configs = FALSE), "rawImputed")
   expect_identical(ncol(imputed@Imputation), 19L)
   expect_identical(nrow(imputed@Imputation), sum(is.na(dataset$Count)))
-  expect_identical(imputed@Minimum, "")
 
   expect_is(
     imputed <- impute(model, dataset, n_imp = n_imp, parallel_configs = FALSE),
@@ -235,12 +234,13 @@ test_that("handles inla with zeroinflatednbinomial1 distribution", {
     ),
     "rawImputed"
   )
-  expect_identical(imputed@Minimum, "Bottom")
+  # imputations are clamped to the minimum stored in `Bottom`
+  expect_true(all(imputed@Imputation >= dataset$Bottom[1]))
   expect_identical(imputed@Extra, na.omit(dataset)[1, ])
 
   expect_error(
     impute(model, dataset, minimum = "Junk", parallel_configs = FALSE),
-    "object@Data does not have.*name.*Junk"
+    "`minimum` must contain a column in `data`"
   )
 })
 
@@ -267,7 +267,6 @@ test_that("handles inla with zeroinflatedpoisson0 distribution", {
   expect_is(imputed <- impute(model, parallel_configs = FALSE), "rawImputed")
   expect_identical(ncol(imputed@Imputation), 19L)
   expect_identical(nrow(imputed@Imputation), sum(is.na(dataset$Count)))
-  expect_identical(imputed@Minimum, "")
 
   expect_is(
     imputed <- impute(model, dataset, n_imp = n_imp, parallel_configs = FALSE),
@@ -286,12 +285,13 @@ test_that("handles inla with zeroinflatedpoisson0 distribution", {
     ),
     "rawImputed"
   )
-  expect_identical(imputed@Minimum, "Bottom")
+  # imputations are clamped to the minimum stored in `Bottom`
+  expect_true(all(imputed@Imputation >= dataset$Bottom[1]))
   expect_identical(imputed@Extra, na.omit(dataset)[1, ])
 
   expect_error(
     impute(model, dataset, minimum = "Junk", parallel_configs = FALSE),
-    "object@Data does not have.*name.*Junk"
+    "`minimum` must contain a column in `data`"
   )
 })
 
@@ -318,7 +318,6 @@ test_that("handles inla with zeroinflatedpoisson1 distribution", {
   expect_is(imputed <- impute(model, parallel_configs = FALSE), "rawImputed")
   expect_identical(ncol(imputed@Imputation), 19L)
   expect_identical(nrow(imputed@Imputation), sum(is.na(dataset$Count)))
-  expect_identical(imputed@Minimum, "")
 
   expect_is(
     imputed <- impute(model, dataset, n_imp = n_imp, parallel_configs = FALSE),
@@ -337,12 +336,13 @@ test_that("handles inla with zeroinflatedpoisson1 distribution", {
     ),
     "rawImputed"
   )
-  expect_identical(imputed@Minimum, "Bottom")
+  # imputations are clamped to the minimum stored in `Bottom`
+  expect_true(all(imputed@Imputation >= dataset$Bottom[1]))
   expect_identical(imputed@Extra, na.omit(dataset)[1, ])
 
   expect_error(
     impute(model, dataset, minimum = "Junk", parallel_configs = FALSE),
-    "object@Data does not have.*name.*Junk"
+    "`minimum` must contain a column in `data`"
   )
 })
 
@@ -368,11 +368,6 @@ test_that("handles datasets without missing observations", {
     nrow(imputed@Imputation),
     sum(is.na(dataset$Count))
   )
-  expect_identical(
-    imputed@Minimum,
-    ""
-  )
-
   expect_is(
     imputed <- impute(
       model,
@@ -382,13 +377,9 @@ test_that("handles datasets without missing observations", {
     ),
     "rawImputed"
   )
-  expect_identical(imputed@Minimum, "Bottom")
+  # imputations are clamped to the minimum stored in `Bottom`
+  expect_true(all(imputed@Imputation >= dataset$Bottom[1]))
   expect_identical(imputed@Extra, na.omit(dataset)[1, ])
-
-  expect_error(
-    impute(model, dataset, minimum = "Junk"),
-    "object@Data does not have.*name.*Junk"
-  )
 
   if (!require(INLA)) {
     skip("INLA package not available")
@@ -580,22 +571,15 @@ test_that("handles glmerMod objects", {
     nrow(imputed@Imputation),
     sum(is.na(dataset$Count))
   )
-  expect_identical(
-    imputed@Minimum,
-    ""
-  )
-
   expect_is(
     imputed <- impute(model, dataset, minimum = "Bottom"),
     "rawImputed"
   )
-  expect_identical(
-    imputed@Minimum,
-    "Bottom"
-  )
+  # imputations are clamped to the minimum stored in `Bottom`
+  expect_true(all(imputed@Imputation >= dataset$Bottom[1]))
 
   expect_error(
     impute(model, dataset, minimum = "Junk"),
-    "object@Data does not have.*name.*Junk"
+    "`minimum` must contain a column in `data`"
   )
 })

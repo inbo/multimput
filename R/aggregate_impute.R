@@ -63,7 +63,7 @@ See ?impute or ?aggregate_impute"
 setMethod(
   f = "aggregate_impute",
   signature = signature(object = "rawImputed"),
-  definition = function(object, grouping, fun, filter = list(), join, minimum) {
+  definition = function(object, grouping, fun, filter = list(), join, ...) {
     assert_that(
       is.character(grouping),
       inherits(fun, "function"),
@@ -177,7 +177,7 @@ setMethod(
 setMethod(
   f = "aggregate_impute",
   signature = signature(object = "aggregatedImputed"),
-  definition = function(object, grouping, fun, filter = list(), join, minimum) {
+  definition = function(object, grouping, fun, filter = list(), join, ...) {
     assert_that(
       is.character(grouping),
       inherits(fun, "function"),

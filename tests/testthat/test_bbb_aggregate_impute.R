@@ -14,14 +14,60 @@ test_that("aggregate_impute", {
   expect_identical(nrow(aggr@Covariate), nrow(aggr@Imputation))
   expect_identical(ncol(imputed@Imputation), ncol(aggr@Imputation))
 
-  # handles rawImputed with Minimum
-  imputed2 <- impute(data = dataset, model = model, minimum = "Bottom")
-  aggr2 <- aggregate_impute(imputed2, grouping = grouping, fun = fun)
+  # clamps the aggregated values to a `minimum` data.frame
+  # the minimum is set very high so every aggregated value must be clamped
+  minimum <- expand.grid(
+    Year = unique(dataset$Year),
+    Period = unique(dataset$Period)
+  )
+  minimum$Floor <- 1e6
+  aggr2 <- aggregate_impute(
+    imputed,
+    grouping = grouping,
+    fun = fun,
+    minimum = minimum
+  )
   expect_is(aggr2, "aggregatedImputed")
   expect_identical(colnames(aggr2@Covariate), grouping)
   expect_identical(nrow(aggr2@Covariate), nrow(aggr2@Imputation))
-  expect_identical(ncol(imputed2@Imputation), ncol(aggr2@Imputation))
+  expect_identical(ncol(imputed@Imputation), ncol(aggr2@Imputation))
+  expect_true(all(aggr2@Imputation >= 1e6))
   expect_true(all(aggr@Imputation <= aggr2@Imputation))
+
+  # checks the sanity of `minimum`
+  expect_error(
+    aggregate_impute(imputed, grouping = grouping, fun = fun, minimum = "junk"),
+    "`minimum` is not a data.frame"
+  )
+  expect_error(
+    aggregate_impute(
+      imputed,
+      grouping = grouping,
+      fun = fun,
+      minimum = minimum[, c("Year", "Floor")]
+    ),
+    "`minimum` does not contain all grouping columns"
+  )
+  minimum$Extra <- 1
+  expect_error(
+    aggregate_impute(
+      imputed,
+      grouping = grouping,
+      fun = fun,
+      minimum = minimum
+    ),
+    "`minimum` should have exactly one more column than the grouping columns"
+  )
+  minimum$Extra <- NULL
+  expect_error(
+    aggregate_impute(
+      imputed,
+      grouping = grouping,
+      fun = fun,
+      minimum = rbind(minimum, minimum)
+    ),
+    "`minimum` contains duplicate rows for the grouping columns"
+  )
 
   # handles datasets without missing observations
   n_imp <- 19L
