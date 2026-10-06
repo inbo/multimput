@@ -9,6 +9,13 @@
 #' An optional argument to filter the raw dataset based on a data.frame.
 #' A [dplyr::semi_join()] will be applied with `join` or each element
 #' of `join` in case join is a list.
+#' @param ... Additional arguments.
+#' See details.
+#' @details
+#' You can pass a data.frame to `minimum`.
+#' This data.frame should contain the same grouping columns as `grouping` and
+#' one additional column with the minimum value for each group.
+#' The aggregated values will be clamped to the minimum value for each group.
 #' @name aggregate_impute
 #' @rdname aggregate_impute
 #' @exportMethod aggregate_impute
@@ -16,7 +23,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "aggregate_impute",
-  def = function(object, grouping, fun, filter = list(), join) {
+  def = function(object, grouping, fun, filter = list(), join, ...) {
     standard.generic("aggregate_impute") # nocov
   }
 )
@@ -26,7 +33,7 @@ setGeneric(
 setMethod(
   f = "aggregate_impute",
   signature = signature(object = "ANY"),
-  definition = function(object, grouping, fun, filter = list(), join) {
+  definition = function(object, grouping, fun, filter = list(), join, ...) {
     stop(
       "aggregate_impute() requires a 'rawImputed' or 'aggregatedImputed' object.
 See ?impute or ?aggregate_impute"
@@ -56,7 +63,7 @@ See ?impute or ?aggregate_impute"
 setMethod(
   f = "aggregate_impute",
   signature = signature(object = "rawImputed"),
-  definition = function(object, grouping, fun, filter = list(), join) {
+  definition = function(object, grouping, fun, filter = list(), join, minimum) {
     assert_that(
       is.character(grouping),
       inherits(fun, "function"),
@@ -64,7 +71,6 @@ setMethod(
     )
     grouping <- syms(grouping)
     id_column <- paste0("ID", sha1(Sys.time()))
-    minimum_column <- paste0("Minimum", sha1(Sys.time()))
     response <- object@Response
     dots <- expr(
       !!parse_expr(
@@ -74,13 +80,6 @@ setMethod(
     data <- object@Data |>
       mutate(!!id_column := !!dots) |>
       bind_rows(object@Extra)
-    if (object@Minimum == "") {
-      data <- data |>
-        mutate(!!minimum_column := -Inf)
-    } else {
-      data <- data |>
-        mutate(!!minimum_column := !!parse_expr(object@Minimum))
-    }
     imputation <- object@Imputation
 
     map(filter, trans) |>
@@ -129,17 +128,14 @@ setMethod(
       )
     }
 
+    # unselect imputations that are not in the filtered dataset
     imputation <- imputation[na.omit(data[[id_column]]), , drop = FALSE]
 
     missing_obs <- which(is.na(data[, response]))
-    total <- lapply(
+    lapply(
       seq_len(ncol(imputation)),
       function(i) {
-        data[missing_obs, response] <- pmax(
-          imputation[, i],
-          data[[minimum_column]][missing_obs],
-          na.rm = TRUE
-        )
+        data[missing_obs, response] <- imputation[, i]
         data |>
           group_by(!!!grouping) |>
           summarise(
@@ -155,7 +151,8 @@ setMethod(
     ) |>
       bind_rows() |>
       pivot_wider(names_from = "Imputation", values_from = all_of(response)) |>
-      ungroup()
+      ungroup() |>
+      aggregate_clamp(...) -> total
     new(
       "aggregatedImputed",
       Covariate = total |>
@@ -180,7 +177,7 @@ setMethod(
 setMethod(
   f = "aggregate_impute",
   signature = signature(object = "aggregatedImputed"),
-  definition = function(object, grouping, fun, filter = list(), join) {
+  definition = function(object, grouping, fun, filter = list(), join, minimum) {
     assert_that(
       is.character(grouping),
       inherits(fun, "function"),
@@ -251,7 +248,8 @@ setMethod(
           .names = "{.col}"
         ),
         .groups = "drop"
-      ) -> total
+      ) |>
+      aggregate_clamp(...) -> total
 
     new(
       "aggregatedImputed",

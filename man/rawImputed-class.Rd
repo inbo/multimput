@@ -16,9 +16,6 @@ Holds a dataset and imputed values
 
 \item{\code{Response}}{A character holding the name of the response variable.}
 
-\item{\code{Minimum}}{An optional character holding the name of the variable with the
-minimum.}
-
 \item{\code{Imputation}}{A matrix with imputed values.}
 
 \item{\code{Extra}}{A data.frame with extra data to add to the imputations.

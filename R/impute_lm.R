@@ -43,8 +43,12 @@ setMethod(
       "rawImputed",
       Data = data,
       Response = response,
-      Minimum = coalesce(dots$minimum, ""),
-      Imputation = prediction$fit + rt_value * prediction$se.pred,
+      Imputation = raw_clamp(
+        y = prediction$fit + rt_value * prediction$se.pred,
+        data = data,
+        dots = dots,
+        missing_obs = missing_obs
+      ),
       Extra = extra
     )
   }

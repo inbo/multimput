@@ -8,13 +8,13 @@
 \alias{aggregate_impute,aggregatedImputed-method}
 \title{Aggregate an imputed dataset}
 \usage{
-aggregate_impute(object, grouping, fun, filter = list(), join)
+aggregate_impute(object, grouping, fun, filter = list(), join, ...)
 
-\S4method{aggregate_impute}{ANY}(object, grouping, fun, filter = list(), join)
+\S4method{aggregate_impute}{ANY}(object, grouping, fun, filter = list(), join, ...)
 
-\S4method{aggregate_impute}{rawImputed}(object, grouping, fun, filter = list(), join)
+\S4method{aggregate_impute}{rawImputed}(object, grouping, fun, filter = list(), join, minimum)
 
-\S4method{aggregate_impute}{aggregatedImputed}(object, grouping, fun, filter = list(), join)
+\S4method{aggregate_impute}{aggregatedImputed}(object, grouping, fun, filter = list(), join, minimum)
 }
 \arguments{
 \item{object}{A \code{rawImputed} object.}
@@ -29,9 +29,18 @@ Will be passed to \code{\link[dplyr:filter]{dplyr::filter()}}.}
 \item{join}{An optional argument to filter the raw dataset based on a data.frame.
 A \code{\link[dplyr:semi_join]{dplyr::semi_join()}} will be applied with \code{join} or each element
 of \code{join} in case join is a list.}
+
+\item{...}{Additional arguments.
+See details.}
 }
 \description{
 Aggregate an imputed dataset
+}
+\details{
+You can pass a data.frame to \code{minimum}.
+This data.frame should contain the same grouping columns as \code{grouping} and
+one additional column with the minimum value for each group.
+The aggregated values will be clamped to the minimum value for each group.
 }
 \examples{
 dataset <- generate_data(n_year = 10, n_site = 50, n_run = 1)

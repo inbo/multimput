@@ -70,7 +70,7 @@ Convert the factor in the dataset and refit the model."
       }
     ) |>
       c(list(fixed)) |>
-      do.call(what = "+")
+      Reduce(f = "+")
     mu <- model@resp$family$linkinv(eta)
     y <- switch(
       model@resp$family$family,
@@ -92,8 +92,12 @@ Convert the factor in the dataset and refit the model."
       "rawImputed",
       Data = data,
       Response = response,
-      Imputation = y,
-      Minimum = coalesce(dots$minimum, ""),
+      Imputation = raw_clamp(
+        y = y,
+        data = data,
+        dots = dots,
+        missing_obs = missing_obs
+      ),
       Extra = extra
     )
   }

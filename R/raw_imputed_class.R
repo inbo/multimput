@@ -2,8 +2,6 @@
 #' Holds a dataset and imputed values
 #' @slot Data A data.frame with the data.
 #' @slot Response A character holding the name of the response variable.
-#' @slot Minimum An optional character holding the name of the variable with the
-#' minimum.
 #' @slot Imputation A matrix with imputed values.
 #' @slot Extra A data.frame with extra data to add to the imputations.
 #' This data is not used in the imputation model.
@@ -19,7 +17,6 @@ setClass(
   representation = representation(
     Data = "data.frame",
     Response = "character",
-    Minimum = "character",
     Imputation = "matrix",
     Extra = "data.frame"
   )
@@ -84,10 +81,5 @@ setValidity(
       all(!is.na(object@Extra[[object@Response]])),
       msg = "Response variable in `Extra` contains `NA` values."
     )
-
-    assert_that(length(object@Minimum) == 1)
-    if (!is.na(object@Minimum) && object@Minimum != "") {
-      assert_that(has_name(object@Data, object@Minimum))
-    }
   }
 )

@@ -162,8 +162,8 @@ a reproducible example at https://github.com/inbo/multimput/issues"
       Data = covariates,
       Response = response,
       Extra = extra,
-      Imputation = as.matrix(imputation),
-      Minimum = coalesce(dots$minimum, "")
+      Imputation = as.matrix(imputation) |>
+        raw_clamp(data = data, dots = dots, missing_obs = missing_obs)
     )
   }
 )

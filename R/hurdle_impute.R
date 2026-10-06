@@ -34,13 +34,6 @@ hurdle_impute <- function(presence, count) {
   count@Data[[count@Response]] |>
     matrix(nrow = nrow(count@Data), ncol = ncol(count@Imputation)) -> count_resp
   count_resp[is.na(count@Data[[count@Response]]), ] <- count@Imputation
-  if (count@Minimum != "") {
-    minimum <- count@Data[[count@Minimum]]
-    relevant <- !is.na(minimum) & minimum > 0
-    minimum[relevant] |>
-      matrix(nrow = sum(relevant), ncol = ncol(count@Imputation)) |>
-      pmax(count_resp[relevant, ]) -> count_resp[relevant, ]
-  }
   presence@Data[[presence@Response]] |>
     matrix(
       nrow = nrow(presence@Data),
@@ -49,21 +42,14 @@ hurdle_impute <- function(presence, count) {
   presence_resp[
     is.na(presence@Data[[presence@Response]]),
   ] <- presence@Imputation
-  if (presence@Minimum != "") {
-    minimum <- presence@Data[[presence@Minimum]]
-    relevant <- !is.na(minimum) & minimum > 0
-    minimum[relevant] |>
-      matrix(nrow = sum(relevant), ncol = ncol(presence@Imputation)) |>
-      pmax(presence_resp[relevant, ]) -> presence_resp[relevant, ]
-  }
 
   # prepare covariates
   cv_count <- count@Data[,
-    !colnames(count@Data) %in% c(count@Response, count@Minimum),
+    !colnames(count@Data) %in% count@Response,
     drop = FALSE
   ]
   cv_presence <- presence@Data[,
-    !colnames(presence@Data) %in% c(presence@Response, presence@Minimum),
+    !colnames(presence@Data) %in% presence@Response,
     drop = FALSE
   ]
   common <- return_common(cv_count, cv_presence)
