@@ -1,7 +1,8 @@
 {
   "permission": {
     "skill": {
-      "r-pkg-code": "allow"
+      "r-pkg-code": "allow",
+      "r-unit-test": "allow"
     },
     "edit": {
       "*.md": "allow",
@@ -13,7 +14,10 @@
       "tail *": "allow",
       "Rscript *": "allow",
       "git stash *": "allow",
-      "git stash pop *": "allow"
+      "git stash pop *": "allow",
+      "cd *": "allow",
+      "perl *": "allow",
+      "grep *": "allow"
     },
     "executeCode": {
       "*": "allow"
