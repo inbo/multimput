@@ -1,0 +1,196 @@
+---
+title: "Clamping imputations"
+author: "Thierry Onkelinx"
+date: "2026-10-05"
+bibliography: multimput.bib
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Clamping imputations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{ggplot2}
+---
+
+```{r}
+#| label: settings
+#| echo: false
+
+library(knitr)
+opts_chunk$set(message = FALSE, fig.width = 7.1, fig.height = 5)
+```
+
+# Clamping
+
+`multimput` supports clamping as of version `0.3.0`.
+Clamping allows to set lower and or upper boundaries for both the imputed values as for their aggregations.
+
+# Clamping at the observation level
+
+A minimal example is a site that was partly inaccessible and therefore we possibly missed some of the animals.
+Thus the observed count is rather a minimum than a correct estimate.
+In this case we set the observation to missing, impute the observation and clamp the imputations to at least equal to the observed minimum.
+
+```{r}
+#| label: prepare-data
+
+set.seed(20261005)
+n_year <- 10
+n_site <- 10
+prob_missing <- 0.1
+dataset <- expand.grid(year = seq_len(n_year), site = seq_len(n_site))
+dataset$id <- seq_along(dataset$year)
+rf_site <- rnorm(n_site)
+dataset$eta <- 2 + log(1.1) * dataset$year + rf_site[dataset$site]
+dataset$y <- rpois(nrow(dataset), lambda = exp(dataset$eta))
+dataset$value <- ifelse(
+  rbinom(nrow(dataset), size = 1, prob = prob_missing),
+  dataset$y,
+  NA
+)
+dataset$y[!is.na(dataset$value)] <- NA
+dataset$eta <- NULL
+```
+
+Prepare the imputation model and generate the imputations with and without clamping.
+Note that the clamped imputations are, as expected, larger that the unclamped imputations.
+
+```{r}
+#| label: raw-impute
+
+library(lme4)
+library(multimput)
+model <- glmer(y ~ year + (1 | site), data = dataset, family = poisson)
+no_minimum <- impute(model = model, dataset)
+minimum <- impute(model = model, dataset, minimum = "value")
+data.frame(
+  unclamped = rowMeans(no_minimum@Imputation),
+  clamped = rowMeans(minimum@Imputation)
+) |>
+  round(2)
+data.frame(
+  unclamped = apply(no_minimum@Imputation, 1, min),
+  clamped = apply(minimum@Imputation, 1, min)
+) |>
+  round(2)
+```
+
+# Clamping at the aggregation level
+
+A more complex example has a design with locations and sublocations.
+The count should be collected at the sublocations level but some of the historical data is only available at the location level.
+Furthermore we know that we have no guarantee that every sublocation of a location is surveyed during every visit.
+When we have only a total at the location level, we don't have information about which sublocations were surveyed or not.
+
+Let's create a dataset with 10 years, 20 locations and 5 sublocations per location.
+
+```{r}
+#| label: prepare-data-2
+
+n_year <- 10
+n_location <- 20
+n_sublocation <- 5
+rf_location <- rnorm(n_location)
+rf_sublocation <- rnorm(n_location * n_sublocation)
+
+dataset <- expand.grid(
+  location = seq_len(n_location),
+  sublocation = seq_len(n_sublocation),
+  year = seq_len(n_year)
+)
+dataset$sublocation <- interaction(dataset$location, dataset$sublocation)
+dataset$id <- seq_along(dataset$year)
+dataset$eta <- 2 +
+  log(1.1) * dataset$year +
+  rf_location[dataset$location] +
+  rf_sublocation[dataset$sublocation]
+dataset$y <- rpois(nrow(dataset), lambda = exp(dataset$eta))
+dataset$eta <- NULL
+dataset$location <- as.character(dataset$location)
+dataset$sublocation <- as.character(dataset$sublocation)
+```
+
+Now let's poke some holes in the dataset by randomly selecting 10% of the year-location combinations.
+For the selected combinations we will set the counts of all sublocations to missing.
+
+```{r}
+#| label: clamps
+
+prob_missing <- 0.1
+only_totals <- sample(
+  n_year * n_location,
+  size = floor(n_year * n_location * prob_missing)
+)
+minimum <- aggregate(y ~ year + location, data = dataset, sum)
+minimum <- minimum[
+  sample(nrow(minimum), size = floor(nrow(minimum) * prob_missing)),
+]
+dataset <- merge(
+  dataset,
+  minimum,
+  by = c("year", "location"),
+  all.x = TRUE,
+  suffixes = c("", ".min")
+)
+dataset[!is.na(dataset$y.min), "y"] <- NA
+dataset$y.min <- NULL
+```
+
+Next we impute the missing values and aggregate the imputations at the location level.
+Then we do the same but we clamp the aggregated imputations to the minimum value for each year-location combination.
+This figure shows the estimated effect of year on the log(count) for both the clamped and unclamped imputations.
+Note that the clamped imputations are higher than the unclamped imputations, because we are enforcing a minimum value.
+
+```{r}
+#| label: fig-impute-aggregate
+#| fig-cap: Estimated year effects with and without clamping.
+
+model <- glmer(
+  y ~ year + (1 | location) + (1 | sublocation),
+  data = dataset,
+  family = poisson
+)
+imputed <- impute(model = model, dataset)
+unclamped <- aggregate_impute(
+  object = imputed,
+  grouping = c("year", "location"),
+  fun = sum
+)
+clamped <- aggregate_impute(
+  object = imputed,
+  grouping = c("year", "location"),
+  fun = sum,
+  minimum = minimum
+)
+extractor <- function(model) {
+  summary(model)$coefficients[, c("Estimate", "Std. Error")]
+}
+mic <- model_impute(
+  unclamped,
+  model_fun = glm,
+  rhs = "~ 0 + factor(year)",
+  extractor = extractor,
+  model_args = list(family = poisson)
+)
+mic$type <- "unclamped"
+mic_clamped <- model_impute(
+  clamped,
+  model_fun = glm,
+  rhs = "~ 0 + factor(year)",
+  extractor = extractor,
+  model_args = list(family = poisson)
+)
+mic_clamped$type <- "clamped"
+mic <- rbind(mic, mic_clamped)
+gsub(".*?([0-9]+)", "\\1", mic$Parameter) |>
+  as.integer() -> mic$year
+library(ggplot2)
+ggplot(mic, aes(x = year, y = Estimate, ymin = LCL, ymax = UCL, color = type)) +
+  geom_pointrange(position = position_dodge(width = 0.5)) +
+  scale_x_continuous(breaks = seq_len(n_year)) +
+  labs(
+    x = "Year",
+    y = "Estimated effect of year on log(count)",
+    color = "Clamping"
+  ) +
+  theme_bw()
+```
