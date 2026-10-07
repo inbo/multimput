@@ -1,7 +1,7 @@
 Type: Package
 Package: multimput
 Title: Using Multiple Imputation to Address Missing Data
-Version: 0.2.15
+Version: 0.3.0
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8804-4216", affiliation = "Research Institute for Nature and Forest (INBO)")),
@@ -47,12 +47,15 @@ VignetteBuilder:
     knitr
 Additional_repositories: https://inla.r-inla-download.org/R/stable
 Config/citeme/communities: inbo
-Config/citeme/keywords: missing data; multiple imputation; Rubin; inbo_version
+Config/citeme/keywords: missing data; multiple imputation; Rubin;
+    inbo_version
+Config/roxygen2/version: 8.1.0
 Encoding: UTF-8
 Language: en-GB
 LazyData: TRUE
 Roxygen: list(markdown = TRUE)
 Collate:
+    'aggregate_clamp.R'
     'raw_imputed_class.R'
     'aggregated_imputed_class.R'
     'aggregate_impute.R'
@@ -71,4 +74,4 @@ Collate:
     'missing_observed.R'
     'missing_volunteer.R'
     'model_impute.R'
-Config/roxygen2/version: 8.1.0
+    'raw_clamp.R'
