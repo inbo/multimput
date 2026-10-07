@@ -1,4 +1,12 @@
-# multimput 0.2.15
+# multimput 0.3.0
+
+## Breaking change
+
+* Clamping is now directly applied to the imputations by `impute()`.
+  The stored imputations no longer contain the raw imputations but the clamped imputations.
+* Clamping is now also available with `aggregate_impute()`.
+
+## Bugfixes
 
 * Bugfix in `hurdle_impute()` when selecting single covariates.
 
@@ -14,7 +22,7 @@
 
 # multimput 0.2.13
 
-* `aggregate_impute()` handles the corner case when `join` results in an empty 
+* `aggregate_impute()` handles the corner case when `join` results in an empty
   dataset.
 * The `model_fun` argument of `model_impute()` can be either a function or a
   string containing the name of a function (like `"glm"`).
@@ -43,7 +51,7 @@
 
 # multimput 0.2.10
 
-* Use [`checklist`](https://inbo.github.io/checklist/) infrastructure. 
+* Use [`checklist`](https://inbo.github.io/checklist/) infrastructure.
 
 # multimput 0.2.7.9000
 
