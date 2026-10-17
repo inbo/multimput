@@ -9,9 +9,11 @@
 #' `count_` prefix.
 #' @param presence the `rawImputed` object for the presence.
 #' @param count the `rawImputed` object for counts.
+#' @param by The name of the variable linking the `presence` and `count`
+#' objects.
 #' @export
 #' @importFrom methods new validObject
-hurdle_impute <- function(presence, count) {
+hurdle_impute <- function(presence, count, by) {
   stopifnot(
     "`presence` is not a `rawImputed` object" = inherits(
       presence,
@@ -27,31 +29,51 @@ hurdle_impute <- function(presence, count) {
     ) ==
       ncol(presence@Imputation),
     "Only add extra observations to the `count` model" = nrow(presence@Extra) ==
-      0
+      0,
+    "`by` is not a string" = is.character(by),
+    "`by` must contain only one element" = length(by) == 1,
+    "`by` must be a covariate of of `count`" = by %in% colnames(count@Data),
+    "`by` must be a covariate of of `presence`" = by %in%
+      colnames(presence@Data),
+    "`by` has duplicated values in `count`" = anyDuplicated(count@Data[, by]) ==
+      0,
+    "`by` has duplicated values in `presence`" = anyDuplicated(presence@Data[,
+      by
+    ]) ==
+      0,
+    "all values of `by` must match between `count` and `presence`" = all(
+      count@Data[, by] %in% presence@Data[, by]
+    )
   )
 
   # prepare imputations
   count@Data[[count@Response]] |>
-    matrix(nrow = nrow(count@Data), ncol = ncol(count@Imputation)) -> count_resp
+    matrix(nrow = nrow(count@Data), ncol = ncol(count@Imputation)) |>
+    `rownames<-`(count@Data[, by]) -> count_resp
   count_resp[is.na(count@Data[[count@Response]]), ] <- count@Imputation
   presence@Data[[presence@Response]] |>
     matrix(
       nrow = nrow(presence@Data),
       ncol = ncol(presence@Imputation)
-    ) -> presence_resp
+    ) |>
+    `rownames<-`(presence@Data[, by]) -> presence_resp
   presence_resp[
     is.na(presence@Data[[presence@Response]]),
   ] <- presence@Imputation
+  presence_resp <- presence_resp[rownames(count_resp), ]
 
   # prepare covariates
   cv_count <- count@Data[,
     !colnames(count@Data) %in% count@Response,
     drop = FALSE
-  ]
+  ] |>
+    `rownames<-`(count@Data[, by])
   cv_presence <- presence@Data[,
     !colnames(presence@Data) %in% presence@Response,
     drop = FALSE
-  ]
+  ] |>
+    `rownames<-`(presence@Data[, by])
+  cv_presence <- cv_presence[rownames(count_resp), ]
   common <- return_common(cv_count, cv_presence)
   extra_count <- colnames(cv_count)[!colnames(cv_count) %in% common]
   extra_presence <- colnames(cv_presence)[!colnames(cv_presence) %in% common]
@@ -74,7 +96,8 @@ hurdle_impute <- function(presence, count) {
       drop = FALSE
     ],
     ren_presence
-  )
+  ) |>
+    `rownames<-`(NULL)
   if (nrow(count@Extra) == 0) {
     extra <- matrix(nrow = 0, ncol = ncol(count_resp))
   } else {
@@ -111,7 +134,8 @@ hurdle_impute <- function(presence, count) {
     "aggregatedImputed",
     Covariate = cv,
     Imputation = rbind(presence_resp * count_resp, extra) |>
-      `colnames<-`(sprintf("Imputation%04i", seq_len(ncol(count_resp))))
+      `colnames<-`(sprintf("Imputation%04i", seq_len(ncol(count_resp)))) |>
+      `rownames<-`(NULL)
   )
 }
 

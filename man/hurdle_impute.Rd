@@ -4,12 +4,15 @@
 \alias{hurdle_impute}
 \title{Combine two models into a hurdle model}
 \usage{
-hurdle_impute(presence, count)
+hurdle_impute(presence, count, by)
 }
 \arguments{
 \item{presence}{the \code{rawImputed} object for the presence.}
 
 \item{count}{the \code{rawImputed} object for counts.}
+
+\item{by}{The name of the variable linking the \code{presence} and \code{count}
+objects.}
 }
 \description{
 Multiplies the imputed values for the \code{presence} model with those of the

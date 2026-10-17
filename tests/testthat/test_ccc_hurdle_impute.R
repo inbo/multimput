@@ -1,6 +1,7 @@
 test_that("hurdle_impute", {
   set.seed(20230704)
   dataset <- generate_data(n_year = 10, n_site = 10, n_run = 1, intercept = 1)
+  dataset$ID <- seq_len(nrow(dataset))
   dataset |>
     mutate(
       Minimum = .data$Count,
@@ -27,7 +28,7 @@ test_that("hurdle_impute", {
   )
   impute_present <- impute(model, data = present, minimum = "Minimum")
   expect_is(
-    impute_hurdle <- hurdle_impute(impute_present, impute_count),
+    impute_hurdle <- hurdle_impute(impute_present, impute_count, by = "ID"),
     "aggregatedImputed"
   )
 })

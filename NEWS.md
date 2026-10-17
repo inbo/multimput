@@ -6,6 +6,8 @@
   The stored imputations no longer contain the raw imputations but the clamped
   imputations.
 * Clamping is now also available with `aggregate_impute()`.
+* `hurdle_impute()` now requires a variable that links the count data to the
+  presence data.
 
 ## Bugfixes
 
