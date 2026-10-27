@@ -37,10 +37,9 @@ hurdle_impute <- function(presence, count, by) {
       colnames(presence@Data),
     "`by` has duplicated values in `count`" = anyDuplicated(count@Data[, by]) ==
       0,
-    "`by` has duplicated values in `presence`" = anyDuplicated(presence@Data[,
-      by
-    ]) ==
-      0,
+    # fmt: skip
+    "`by` has duplicated values in `presence`" =
+      anyDuplicated(presence@Data[, by]) == 0,
     "all values of `by` must match between `count` and `presence`" = all(
       count@Data[, by] %in% presence@Data[, by]
     )

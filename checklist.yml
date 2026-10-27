@@ -2,29 +2,24 @@ description: Configuration file for checklist::check_pkg()
 package: yes
 allowed:
   warnings:
-  - motivation: INLA is required and not available on CRAN.
-    value: |-
-      checking CRAN incoming feasibility ... WARNING
-      Maintainer: 'Thierry Onkelinx <thierry.onkelinx@inbo.be>'
-
-      New submission
-
-      Strong dependencies not in mainstream repositories:
-        INLA
-      Availability using Additional_repositories specification:
-        INLA   yes   https://inla.r-inla-download.org/R/stable
+  - motivation: ROR is false positive and INLA is not available on CRAN
+    value: "checking CRAN incoming feasibility ... WARNING\nMaintainer: 'Thierry Onkelinx
+      <thierry.onkelinx@inbo.be>'\n\nNew submission\n\nStrong dependencies not in
+      the CRAN or BioC software repositories:\n  INLA\nAvailability using Additional_repositories
+      specification:\n  INLA   yes   https://inla.r-inla-download.org/R/stable\n\nFound
+      the following (possibly) invalid ROR IDs:\n  ID: 00j54wy13\t(from: DESCRIPTION)"
   notes: []
 required:
 - CITATION
 - DESCRIPTION
 - R CMD check
 - checklist
-- codemeta
 - documentation
 - filename conventions
 - folder conventions
 - license
 - lintr
+- organisation
 - repository secret
 - spelling
 spelling:
@@ -32,3 +27,5 @@ spelling:
   ignore:
   - .github
   - LICENSE.md
+pak: []
+gha_install: []
